@@ -1,0 +1,22 @@
+services:
+  maxpharma-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maxpharma-web
+    ports:
+      - "8128:3000"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3 
+    networks:
+      - maxpharma_network
+
+networks:
+  maxpharma_network:
+    external: true
