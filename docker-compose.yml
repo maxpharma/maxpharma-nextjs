@@ -1,0 +1,29 @@
+services:
+  maxpharma-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: maxpharma-api
+    ports:
+      - "9063:9000"
+      - "9064:9002"
+    env_file:
+      - .env
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - maxpharma_network
+    volumes:
+      - uploads:/app/uploads
+    entrypoint: ["./entrypoint.sh"] 
+
+volumes:
+  uploads:
+
+networks:
+  maxpharma_network:
+    external: true
