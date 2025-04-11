@@ -29,6 +29,12 @@ const buildFindFilter = async (params: any) => {
   if (!!params?.id) {
     filter.where = { id: params.id };
   }
+  if(params?.type){
+    filter.where = {
+      ...filter.where,
+      type: params?.type
+   }
+  }
 
   return filter;
 };

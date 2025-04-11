@@ -1,7 +1,7 @@
 import adminRoutes from "./admin";
 import applicationRoutes from "./application"
 import contactRoutes from "./contact";
-import  documentRoutes from "./document"
+import  serviceRoutes from "./service"
 import galleryRoutes from "./gallery";
 import settingRoutes from "./setting"
 import teamRoutes from "./team";
@@ -27,7 +27,7 @@ export const routes = [
   ...adminRoutes,
   ...applicationRoutes,
   ...contactRoutes,
-  ...documentRoutes,
+  ...serviceRoutes,
   ...galleryRoutes,
   ...settingRoutes,
   ...teamRoutes,

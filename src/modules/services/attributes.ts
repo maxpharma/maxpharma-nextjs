@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-const documentAttributes = {
+const serviceAttributes = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -8,14 +8,16 @@ const documentAttributes = {
   title: {
     type: DataTypes.STRING,
   },
-  file: {
+  description: {
     type: DataTypes.STRING,
   },
   type: {
     type: DataTypes.STRING,
+    unique:true,
+    allowNull: false
   },
-  date: {
-    type: DataTypes.DATE,
+  files: {
+    type: DataTypes.JSON,
   },
   createdAt: {
     type: DataTypes.DATE,
@@ -25,4 +27,4 @@ const documentAttributes = {
   },
 };
 
-export { documentAttributes };
+export { serviceAttributes };

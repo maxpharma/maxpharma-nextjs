@@ -4,13 +4,26 @@ const controller = {
     try {
       const { query }: any = req;
       const data = await Service.list({
-        search: query?.search || "",
+        search: query?.search || null,
+        type: query?.type || null,
       });
       return data;
     } catch (err: any) {
       throw new Error(err);
     }
   },
+   find: async (req: Request) => {
+        try {
+          const { user, params }: any = req;
+          const data = await Service.find({
+            id: params?.id,
+            type: params?.type
+          });
+          return data;
+        } catch (err: any) {
+          throw new Error(err);
+        }
+      },
   create: async (req: Request) => {
     try {
       const data = await Service.create(req?.body);
@@ -22,7 +35,7 @@ const controller = {
   update: async (req: Request) => {
     try {
       const { params }: any = req;
-      const data = await Service.update(req?.body);
+      const data = await Service.update(req?.body, params?.id);
       return data;
     } catch (err: any) {
       throw new Error(err);

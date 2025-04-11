@@ -1,7 +1,7 @@
 import removeFile from "./removeFile"
 import uploadImage from "./uploadImage"
 
-const uploadProductImage = async(items:any[],dynamicPath:string, oldImages?:any[]) => {
+const uploadMultipleImage = async(items:any[],dynamicPath:string, oldImages?:any[]) => {
     const data = await Promise.all(
       items?.map(async(value:any, index:number) => {
         if(!!value?.base64){
@@ -22,4 +22,6 @@ const uploadProductImage = async(items:any[],dynamicPath:string, oldImages?:any[
     )
     console.log(data,'list of image upload')
     return data
-  }
+}
+
+export default uploadMultipleImage

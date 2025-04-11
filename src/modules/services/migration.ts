@@ -1,12 +1,12 @@
 import { QueryInterface } from "sequelize";
-import { documentAttributes } from "./attributes";
+import { serviceAttributes } from "./attributes";
 
 const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable("documents", documentAttributes);
+  await queryInterface.createTable("services", serviceAttributes);
 };
 
 const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable("documents");
+  await queryInterface.dropTable("services");
 };
 
 export { up, down };

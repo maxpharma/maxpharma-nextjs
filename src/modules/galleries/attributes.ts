@@ -8,6 +8,9 @@ const galleryAttributes = {
   title: {
     type: DataTypes.STRING,
   },
+  files: {
+    type: DataTypes.JSON,
+  },
   createdAt: {
     type: DataTypes.DATE,
   },

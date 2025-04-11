@@ -1,36 +1,27 @@
-import Controller from "../modules/images/controller";
+import Controller from "../modules/services/controller";
 const routes = [
   {
     method: "get",
-    path: "images",
+    path: "services",
     controller: Controller.get,
-    authorization: true,
-    authCheckType: ["admin", "user"]
   },
   {
-    method: "get",
-    path: "images/:id",
-    controller: Controller.find,
+    method: "post",
+    path: "services",
+    controller: Controller.create,
     authorization: true,
     authCheckType: ["admin"],
   },
   {
-    method: "post",
-    path: "images",
-    controller: Controller.create,
-    authorization: true,
-    authCheckType: ["admin", "user"]
-  },
-  {
     method: "patch",
-    path: "images/:id",
+    path: "services/:id",
     controller: Controller.update,
     authorization: true,
     authCheckType: ["admin"],
   },
   {
     method: "delete",
-    path: "images/:id",
+    path: "services/:id",
     controller: Controller.delete,
     authorization: true,
     authCheckType: ["admin"],
