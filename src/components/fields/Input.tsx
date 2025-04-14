@@ -1,7 +1,7 @@
 import { ChangeEvent, FC, useState, KeyboardEvent } from "react";
 import { Field, FieldProps, FormikProps } from "formik";
 import SvgIcon from "../SvgIcon";
-import { showPasswordIcon } from "@/assets/svg";
+import { hidePasswordIcon } from "@/assets/commonSvg";
 
 interface InputProps {
     type?: "text" | "password" | "email" | "url" | "date" | "number";
@@ -228,7 +228,7 @@ const Input: FC<InputProps> = ({
                                                 : "Show password"
                                         }
                                     >
-                                        <SvgIcon src={showPasswordIcon} />
+                                        <SvgIcon src={hidePasswordIcon} />
                                     </button>
                                 )}
                             </div>
