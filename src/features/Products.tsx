@@ -1,3 +1,5 @@
+"use client";
+
 import Button from "@/components/Button";
 import CustomImage from "@/components/CustomImage";
 import { useRouter } from "next/navigation";
