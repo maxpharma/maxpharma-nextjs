@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import Documents from '@/api/documents';
-import ActionButton from '@/components/ActionButton';
-import Dropdown from '@/components/ui/Dropdown';
-import Input from '@/components/ui/fields/Input';
-import Upload from '@/components/ui/fields/Upload';
-import { Form, Formik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import DocumentsData from './DocumentsData';
-import NepaliDatePicker from '@/components/ui/fields/NepaliDatePicker';
+import Documents from "@/api/documents";
+import ActionButton from "@/components/ActionButton";
+import Dropdown from "@/components/ui/Dropdown";
+
+import { Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import DocumentsData from "./DocumentsData";
+import Input from "@/components/fields/Input";
+import CustomDate from "@/components/fields/CustomDate";
+import Upload from "@/components/fields/Upload";
 
 interface DocumentType {
     id: number;
@@ -20,36 +21,36 @@ interface DocumentType {
 
 const DocumentsPage = () => {
     const [updateIdData, setUpdateIdData] = useState<DocumentType | null>(null);
-    const [dropdownValue, setDropdownValue] = useState('');
-    console.log(dropdownValue, 'dropdownValue');
+    const [dropdownValue, setDropdownValue] = useState("");
+    console.log(dropdownValue, "dropdownValue");
     const [loading, setLoading] = useState(false);
 
     const documentOptions = [
-        'Notice Board',
-        'Company News',
-        'Press & Media Release',
-        'Procurement Notices',
-        'Career News',
-        'Downloads',
+        "Notice Board",
+        "Company News",
+        "Press & Media Release",
+        "Procurement Notices",
+        "Career News",
+        "Downloads",
     ];
 
     const handleDocumentTypeChange = (selectedOption: string) => {
         setDropdownValue(selectedOption);
     };
     const [initialValues, setInitialValues] = useState({
-        title: '',
-        type: '',
-        date: '',
+        title: "",
+        type: "",
+        date: "",
         file: {
-            base64: '',
-            extension: '',
+            base64: "",
+            extension: "",
         },
     });
 
     useEffect(() => {
         if (updateIdData?.id) {
             setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
             }, 100);
             setInitialValues({
                 title: updateIdData?.title,
@@ -57,21 +58,21 @@ const DocumentsPage = () => {
                 date: updateIdData?.date,
                 file: {
                     base64: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${updateIdData?.file}`,
-                    extension: updateIdData?.file.split('.').pop() || '',
+                    extension: updateIdData?.file.split(".").pop() || "",
                 },
             });
             setDropdownValue(updateIdData?.type);
         } else {
             setInitialValues({
-                title: '',
-                type: '',
-                date: '',
+                title: "",
+                type: "",
+                date: "",
                 file: {
-                    base64: '',
-                    extension: '',
+                    base64: "",
+                    extension: "",
                 },
             });
-            setDropdownValue('');
+            setDropdownValue("");
         }
     }, [
         updateIdData?.id,
@@ -80,7 +81,7 @@ const DocumentsPage = () => {
         updateIdData?.type,
     ]);
 
-    console.log(initialValues, 'initialValues');
+    console.log(initialValues, "initialValues");
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
@@ -97,12 +98,12 @@ const DocumentsPage = () => {
 
         try {
             if (updateIdData?.id) {
-                await Documents.update('documents', payload, updateIdData?.id);
+                await Documents.update("documents", payload, updateIdData?.id);
             } else {
-                await Documents.create('documents', payload);
+                await Documents.create("documents", payload);
             }
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error("Error uploading file:", error);
         } finally {
             resetForm();
             setUpdateIdData(null);
@@ -137,7 +138,7 @@ const DocumentsPage = () => {
                                 />
                             </div>
                             <div className='flex gap-4'>
-                                <NepaliDatePicker
+                                <CustomDate
                                     name='date'
                                     label='Date'
                                     placeholder='Select Date'
@@ -162,7 +163,7 @@ const DocumentsPage = () => {
                                 type='submit'
                                 classname='flex justify-self-end'
                             >
-                                {updateIdData?.id ? 'Update' : 'Save'}
+                                {updateIdData?.id ? "Update" : "Save"}
                             </ActionButton>
                         </Form>
                     )}
