@@ -1,43 +1,44 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    --color-primary: #7d8e23; /* Default fallback color */
+    --color-light-primary: #fafbea; /* Default fallback color */
+    --color-secondary: #ea580c;
 }
 
 @font-face {
-    font-family: 'Sansation';
-    src: url('/fonts/sansation/Sansation-Regular.ttf') format('truetype');
+    font-family: "Sansation";
+    src: url("/fonts/sansation/Sansation-Regular.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Sansation';
-    src: url('/fonts/sansation/Sansation-Bold.ttf') format('truetype');
+    font-family: "Sansation";
+    src: url("/fonts/sansation/Sansation-Bold.ttf") format("truetype");
     font-weight: 700;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Sansation';
-    src: url('/fonts/sansation/Sansation-Light.ttf') format('truetype');
+    font-family: "Sansation";
+    src: url("/fonts/sansation/Sansation-Light.ttf") format("truetype");
     font-weight: 300;
     font-style: normal;
 }
 
-@theme {
-    --font-sansation: 'Sansation', sans-serif;
-    --color-primary: #0059ab;
-    --color-secondary: #17ad4c;
-    --color-light-green: #f3fff8;
-    --color-light-blue: #f0f8ff;
-    --color-color-primary: #202b5d;
+@theme default {
+    --color-primary: var(--color-primary);
+    --color-light-primary: var(--color-light-primary);
+    --color-secondary: var(--color-secondary);
+    --text-primary: #000000;
+    --text-secondary: #000000;
+    --font-sansation: "Sansation", sans-serif;
 }
 
 @layer base {
     h1 {
-        @apply text-lg md:text-xl lg:text-2xl font-bold text-primary;
+        @apply text-primary text-lg md:text-xl lg:text-2xl font-semibold;
     }
 
     h2 {
@@ -53,7 +54,7 @@
     }
 
     p {
-        @apply text-base text-justify text-color-primary;
+        @apply text-base text-justify text-black;
     }
 }
 
@@ -76,5 +77,9 @@
 
     .inactive-button {
         @apply text-gray-700 whitespace-nowrap bg-black/5 text-sm border-2 border-gray-300 px-2 py-1 rounded-xl;
+    }
+
+    .custom-transition {
+        @apply transition-all duration-200 ease-in-out;
     }
 }

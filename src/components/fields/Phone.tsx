@@ -1,6 +1,6 @@
-import { ChangeEvent, FC } from 'react';
-import { Field, FieldProps } from 'formik';
-import Image from 'next/image';
+import { ChangeEvent, FC } from "react";
+import { Field, FieldProps } from "formik";
+import Image from "next/image";
 
 interface PhoneInputProps {
     label?: string;
@@ -13,11 +13,11 @@ interface PhoneInputProps {
 }
 
 const PhoneInput: FC<PhoneInputProps> = ({
-    label = 'Phone',
+    label = "Phone",
     name,
     onChange,
-    placeholder = 'Enter your phone number',
-    className = '',
+    placeholder = "Enter your phone number",
+    className = "",
     disabled = false,
 }) => {
     return (
@@ -25,15 +25,13 @@ const PhoneInput: FC<PhoneInputProps> = ({
             <Field name={name}>
                 {({ field, meta, form }: FieldProps) => {
                     const hasError = meta.touched && meta.error;
-                    console.log('meta', meta);
-                    console.log('field', field);
 
                     const handlePhoneChange = (
                         e: ChangeEvent<HTMLInputElement>
                     ) => {
                         const rawValue = e.target.value;
                         const sanitizedValue = rawValue
-                            .replace(/\D/g, '')
+                            .replace(/\D/g, "")
                             .slice(0, 10);
 
                         form.setFieldValue(name, sanitizedValue);
@@ -52,25 +50,25 @@ const PhoneInput: FC<PhoneInputProps> = ({
                                     htmlFor={name}
                                     className={`block text-sm font-medium mb-1 ${
                                         hasError
-                                            ? 'text-red-500'
-                                            : 'text-gray-700'
+                                            ? "text-red-500"
+                                            : "text-gray-700"
                                     }`}
                                 >
                                     {label}
                                 </label>
                             )}
                             <div
-                                className={`relative bg-white flex items-center border rounded-md overflow-hidden focus-within:border focus-within:border-black focus-within:border-opacity-70 ${
+                                className={`relative bg-white flex items-center border rounded-lg overflow-hidden  focus-within:border-primary focus-within:border-2 focus-within:border-opacity-70 ${
                                     hasError
-                                        ? 'border-red-500 focus-within:border-red-500'
-                                        : 'border-gray-300'
+                                        ? "border-red-500 focus-within:border-red-500"
+                                        : "border-gray-300"
                                 }`}
                             >
                                 {/* Nepal Flag + Country Code */}
                                 <div className='flex items-center pl-3 py-2'>
                                     <div className='relative w-6 h-4 mr-1'>
                                         <Image
-                                            src={'/images/nepal-icon.png'}
+                                            src={"/images/nepal-icon.png"}
                                             alt='nepal-flag'
                                             fill
                                             className='object-contain'
@@ -84,7 +82,7 @@ const PhoneInput: FC<PhoneInputProps> = ({
                                 <input
                                     id={name}
                                     type='tel'
-                                    value={field.value || ''}
+                                    value={field.value || ""}
                                     onChange={handlePhoneChange}
                                     onBlur={field.onBlur}
                                     disabled={disabled}
@@ -92,8 +90,8 @@ const PhoneInput: FC<PhoneInputProps> = ({
                                     className={`w-full px-3 py-2 focus:outline-none bg-white
                                      ${
                                          disabled
-                                             ? 'bg-gray-100 cursor-not-allowed'
-                                             : ''
+                                             ? "bg-gray-100 cursor-not-allowed"
+                                             : ""
                                      }`}
                                 />
                             </div>

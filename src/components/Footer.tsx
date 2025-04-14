@@ -1,45 +1,28 @@
-import { Clock, Mail, MapPin, Phone } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 const Footer = () => {
     return (
-        <footer className='bg-light-blue py-8 mt-32'>
+        <footer className='bg-light-primary py-8 mt-32'>
             <div className='custom-container mx-auto px-4'>
                 <div className='flex flex-col md:flex-row justify-between gap-8'>
                     {/* Logo Section */}
-                    <div className='flex flex-col gap-4 md:max-w-1/4'>
+                    <div className='flex flex-col gap-4 md:max-w-2/5'>
                         <Image
                             src='/images/logo.png'
                             alt='Prabhu Steels and Hydro Investment Company Ltd.'
                             width={300}
                             height={100}
                         />
-                        <div className='flex items-start gap-2'>
-                            <Clock size={16} className=' mt-1' />
-                            <div>
-                                <p>Opening Hours:</p>
-                                <p>Sun-Fri: 10:00am to 6:00pm</p>
-                            </div>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                            <Phone size={16} className='' />
-                            <Link
-                                href='tel:01-5913729'
-                                className='hover:text-blue-600 transition-colors'
-                            >
-                                01-5913729 | 01-5913728
-                            </Link>
-                        </div>
-                        <div className='flex items-center gap-2'>
-                            <Mail size={16} className='' />
-                            <Link
-                                href='mailto:Contact@prabhusteel.com'
-                                className='hover:text-blue-600 transition-colors'
-                            >
-                                Contact@prabhusteel.com
-                            </Link>
-                        </div>
+                        <p>
+                            Max Pharma Pvt. Ltd., based in Bagdurbar, Sundhara,
+                            Kathmandu, has been a trusted name in Nepal’s
+                            pharmaceutical industry for over 22 years. We import
+                            quality medicines from India and distribute them
+                            efficiently across the country, ensuring access even
+                            in remote areas.
+                        </p>
                     </div>
 
                     {/* First Useful Links */}
@@ -104,7 +87,7 @@ const Footer = () => {
                                     rel='noopener noreferrer'
                                 >
                                     <Image
-                                        src={'/svg/facebook.svg'}
+                                        src={"/svg/facebook.svg"}
                                         alt='facebook logo'
                                         width={32}
                                         height={32}
@@ -116,7 +99,7 @@ const Footer = () => {
                                     rel='noopener noreferrer'
                                 >
                                     <Image
-                                        src={'/svg/instagram.svg'}
+                                        src={"/svg/instagram.svg"}
                                         alt='instagram logo'
                                         width={32}
                                         height={32}
@@ -128,7 +111,7 @@ const Footer = () => {
                                     rel='noopener noreferrer'
                                 >
                                     <Image
-                                        src={'/svg/youtube.svg'}
+                                        src={"/svg/youtube.svg"}
                                         alt='youtube logo'
                                         width={32}
                                         height={32}
@@ -142,8 +125,7 @@ const Footer = () => {
                 {/* Copyright */}
                 <div className='mt-8 pt-4 border-t border-blue-200'>
                     <p className='text-center text-sm'>
-                        © 2023. All Rights Reserved by Prabhu Steels and Hydro
-                        Investment Company Limited.
+                        © 2023. All Rights Reserved by Max Pharma Pvt. Ltd
                     </p>
                 </div>
             </div>

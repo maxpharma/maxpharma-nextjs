@@ -1,5 +1,5 @@
-import { ChangeEvent, FC } from 'react';
-import { Field, FieldProps, FormikProps } from 'formik';
+import { ChangeEvent, FC } from "react";
+import { Field, FieldProps, FormikProps } from "formik";
 
 interface TextAreaProps {
     onChange?: (value: string) => void;
@@ -35,7 +35,7 @@ const TextArea: FC<TextAreaProps> = ({
                             <label
                                 htmlFor={name}
                                 className={`block text-sm font-medium mb-1 ${
-                                    hasError ? 'text-red-500' : 'text-gray-700'
+                                    hasError ? "text-red-500" : "text-gray-700"
                                 }`}
                             >
                                 {label}
@@ -43,21 +43,26 @@ const TextArea: FC<TextAreaProps> = ({
                         )}
                         <textarea
                             id={name}
-                            value={String(field.value ?? '')}
+                            value={String(field.value ?? "")}
                             rows={rows}
                             onChange={(
                                 event: ChangeEvent<HTMLTextAreaElement>
                             ) => handleChange(form, event.target.value)}
-                            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:border focus:border-black focus:border-opacity-70
+                            onInput={(e) => {
+                                const target = e.currentTarget;
+                                target.style.height = "auto"; // Reset height
+                                target.style.height = `${target.scrollHeight}px`; // Set new height
+                            }}
+                            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:border focus:border-primary focus:border-opacity-70
                 ${
                     hasError
-                        ? 'border-red-500 focus:border-red-500'
-                        : 'border-gray-300'
+                        ? "border-red-500 focus:border-red-500"
+                        : "border-gray-300"
                 } 
                 ${
                     restProps.disabled
-                        ? 'bg-gray-100 cursor-not-allowed'
-                        : 'bg-white'
+                        ? "bg-gray-100 cursor-not-allowed"
+                        : "bg-white"
                 }
               `}
                             {...restProps}

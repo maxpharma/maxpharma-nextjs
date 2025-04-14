@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useState, useEffect } from 'react';
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
 import {
     Phone,
     Mail,
@@ -12,7 +12,9 @@ import {
     X,
     ChevronDown,
     ChevronRight,
-} from 'lucide-react';
+} from "lucide-react";
+import { color } from "@/utils/theme";
+import CustomImage from "./CustomImage";
 
 const Navbar = () => {
     const router = useRouter();
@@ -28,19 +30,19 @@ const Navbar = () => {
             }
         };
 
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, [mobileMenuOpen]);
 
     // Lock body scroll when mobile menu is open
     useEffect(() => {
         if (mobileMenuOpen) {
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = "hidden";
         } else {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = "unset";
         }
         return () => {
-            document.body.style.overflow = 'unset';
+            document.body.style.overflow = "unset";
         };
     }, [mobileMenuOpen]);
 
@@ -55,45 +57,31 @@ const Navbar = () => {
     };
 
     const navItems: NavItem[] = [
-        { name: 'Home', path: '/' },
+        { name: "Home", path: "/" },
         {
-            name: 'About Us',
-            path: '/about',
-            dropdown: [
-                { name: 'Overview', path: '/about' },
-                {
-                    name: 'Strategic Objectives',
-                    path: '/about/strategic-objectives',
-                },
-                {
-                    name: 'Corporate Governance',
-                    path: '/about/corporate-governance',
-                },
-                { name: 'Board Of Directors', path: '/about/directors' },
-                { name: 'Management Team', path: '/about/team' },
-            ],
+            name: "About Us",
+            path: "/about",
         },
         {
-            name: 'Notice',
-            path: '/notice',
+            name: "Products",
+            path: "/notice",
         },
         // {
         //     name: 'Projects',
         //     path: '/projects',
         // },
-        { name: 'Portfolio', path: '/portfolio' },
+        { name: "Manufacturing", path: "/portfolio" },
         {
-            name: 'Gallery',
-            path: '/gallery',
+            name: "Notice",
+            path: "/gallery",
         },
         {
-            name: 'Legal Doc',
-            path: '/legal',
-            link: 'https://legal.prabhusteel.com/sign-in',
+            name: "Gallery",
+            path: "/legal",
         },
         {
-            name: 'Contact Us',
-            path: '/contact',
+            name: "Contact Us",
+            path: "/contact",
         },
     ];
 
@@ -107,7 +95,6 @@ const Navbar = () => {
             } else {
                 router.push(item.path);
             }
-            // Removed duplicate function call
         }
     };
 
@@ -126,14 +113,14 @@ const Navbar = () => {
                         <div className='flex gap-1 items-center flex-nowrap max-md:hidden'>
                             <Mail size={16} />
                             <span>
-                                <span className='max-lg:hidden'>Mail us:</span>{' '}
+                                <span className='max-lg:hidden'>Mail us:</span>{" "}
                                 contact@prabhusteel.com
                             </span>
                         </div>
                         <div className='flex gap-1 items-center flex-nowrap'>
                             <MapPin size={16} />
                             <span>
-                                <span className='max-lg:hidden'>Reach us:</span>{' '}
+                                <span className='max-lg:hidden'>Reach us:</span>{" "}
                                 Kathmandu-32 Tinkune
                             </span>
                         </div>
@@ -143,18 +130,15 @@ const Navbar = () => {
             <nav className='custom-container flex items-center justify-between max-md:py-2'>
                 <div
                     className='relative w-40 md:w-72 h-auto min-h-8 cursor-pointer'
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push("/")}
                 >
-                    <Image
+                    <CustomImage
                         src='/images/logo.png'
-                        alt='logo'
-                        width={250}
-                        height={70}
-                        className='object-contain'
+                        className='w-32 h-16 md:w-48 '
                     />
                 </div>
 
-                <div className='flex items-center gap-10 font-extralight text-primary max-lg:hidden'>
+                <div className='flex items-center gap-10 font-extralight max-lg:hidden'>
                     {navItems.map((item) => (
                         <div
                             key={item.name}
@@ -175,8 +159,8 @@ const Navbar = () => {
                                         size={16}
                                         className={`text-primary transition-transform duration-300 ${
                                             openDropdown === item.name
-                                                ? 'rotate-180'
-                                                : ''
+                                                ? "rotate-180"
+                                                : ""
                                         }`}
                                     />
                                 )}
@@ -206,7 +190,7 @@ const Navbar = () => {
                 <div className='flex items-center gap-4 '>
                     <button
                         className='button'
-                        onClick={() => router.push('/request-share')}
+                        onClick={() => router.push("/request-share")}
                     >
                         Request Share
                     </button>
@@ -223,14 +207,14 @@ const Navbar = () => {
             <div
                 className={`fixed inset-0 bg-white bg-opacity-50 z-50 transition-opacity duration-300 ${
                     mobileMenuOpen
-                        ? 'opacity-100'
-                        : 'opacity-0 pointer-events-none'
+                        ? "opacity-100"
+                        : "opacity-0 pointer-events-none"
                 }`}
                 onClick={() => setMobileMenuOpen(false)}
             >
                 <div
                     className={`fixed top-0 left-0 h-full w-full max-w-sm bg-white transition-transform duration-300 ease-in-out transform ${
-                        mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+                        mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
                     }`}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -311,7 +295,7 @@ const Navbar = () => {
                                 className='w-full bg-primary text-white py-3 rounded font-medium'
                                 onClick={() => {
                                     setMobileMenuOpen(false);
-                                    router.push('/request-share');
+                                    router.push("/request-share");
                                 }}
                             >
                                 Request Share
