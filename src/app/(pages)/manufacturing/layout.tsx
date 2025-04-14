@@ -9,18 +9,29 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
     const aboutNavItems = [
-        { name: "Overview", path: "/about" },
         {
-            name: "Message from Chairperson",
-            path: "/about/message-from-chairperson",
+            name: "Production Department",
+            path: "/manufacturing/production-department",
         },
         {
-            name: "Organization Hierarchy",
-            path: "/about/organization-hierarchy",
+            name: "Quality Assurance",
+            path: "/manufacturing/quality-assurance",
+        },
+        {
+            name: "Quality Control",
+            path: "/manufacturing/quality-control",
+        },
+        {
+            name: "Research & Development",
+            path: "/manufacturing/research-development",
+        },
+        {
+            name: "Store & Logistics",
+            path: "/manufacturing/store-logistics",
         },
     ];
 
-    const [title, setTitle] = useState("About");
+    const [title, setTitle] = useState("Manufacturing");
 
     useEffect(() => {
         const check = aboutNavItems.find((item) => item.path === pathname);
@@ -28,7 +39,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         if (check) {
             setTitle(check.name);
         } else {
-            setTitle("About");
+            setTitle("Manufacturing");
         }
     }, [pathname]);
 

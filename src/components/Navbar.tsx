@@ -64,20 +64,17 @@ const Navbar = () => {
         },
         {
             name: "Products",
-            path: "/notice",
+            path: "/products",
         },
-        // {
-        //     name: 'Projects',
-        //     path: '/projects',
-        // },
-        { name: "Manufacturing", path: "/portfolio" },
+
+        { name: "Manufacturing", path: "/manufacturing/production-department" },
         {
             name: "Notice",
-            path: "/gallery",
+            path: "/notice",
         },
         {
             name: "Gallery",
-            path: "/legal",
+            path: "/gallery",
         },
         {
             name: "Contact Us",
@@ -192,7 +189,7 @@ const Navbar = () => {
                         className='button'
                         onClick={() => router.push("/request-share")}
                     >
-                        Request Share
+                        Send Inquiry
                     </button>
                     <button
                         className='lg:hidden text-primary'
@@ -298,7 +295,7 @@ const Navbar = () => {
                                     router.push("/request-share");
                                 }}
                             >
-                                Request Share
+                                Send Inquiry
                             </button>
                         </div>
                     </div>

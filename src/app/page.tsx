@@ -22,11 +22,9 @@ const Page = () => {
         <>
             <Banner />
             <div className='custom-container mt-4 flex flex-col gap-4 md:gap-20'>
-                {/* Who are we? */}
                 <section className='space-y-4 '>
                     <div className='flex flex-col lg:flex-row gap-12'>
                         <div className='space-y-6 lg:w-7/10'>
-                            {/* Your text content stays the same */}
                             <h1>Who are we?</h1>
                             <p>
                                 Max Pharma Pvt. Ltd, based in Bagdurbar,

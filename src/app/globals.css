@@ -68,11 +68,15 @@
     }
 
     .button {
-        @apply bg-primary text-white text-sm md:text-base font-normal md:font-bold py-2 px-4 rounded-xl cursor-pointer;
+        @apply bg-primary text-white text-sm md:text-base font-normal md:font-bold py-3 px-4 rounded-xl cursor-pointer;
+    }
+
+    .secondary-button {
+        @apply bg-white text-primary border border-primary text-sm md:text-base font-normal md:font-bold py-3 px-4 rounded-lg cursor-pointer;
     }
 
     .active-button {
-        @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-xl;
+        @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-lg;
     }
 
     .inactive-button {

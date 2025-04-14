@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import Admin from '@/api/admin';
-import ActionButton from '@/components/ActionButton';
-import Input from '@/components/ui/fields/Input';
-import { Helper } from '@/utils';
+import Admin from "@/api/admin";
+import ActionButton from "@/components/ActionButton";
+import Input from "@/components/fields/Input";
+import { Helper } from "@/utils";
 
-import { Form, Formik } from 'formik';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { Form, Formik } from "formik";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 const AdminLogin = () => {
     const [loading, setLoading] = useState(false);
@@ -17,8 +17,8 @@ const AdminLogin = () => {
     const router = useRouter();
 
     const initialValues = {
-        username: '',
-        password: '',
+        username: "",
+        password: "",
     };
 
     const submithandler = async (values: any) => {
@@ -34,10 +34,10 @@ const AdminLogin = () => {
 
             Helper.saveUser(res);
             if (res?.token) {
-                router.push('/admin/dashboard');
+                router.push("/admin/dashboard");
             }
         } catch (err) {
-            console.error('Login Error:', err);
+            console.error("Login Error:", err);
         }
 
         setLoading(false);

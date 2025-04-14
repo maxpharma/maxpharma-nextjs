@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { Form, Formik } from "formik";
 import Image from "next/image";

@@ -4,22 +4,21 @@ import BannerNavigation from "@/components/BannerNavigation";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const NoticeLayout = ({ children }: { children: React.ReactNode }) => {
+const ProductLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
+    console.log(pathname === "/products");
+
     const aboutNavItems = [
-        { name: "All Notice", path: "/notice" },
+        { name: "Imported Products", path: "/products" },
+
         {
-            name: "Important Notice",
-            path: "/notice/important-notice",
-        },
-        {
-            name: "Career Notice",
-            path: "/notice/career-notice",
+            name: "Manufactured Products",
+            path: "/products/manufactured-products",
         },
     ];
 
-    const [title, setTitle] = useState("About");
+    const [title, setTitle] = useState("Products");
 
     useEffect(() => {
         const check = aboutNavItems.find((item) => item.path === pathname);
@@ -32,15 +31,17 @@ const NoticeLayout = ({ children }: { children: React.ReactNode }) => {
     }, [pathname]);
 
     console.log("title:", title);
-
     return (
-        <>
+        <div>
             <div>
-                <BannerNavigation title={title} items={aboutNavItems} />
+                {(pathname === "/products" ||
+                    pathname === "/products/manufactured-products") && (
+                    <BannerNavigation title={title} items={aboutNavItems} />
+                )}
             </div>
             <div className='custom-container mt-4'>{children}</div>
-        </>
+        </div>
     );
 };
 
-export default NoticeLayout;
+export default ProductLayout;

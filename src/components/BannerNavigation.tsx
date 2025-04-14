@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import React from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type NavigationItem = {
     name: string;
@@ -18,13 +18,13 @@ type BannerNavigationProps = {
 const BannerNavigation = ({
     title,
     items,
-    className = '',
+    className = "",
 }: BannerNavigationProps) => {
     const pathname = usePathname();
 
     return (
         <div
-            className={`mx-auto w-[98vw] bg-blue-50 rounded-xl py-8 ${className}`}
+            className={`mx-auto w-[98vw] bg-light-primary rounded-xl py-8 ${className}`}
         >
             <div className='px-4 flex flex-col items-center gap-8'>
                 <h1>{title}</h1>
@@ -32,7 +32,7 @@ const BannerNavigation = ({
                 <div className='flex flex-wrap justify-center gap-1 md:gap-2'>
                     {items.map((item) => {
                         const isExactMatchOnly =
-                            item.path.split('/').length === 2;
+                            item.path.split("/").length === 2;
 
                         const isActive = isExactMatchOnly
                             ? pathname === item.path
@@ -47,8 +47,8 @@ const BannerNavigation = ({
                   px-4 py-2 rounded-md text-sm font-medium transition duration-200
                   ${
                       isActive
-                          ? 'bg-primary text-white'
-                          : 'bg-white text-primary hover:bg-blue-100'
+                          ? "bg-primary text-white"
+                          : "bg-white text-primary hover:bg-blue-100"
                   }
                 `}
                             >

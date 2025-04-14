@@ -117,7 +117,7 @@ const Banner: React.FC<BannerProps> = ({
                             onClick={() => goToSlide(index)}
                             className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
                                 index === currentIndex
-                                    ? "bg-white w-4"
+                                    ? "bg-primary w-4"
                                     : "bg-white/50"
                             }`}
                             aria-label={`Go to slide ${index + 1}`}
