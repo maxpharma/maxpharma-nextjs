@@ -22,7 +22,7 @@ const GalleryCard = () => {
       <div className="absolute bottom-0 right-0 w-3/5 h-3/5 rounded-lg overflow-hidden shadow-lg transform rotate-[1deg] bg-white">
         <div className="relative w-full h-full border-8 border-white rounded-lg overflow-hidden">
           <Image
-            src="/images/banner.png"
+            src="/images/bottom-banner.png"
             alt="Company Team"
             fill
             className="object-cover rounded-sm"

@@ -38,7 +38,7 @@ const ContactUs = () => {
               </div>
               <div className="flex gap-2 items-center text-primary">
                 <MapPin />
-                <p>Kathmandu-32 Tinkune, Near to NMB Bank</p>
+                <p>{websiteData.location}</p>
               </div>
             </div>
 
