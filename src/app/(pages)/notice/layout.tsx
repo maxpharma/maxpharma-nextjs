@@ -8,7 +8,6 @@ const NoticeLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
     const aboutNavItems = [
-        { name: "All Notice", path: "/notice" },
         {
             name: "Important Notice",
             path: "/notice/important-notice",

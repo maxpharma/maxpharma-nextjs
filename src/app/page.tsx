@@ -25,7 +25,7 @@ const Page = () => {
 
                 <section className='space-y-4 mb-8'>
                     <div className='flex flex-col lg:flex-row gap-4 lg:gap-12 lg:items-center'>
-                        <div className='space-y-6 lg:w-6/10'>
+                        <div className='space-y-2 md:space-y-6 lg:w-6/10'>
                             <h1>Who are we?</h1>
                             <p>
                                 Max Pharma Pvt. Ltd, based in Bagdurbar,
@@ -70,7 +70,7 @@ const Page = () => {
                 </section>
 
                 <section className='space-y-4  mt-8'>
-                    <h1 className='text-center'>Latest Notices</h1>
+                    <h1>Latest Notices</h1>
                     <Notices limit={3} />
                 </section>
 

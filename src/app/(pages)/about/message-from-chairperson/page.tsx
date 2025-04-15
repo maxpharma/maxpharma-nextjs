@@ -31,9 +31,10 @@ const page = () => {
                 <Image
                     src={"/images/opsah.jpg"}
                     alt='Banner Image'
-                    width={50}
-                    height={50}
+                    width={400}
+                    height={400}
                     className='rounded-full size-48'
+                    priority={true}
                 />
                 <span className='font-bold text-xl'>O.P Sah</span>
                 <span className=''>Chairperson</span>
