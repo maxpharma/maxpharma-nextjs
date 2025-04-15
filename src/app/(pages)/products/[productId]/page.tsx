@@ -8,6 +8,7 @@ import TextArea from "@/components/fields/TextArea";
 import Overlay from "@/components/Overlay";
 import Categories from "@/features/Categories";
 import Products from "@/features/Products";
+import SendInquiry from "@/features/SendInquiry";
 import { Form, Formik } from "formik";
 import { sub } from "framer-motion/client";
 import { useParams } from "next/navigation";
@@ -112,62 +113,7 @@ const ProductDetailPage = () => {
       </div>
       {isOverlayOpen && (
         <Overlay onClose={() => setIsOverlayOpen(false)} isOpen={isOverlayOpen}>
-          <div className="space-y-4 ">
-            <h1>Interested in Our Products</h1>
-            <Formik
-              initialValues={{
-                name: "",
-                phone: "",
-                email: "",
-                subjest: "",
-                message: "",
-              }}
-              onSubmit={() => {}}
-            >
-              <Form>
-                <div className="flex gap-4 flex-col sm:flex-row">
-                  <Input
-                    name="name"
-                    label="Name"
-                    placeholder="Enter your name"
-                    required
-                    className="flex-1"
-                  />
-                  <PhoneInput
-                    name="phone"
-                    label="Contact Number"
-                    placeholder="Phone Number"
-                    required
-                    className="flex-1"
-                  />
-                </div>
-                <div className="flex gap-4 flex-col sm:flex-row">
-                  <Input
-                    name="email"
-                    label="Email"
-                    placeholder="Enter your email"
-                    type="email"
-                    required
-                    className="flex-1"
-                  />
-                  <Input
-                    name="subjest"
-                    label="Subject"
-                    placeholder="Enter your subject"
-                    required
-                    className="flex-1"
-                  />
-                </div>
-                <TextArea
-                  name="message"
-                  label="Message"
-                  placeholder="Enter your message"
-                  required
-                />
-                <Button variant="submit">Send Message</Button>
-              </Form>
-            </Formik>
-          </div>
+          <SendInquiry />
         </Overlay>
       )}
     </>
