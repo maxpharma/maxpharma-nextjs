@@ -1,168 +1,305 @@
-import { fetchByKey } from '@/utils/fetch';
-import { Metadata } from 'next';
-import Image from 'next/image';
-import React from 'react';
+"use client";
 
-export async function generateMetadata(): Promise<Metadata> {
-    const data: any = await fetchByKey('corporateGovernanceSeo');
+import React, { useState } from "react";
+import Image from "next/image";
+import { ChevronDown } from "lucide-react";
 
-    const parsedData = JSON.parse(data?.value || '{}');
-
-    return {
-        title: {
-            default: parsedData?.title || 'checks',
-            template: '%s | Prabhu Steels',
-        },
-        description: parsedData?.description || 'Default description',
-        keywords: parsedData?.keywords || 'Default keywords',
-        icons: {
-            icon: '/logo.ico',
-            apple: '/logo.ico',
-            shortcut: '/logo.ico',
-        },
-    };
+interface OrgNodeData {
+    id: string;
+    name: string;
+    title: string;
+    img?: string;
+    children?: OrgNodeData[];
+    layout?: "horizontal" | "vertical"; // Controls child layout direction
+    childLayout?: "horizontal" | "vertical"; // Controls grandchild layout direction
 }
 
-const page = () => {
+interface OrgChartProps {
+    data: OrgNodeData;
+}
+
+const OrgChart: React.FC<OrgChartProps> = ({ data }) => {
     return (
-        <div className='flex flex-col gap-4 md:gap-20'>
-            <section>
-                <div className='flex justify-between '>
-                    <div className='w-full md:w-3/5 flex flex-col gap-2 md:gap-6'>
-                        <h1>Corporate Governance</h1>
-                        <p>
-                            Prabhu Steels and Hydro Investment Company
-                            Limited refers to the system of rules, practices,
-                            and processes by which the company is directed,
-                            controlled, and managed. Effective corporate
-                            governance is essential to ensure that the company
-                            operates in a transparent and ethical manner, and
-                            that it meets the expectations of stakeholders,
-                            including shareholders, customers, employees, and
-                            the broader community.
-                        </p>
-
-                        <div className='w-[250px] md:w-[400px] md:hidden mx-auto'>
-                            <Image
-                                src='/svg/corporate-image.svg'
-                                alt='success'
-                                width={400}
-                                height={400}
-                            />
-                        </div>
-
-                        <div className='flex flex-col gap-4 p-4 rounded-lg bg-light-blue'>
-                            <h3>Accountability and transparency:</h3>
-                            <ul className='list-disc pl-5 space-y-4'>
-                                <li className='marker:text-primary'>
-                                    <p>
-                                        The board of directors and senior
-                                        management of Prabhu Steels and Hydro
-                                        Investment Company Limited are
-                                        accountable to shareholders and other
-                                        stakeholders for their actions,
-                                        decisions, and performance. They are
-                                        operating in a transparent manner,
-                                        providing regular and timely disclosure
-                                        of relevant information.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className='flex flex-col gap-4 p-4 rounded-lg bg-light-blue'>
-                            <h3>Strategic direction and performance:</h3>
-                            <ul className='list-disc pl-5 space-y-4'>
-                                <li className='marker:text-primary'>
-                                    <p>
-                                        The board of directors and senior
-                                        management had set the strategic
-                                        direction of the company and monitor its
-                                        performance against established goals
-                                        and objectives. They have ensured that
-                                        the company operates in a financially
-                                        sustainable manner and creates long-term
-                                        value for shareholders.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className='flex flex-col gap-4 p-4 rounded-lg bg-light-blue'>
-                            <h3>Risk management:</h3>
-                            <ul className='list-disc pl-5 space-y-4'>
-                                <li className='marker:text-primary'>
-                                    <p>
-                                        Prabhu Steels and Hydro Investment
-                                        Company Limited operate in a complex and
-                                        dynamic environment, and face a range of
-                                        risks, including operational, financial,
-                                        legal, and reputational risks. The board
-                                        of directors and senior management had
-                                        identified and manage these risks
-                                        effectively to protect the interests of
-                                        shareholders and other stakeholders.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className='flex flex-col gap-4 p-4 rounded-lg bg-light-blue'>
-                            <h3>Stakeholder engagement:</h3>
-                            <ul className='list-disc pl-5 space-y-4'>
-                                <li className='marker:text-primary'>
-                                    <p>
-                                        Prabhu Steels and Hydro Investment
-                                        Company Limited had engage with their
-                                        stakeholders in a meaningful and
-                                        constructive manner, taking into account
-                                        their interests and concerns. This
-                                        includes employees, customers,
-                                        suppliers, regulators, and the broader
-                                        community.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className='flex flex-col gap-4 p-4 rounded-lg bg-light-blue'>
-                            <h3>Ethical behavior and social responsibility:</h3>
-                            <ul className='list-disc pl-5 space-y-4'>
-                                <li className='marker:text-primary'>
-                                    <p>
-                                        Prabhu Steels and Hydro Investment
-                                        Company Limited had operated in an
-                                        ethical and socially responsible manner,
-                                        respecting human rights, labor
-                                        standards, and the environment. The
-                                        board of directors and senior management
-                                        had ensured that the company complies
-                                        with applicable laws and regulations,
-                                        and adopts best practices in corporate
-                                        social responsibility.
-                                    </p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className='w-[500px] max-md:hidden'>
-                        <Image
-                            src='/svg/corporate-image.svg'
-                            alt='success'
-                            width={500}
-                            height={500}
-                        />
-                    </div>
-                </div>
-                <div className='p-4 mt-8 bg-light-green rounded-lg'>
-                    <p>
-                        By promoting accountability, transparency, strategic
-                        direction, risk management, stakeholder engagement,
-                        ethical behavior, and social responsibility, corporate
-                        governance helps to build trust and confidence among
-                        stakeholders, and to create long-term value for
-                        shareholders.
-                    </p>
-                </div>
-            </section>
+        <div className='w-full overflow-x-auto py-8'>
+            <div className='min-w-fit mx-auto'>
+                <OrgNode node={data} level={0} isRoot={true} />
+            </div>
         </div>
     );
 };
 
-export default page;
+interface OrgNodeProps {
+    node: OrgNodeData;
+    level: number;
+    isRoot?: boolean;
+}
+
+const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
+    const [expanded, setExpanded] = useState(true);
+    const hasChildren = node.children && node.children.length > 0;
+    const layout = node.layout || "vertical";
+
+    const getCardColor = (): string => {
+        if (level === 0) return "bg-yellow-50";
+        if (node.title.includes("Manager")) return "bg-pink-100";
+        if (node.title.includes("Factory")) return "bg-pink-100";
+        if (node.title.includes("Quality")) return "bg-pink-100";
+        if (node.title.includes("Inventory")) return "bg-blue-50";
+        if (node.title.includes("HR")) return "bg-blue-50";
+        if (node.title.includes("Kardex")) return "bg-blue-50";
+        return "bg-pink-50";
+    };
+
+    const toggleExpand = () => {
+        if (hasChildren) {
+            setExpanded(!expanded);
+        }
+    };
+
+    return (
+        <div className='flex flex-col items-center'>
+            <div
+                className={`${getCardColor()} rounded-lg shadow-sm p-2 flex items-center gap-2 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300`}
+                onClick={toggleExpand}
+                style={{ minWidth: "180px" }}
+            >
+                {node.img && (
+                    <div className='w-12 h-12 rounded-tl-xl rounded-br-xl bg-gray-200 overflow-hidden flex-shrink-0'>
+                        <Image
+                            src={node.img}
+                            alt={node.name}
+                            width={48}
+                            height={48}
+                            className='object-cover'
+                        />
+                    </div>
+                )}
+                <div className='flex-1'>
+                    <div className='font-medium text-sm'>{node.name}</div>
+                    <div className='text-xs text-gray-600'>{node.title}</div>
+                </div>
+                {hasChildren && (
+                    <div className='text-gray-400'>
+                        <ChevronDown
+                            className={`${
+                                expanded ? "rotate-180" : ""
+                            } transition-transform duration-300`}
+                        />
+                    </div>
+                )}
+            </div>
+
+            {hasChildren && expanded && (
+                <div className='pt-6 w-full'>
+                    {node.children && node.children.length > 0 && (
+                        <div className='h-8 w-px bg-gray-300 mx-auto'></div>
+                    )}
+
+                    {/* Horizontal layout with connector lines */}
+                    {layout === "horizontal" &&
+                        node.children &&
+                        node.children.length > 0 && (
+                            <div className='relative flex justify-center'>
+                                {/* Horizontal line connecting all children */}
+                                <div
+                                    className='absolute top-0 h-px bg-gray-300'
+                                    style={{
+                                        width: `calc(100% - 200px)`,
+                                        maxWidth: `${
+                                            (node.children.length - 1) * 280
+                                        }px`,
+                                    }}
+                                ></div>
+
+                                {/* Vertical lines down from horizontal line */}
+                                <div
+                                    className='flex justify-between w-full'
+                                    style={{
+                                        maxWidth: `${
+                                            node.children.length * 280
+                                        }px`,
+                                    }}
+                                >
+                                    {node.children.map((_, index) => (
+                                        <div
+                                            key={index}
+                                            className='flex flex-col items-center'
+                                        >
+                                            <div className='h-6 w-px bg-gray-300'></div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                    <div
+                        className={`flex ${
+                            layout === "vertical"
+                                ? "flex-col"
+                                : "flex-wrap justify-center"
+                        } ${
+                            layout === "vertical"
+                                ? "gap-y-6"
+                                : "gap-x-8 gap-y-12"
+                        } pt-2`}
+                    >
+                        {node.children?.map((child) => (
+                            <div
+                                key={child.id}
+                                className={`flex flex-col items-center ${
+                                    layout === "vertical" ? "w-full" : ""
+                                }`}
+                            >
+                                {layout === "vertical" && (
+                                    <div className='h-8 w-px bg-gray-300 mb-2'></div>
+                                )}
+                                <OrgNode node={child} level={level + 1} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const OrganizationChartPage: React.FC = () => {
+    const orgData: OrgNodeData = {
+        id: "1",
+        name: "O.P Sah",
+        title: "Chairperson/CEO",
+        img: "/images/opsah.jpg",
+        children: [
+            {
+                id: "2",
+                name: "Employee Name",
+                title: "General Manager",
+                layout: "horizontal",
+                children: [
+                    {
+                        id: "3",
+                        name: "Employee Name",
+                        title: "Factory Head",
+                        layout: "vertical",
+                        children: [
+                            {
+                                id: "4",
+                                name: "Employee Name",
+                                title: "Production",
+                                layout: "vertical",
+                            },
+                            {
+                                id: "5",
+                                name: "Employee Name",
+                                title: "Manager-1",
+
+                                layout: "vertical",
+                            },
+                            {
+                                id: "6",
+                                name: "Employee Name",
+                                title: "Manager-2",
+
+                                layout: "vertical",
+                            },
+                        ],
+                    },
+                    {
+                        id: "7",
+                        name: "Employee Name",
+                        title: "Country Manager",
+                        layout: "horizontal", // Children arranged horizontally
+                        children: [
+                            {
+                                id: "8",
+                                name: "Employee Name",
+                                title: "Manager-1",
+
+                                layout: "vertical",
+                                children: [
+                                    {
+                                        id: "5",
+                                        name: "Employee Name",
+                                        title: "Manager 1A",
+                                    },
+                                    {
+                                        id: "6",
+                                        name: "Employee Name",
+                                        title: "Manager 1B",
+                                    },
+                                ],
+                            },
+                            {
+                                id: "9",
+                                name: "Employee Name",
+                                title: "Manager-2",
+
+                                layout: "vertical",
+                                children: [
+                                    {
+                                        id: "5",
+                                        name: "Employee Name",
+                                        title: "Manager 2A",
+                                    },
+                                    {
+                                        id: "6",
+                                        name: "Employee Name",
+                                        title: "Manager 2B",
+                                    },
+                                ],
+                            },
+                            {
+                                id: "10",
+                                name: "Employee Name",
+                                title: "Manager-3",
+
+                                layout: "vertical",
+                                children: [
+                                    {
+                                        id: "5",
+                                        name: "Employee Name",
+                                        title: "Manager 3A",
+                                    },
+                                    {
+                                        id: "6",
+                                        name: "Employee Name",
+                                        title: "Manage 3B",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        id: "11",
+                        name: "Employee Name",
+                        title: "Admin Incharge",
+                        layout: "vertical",
+                        children: [
+                            {
+                                id: "12",
+                                name: "Employee Name",
+                                title: "H&S",
+                            },
+                            {
+                                id: "13",
+                                name: "Employee Name",
+                                title: "Quality Assurance",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    };
+
+    return (
+        <div className='container mx-auto px-4 py-8'>
+            <h1 className='text-2xl font-bold text-center mb-8'>
+                Organization Chart
+            </h1>
+            <OrgChart data={orgData} />
+        </div>
+    );
+};
+
+export default OrganizationChartPage;

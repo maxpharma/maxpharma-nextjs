@@ -1,89 +1,89 @@
 @import "tailwindcss";
 
 :root {
-    --color-primary: #7d8e23; /* Default fallback color */
-    --color-light-primary: #fafbea; /* Default fallback color */
-    --color-secondary: #ea580c;
+  --color-primary: #7d8e23; /* Default fallback color */
+  --color-light-primary: #fafbea; /* Default fallback color */
+  --color-secondary: #ea580c;
 }
 
 @font-face {
-    font-family: "Sansation";
-    src: url("/fonts/sansation/Sansation-Regular.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
+  font-family: "Sansation";
+  src: url("/fonts/sansation/Sansation-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "Sansation";
-    src: url("/fonts/sansation/Sansation-Bold.ttf") format("truetype");
-    font-weight: 700;
-    font-style: normal;
+  font-family: "Sansation";
+  src: url("/fonts/sansation/Sansation-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
 }
 
 @font-face {
-    font-family: "Sansation";
-    src: url("/fonts/sansation/Sansation-Light.ttf") format("truetype");
-    font-weight: 300;
-    font-style: normal;
+  font-family: "Sansation";
+  src: url("/fonts/sansation/Sansation-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
 }
 
 @theme default {
-    --color-primary: var(--color-primary);
-    --color-light-primary: var(--color-light-primary);
-    --color-secondary: var(--color-secondary);
-    --text-primary: #000000;
-    --text-secondary: #000000;
-    --font-sansation: "Sansation", sans-serif;
+  --color-primary: var(--color-primary);
+  --color-light-primary: var(--color-light-primary);
+  --color-secondary: var(--color-secondary);
+  --text-primary: #000000;
+  --text-secondary: #000000;
+  --font-sansation: "Sansation", sans-serif;
 }
 
 @layer base {
-    h1 {
-        @apply text-primary text-lg md:text-xl lg:text-2xl font-semibold;
-    }
+  h1 {
+    @apply text-primary text-lg md:text-xl lg:text-2xl font-semibold;
+  }
 
-    h2 {
-        @apply text-base lg:text-lg font-semibold text-secondary;
-    }
+  h2 {
+    @apply text-base lg:text-lg font-semibold text-secondary;
+  }
 
-    h3 {
-        @apply text-base md:text-lg  font-normal text-primary;
-    }
+  h3 {
+    @apply text-base md:text-lg  font-normal text-primary;
+  }
 
-    h4 {
-        @apply text-base md:text-lg  font-normal text-secondary;
-    }
+  h4 {
+    @apply text-base md:text-lg  font-normal text-secondary;
+  }
 
-    p {
-        @apply text-base text-justify text-black;
-    }
+  p {
+    @apply text-base text-justify text-black;
+  }
 }
 
 @layer utilities {
-    .custom-container {
-        @apply max-w-[95%] mx-auto;
-    }
+  .custom-container {
+    @apply max-w-[95%] mx-auto;
+  }
 
-    .flex-center {
-        @apply flex items-center justify-center;
-    }
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
 
-    .button {
-        @apply bg-primary text-white text-sm md:text-base font-normal md:font-bold py-3 px-4 rounded-xl cursor-pointer;
-    }
+  .button {
+    @apply bg-primary text-white text-sm md:text-base font-normal md:font-bold py-1 px-4 rounded-lg cursor-pointer;
+  }
 
-    .secondary-button {
-        @apply bg-white text-primary border border-primary text-sm md:text-base font-normal md:font-bold py-3 px-4 rounded-lg cursor-pointer;
-    }
+  .secondary-button {
+    @apply bg-white text-primary border border-primary text-sm md:text-base font-normal md:font-bold py-1 px-4 rounded-lg cursor-pointer;
+  }
 
-    .active-button {
-        @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-lg;
-    }
+  .active-button {
+    @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-lg;
+  }
 
-    .inactive-button {
-        @apply text-gray-700 whitespace-nowrap bg-black/5 text-sm border-2 border-gray-300 px-2 py-1 rounded-xl;
-    }
+  .inactive-button {
+    @apply text-gray-700 whitespace-nowrap bg-black/5 text-sm border-2 border-gray-300 px-2 py-1 rounded-xl;
+  }
 
-    .custom-transition {
-        @apply transition-all duration-200 ease-in-out;
-    }
+  .custom-transition {
+    @apply transition-all duration-200 ease-in-out;
+  }
 }

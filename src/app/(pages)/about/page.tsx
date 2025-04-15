@@ -27,7 +27,7 @@ const page = () => {
   return (
     <div className="flex flex-col gap-4 md:gap-20">
       <section>
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
           <div className="w-full lg:w-6/10 flex flex-col gap-2 md:gap-6">
             <h1>About Us</h1>
             <p>

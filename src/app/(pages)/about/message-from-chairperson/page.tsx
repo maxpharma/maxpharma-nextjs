@@ -29,7 +29,7 @@ const page = () => {
         <div className='flex flex-col items-center gap-4 md:gap-20 mt-16'>
             <div className='flex flex-col gap-4 items-center'>
                 <Image
-                    src={"/images/banner-1.png"}
+                    src={"/images/opsah.jpg"}
                     alt='Banner Image'
                     width={50}
                     height={50}

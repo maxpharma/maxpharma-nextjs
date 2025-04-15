@@ -4,8 +4,8 @@ import React from "react";
 const page = () => {
   return (
     <section>
-      <div className="flex flex-col lg:flex-row gap-12">
-        <div className="w-full lg:w-7/10 flex flex-col gap-2 md:gap-6">
+      <div className="flex flex-col lg:flex-row gap-12 lg:items-center">
+        <div className="w-full lg:w-6/10 flex flex-col gap-2 md:gap-6">
           <h1>Research & Development</h1>
           <p>
             At Max Pharma Pvt. Ltd., the product development process begins with
@@ -39,7 +39,7 @@ const page = () => {
             are produced using the same formulation and procedure.
           </p>
         </div>
-        <div className="lg:w-3/10">
+        <div className="lg:w-4/10">
           <GalleryCard />
         </div>
       </div>
