@@ -52,10 +52,8 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     const pathname = usePathname();
     const isAdminRoute = pathname?.startsWith("/admin");
 
-    // Ref to detect click outside
     const popupRef = useRef<HTMLDivElement>(null);
 
-    // Close popup on outside click
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (

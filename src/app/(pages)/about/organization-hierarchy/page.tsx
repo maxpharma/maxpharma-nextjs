@@ -5,8 +5,7 @@ import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 
 interface OrgNodeData {
-    id: string;
-    name: string;
+    name?: string;
     title: string;
     img?: string;
     children?: OrgNodeData[];
@@ -40,14 +39,44 @@ const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
     const layout = node.layout || "vertical";
 
     const getCardColor = (): string => {
-        if (level === 0) return "bg-yellow-50";
-        if (node.title.includes("Manager")) return "bg-pink-100";
-        if (node.title.includes("Factory")) return "bg-pink-100";
-        if (node.title.includes("Quality")) return "bg-pink-100";
-        if (node.title.includes("Inventory")) return "bg-blue-50";
-        if (node.title.includes("HR")) return "bg-blue-50";
-        if (node.title.includes("Kardex")) return "bg-blue-50";
-        return "bg-pink-50";
+        if (level === 0) return "bg-yellow-50"; // CEO
+
+        // General Manager
+        if (node.title === "General Manager") return "bg-blue-50";
+
+        // Children of General Manager (level 2) - each with different color
+        if (node.title === "Factory Head") return "bg-red-100";
+        if (node.title === "Country Manager") return "bg-green-100";
+        if (node.title === "Admin Incharge") return "bg-purple-100";
+
+        // Children of Factory Head - inherit parent color
+        if (
+            node.title.includes("Procurement") ||
+            node.title.includes("Production") ||
+            node.title.includes("Quality Assurance") ||
+            node.title.includes("HR Manager")
+        )
+            return "bg-red-100";
+
+        // Children of Country Manager - inherit parent color
+        if (
+            node.title.includes("Manager-1") ||
+            node.title.includes("Manager-2") ||
+            node.title.includes("Manager-3") ||
+            node.title === "HQ"
+        )
+            return "bg-green-100";
+
+        // Children of Admin Incharge - inherit parent color
+        if (
+            node.title.includes("Accountant") ||
+            node.title.includes("Inventory") ||
+            node.title.includes("HR") ||
+            node.title.includes("Office")
+        )
+            return "bg-purple-100";
+
+        return "bg-pink-50"; // Default color
     };
 
     const toggleExpand = () => {
@@ -67,7 +96,7 @@ const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
                     <div className='w-12 h-12 rounded-tl-xl rounded-br-xl bg-gray-200 overflow-hidden flex-shrink-0'>
                         <Image
                             src={node.img}
-                            alt={node.name}
+                            alt={node.title}
                             width={48}
                             height={48}
                             className='object-cover'
@@ -145,7 +174,7 @@ const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
                     >
                         {node.children?.map((child) => (
                             <div
-                                key={child.id}
+                                key={child.title}
                                 className={`flex flex-col items-center ${
                                     layout === "vertical" ? "w-full" : ""
                                 }`}
@@ -165,125 +194,130 @@ const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
 
 const OrganizationChartPage: React.FC = () => {
     const orgData: OrgNodeData = {
-        id: "1",
         name: "O.P Sah",
         title: "Chairperson/CEO",
         img: "/images/opsah.jpg",
         children: [
             {
-                id: "2",
-                name: "Employee Name",
+                name: "Shishir Sharma Neupane",
                 title: "General Manager",
                 layout: "horizontal",
                 children: [
                     {
-                        id: "3",
-                        name: "Employee Name",
                         title: "Factory Head",
                         layout: "vertical",
                         children: [
                             {
-                                id: "4",
-                                name: "Employee Name",
-                                title: "Production",
-                                layout: "vertical",
+                                title: "Procurement Head",
                             },
                             {
-                                id: "5",
-                                name: "Employee Name",
-                                title: "Manager-1",
-
-                                layout: "vertical",
+                                title: "Production Head",
                             },
                             {
-                                id: "6",
-                                name: "Employee Name",
-                                title: "Manager-2",
-
-                                layout: "vertical",
+                                title: "HR Manager",
+                            },
+                            {
+                                title: "Quality Assurance Head",
                             },
                         ],
                     },
                     {
-                        id: "7",
-                        name: "Employee Name",
                         title: "Country Manager",
-                        layout: "horizontal", // Children arranged horizontally
+                        layout: "horizontal",
                         children: [
                             {
-                                id: "8",
-                                name: "Employee Name",
+                                name: "Regional",
                                 title: "Manager-1",
 
                                 layout: "vertical",
                                 children: [
                                     {
-                                        id: "5",
-                                        name: "Employee Name",
-                                        title: "Manager 1A",
+                                        name: "Kathmandu",
+                                        title: "HQ",
                                     },
                                     {
-                                        id: "6",
-                                        name: "Employee Name",
-                                        title: "Manager 1B",
+                                        name: "Kathmandu",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Kathmandu",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Kathmandu",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Kathmandu",
+                                        title: "HQ",
                                     },
                                 ],
                             },
                             {
-                                id: "9",
-                                name: "Employee Name",
+                                name: "Regional",
                                 title: "Manager-2",
 
                                 layout: "vertical",
                                 children: [
                                     {
-                                        id: "5",
-                                        name: "Employee Name",
-                                        title: "Manager 2A",
+                                        name: "Nepalgunj",
+                                        title: "HQ",
                                     },
                                     {
-                                        id: "6",
-                                        name: "Employee Name",
-                                        title: "Manager 2B",
+                                        name: "Butwal",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Narayanghat",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Pokhara",
+                                        title: "HQ",
                                     },
                                 ],
                             },
                             {
-                                id: "10",
-                                name: "Employee Name",
+                                name: "Regional",
                                 title: "Manager-3",
 
                                 layout: "vertical",
                                 children: [
                                     {
-                                        id: "5",
-                                        name: "Employee Name",
-                                        title: "Manager 3A",
+                                        name: "Biratnagar",
+                                        title: "HQ",
                                     },
                                     {
-                                        id: "6",
-                                        name: "Employee Name",
-                                        title: "Manage 3B",
+                                        name: "Dharan",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Janakpur",
+                                        title: "HQ",
+                                    },
+                                    {
+                                        name: "Birgunj",
+                                        title: "HQ",
                                     },
                                 ],
                             },
                         ],
                     },
                     {
-                        id: "11",
-                        name: "Employee Name",
                         title: "Admin Incharge",
                         layout: "vertical",
                         children: [
                             {
-                                id: "12",
-                                name: "Employee Name",
-                                title: "H&S",
+                                title: "Accountant",
                             },
                             {
-                                id: "13",
-                                name: "Employee Name",
-                                title: "Quality Assurance",
+                                title: "Inventory Manager",
+                            },
+                            {
+                                title: "HR Officer",
+                            },
+                            {
+                                title: "Office Assistant",
                             },
                         ],
                     },

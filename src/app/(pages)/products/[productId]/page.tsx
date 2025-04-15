@@ -80,7 +80,7 @@ const ProductDetailPage = () => {
                             </table>
                         </div>
 
-                        <div className='max-md:hidden flex gap-4 pt-4'>
+                        <div className='max-sm:hidden flex gap-4 pt-4'>
                             <button className='secondary-button w-full flex items-center justify-center gap-2 py-2.5'>
                                 <BsWhatsapp className='text-lg' />
                                 <span>Whatsapp</span>

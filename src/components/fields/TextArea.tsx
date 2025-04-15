@@ -53,7 +53,7 @@ const TextArea: FC<TextAreaProps> = ({
                                 target.style.height = "auto"; // Reset height
                                 target.style.height = `${target.scrollHeight}px`; // Set new height
                             }}
-                            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:border focus:border-primary focus:border-opacity-70
+                            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:border-2 focus:border-primary focus:border-opacity-70
                 ${
                     hasError
                         ? "border-red-500 focus:border-red-500"
