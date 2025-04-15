@@ -39,7 +39,7 @@ const ProductDetailPage = () => {
               <div className="order-1 sm:order-2 flex-grow">
                 <CustomImage
                   src="/images/medicine.png"
-                  className="w-full h-64 sm:h-80 lg:h-100  rounded-lg"
+                  className="w-full h-64 sm:h-100   rounded-lg"
                   fit="cover"
                 />
               </div>

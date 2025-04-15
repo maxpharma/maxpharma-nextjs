@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { color } from "@/utils/theme";
 import CustomImage from "./CustomImage";
+import websiteData from "@/features/data";
 
 const Navbar = () => {
   const router = useRouter();
@@ -103,7 +104,7 @@ const Navbar = () => {
             <Phone size={16} />
             <span>
               <span className="max-lg:hidden">Call on:</span>
-              01-5913729 | 5913728
+              {websiteData.phoneNumber}
             </span>
           </div>
           <div className="flex md:w-1/2 justify-between">
@@ -111,14 +112,14 @@ const Navbar = () => {
               <Mail size={16} />
               <span>
                 <span className="max-lg:hidden">Mail us:</span>{" "}
-                contact@prabhusteel.com
+                {websiteData.mail}
               </span>
             </div>
             <div className="flex gap-1 items-center flex-nowrap">
               <MapPin size={16} />
               <span>
-                <span className="max-lg:hidden">Reach us:</span> Kathmandu-32
-                Tinkune
+                <span className="max-lg:hidden">Reach us:</span>{" "}
+                {websiteData.location}
               </span>
             </div>
           </div>

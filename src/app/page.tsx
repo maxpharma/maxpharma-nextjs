@@ -70,8 +70,8 @@ const Page = () => {
         </section>
 
         <section className="bg-light-primary rounded-2xl px-4 py-8">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-4 max-w-2xl">
+          <div className="flex max-sm:flex-col items-center justify-between">
+            <div className="flex flex-col gap-4 md:gap-8  max-w-2xl">
               <div className="text-lg md:text-2xl lg:text-4xl font-semibold">
                 Caring For Your Health, Every Step Of The Way
               </div>
@@ -81,8 +81,11 @@ const Page = () => {
               </p>
               <Button>Let&apos;s Talk</Button>
             </div>
-            <div>
-              <CustomImage src="/images/ad-banner.png" />
+            <div className="ml-auto">
+              <CustomImage
+                src="/images/ad-banner.png"
+                className="w-48 h-48 md:w-64 md:h-64 "
+              />
             </div>
           </div>
         </section>
