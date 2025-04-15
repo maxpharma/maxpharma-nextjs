@@ -16,7 +16,7 @@ const Products = ({ limit = 10 }: { limit?: number }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 ">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 ">
       {Array(limit)
         .fill(data)
         .map((item) => (
@@ -33,7 +33,7 @@ const Items = ({ header, title, description, image, id }: any) => {
 
   return (
     <div
-      className="relative flex flex-col gap-4 border border-slate-300 rounded-xl max-w-sm cursor-pointer"
+      className="relative flex flex-col gap-4 border border-slate-300 rounded-xl w-full sm:max-w-sm cursor-pointer "
       onClick={() => router.push(`/products/${id}`)}
     >
       <div className="px-4 pt-4 pb-8 w-full space-y-4 ">
