@@ -11,7 +11,7 @@ const AdvertisementBanner = () => {
         <section className='bg-secondary rounded-2xl px-4 py-8'>
             <div className='flex max-sm:flex-col items-center justify-between'>
                 {/* Text content on the left */}
-                <div className='flex flex-col gap-4 md:gap-8 max-w-2xl'>
+                <div className='flex flex-col gap-2 md:gap-8 max-w-2xl'>
                     <div className='text-lg md:text-2xl lg:text-4xl font-semibold'>
                         Heading towards a Promising Future in Healthcare
                     </div>

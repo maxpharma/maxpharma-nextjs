@@ -23,8 +23,8 @@ const Page = () => {
             <div className='custom-container mt-4 flex flex-col gap-4 md:gap-16'>
                 <Banner />
 
-                <section className='space-y-4 '>
-                    <div className='flex flex-col lg:flex-row gap-12 lg:items-center'>
+                <section className='space-y-4 mb-8'>
+                    <div className='flex flex-col lg:flex-row gap-4 lg:gap-12 lg:items-center'>
                         <div className='space-y-6 lg:w-6/10'>
                             <h1>Who are we?</h1>
                             <p>
@@ -54,7 +54,7 @@ const Page = () => {
                         </div>
 
                         {/* Gallery card with proper spacing */}
-                        <div className='lg:w-4/10 mt-8 lg:mt-0'>
+                        <div className='lg:w-4/10 lg:mt-0'>
                             <GalleryCard />
                         </div>
                     </div>
