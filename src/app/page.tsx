@@ -97,11 +97,6 @@ const Page = () => {
                 </section>
 
                 <section className='space-y-4'>
-                    <h1 className='text-center'>Hava a Question?</h1>
-                    <p className='text-center'>
-                        We’ve got answers to the most common queries to help you
-                        out—quick, clear, and hassle-free.
-                    </p>
                     <Faqs />
                 </section>
 

@@ -7,6 +7,7 @@ import PhoneInput from "@/components/fields/Phone";
 import TextArea from "@/components/fields/TextArea";
 import Overlay from "@/components/Overlay";
 import Categories from "@/features/Categories";
+import Faqs from "@/features/Faqs";
 import Products from "@/features/Products";
 import SendInquiry from "@/features/SendInquiry";
 import { Form, Formik } from "formik";
@@ -22,7 +23,7 @@ const ProductDetailPage = () => {
 
     return (
         <>
-            <div className='py-6 space-y-6'>
+            <div className='py-6 space-y-8'>
                 <div className='flex flex-col lg:flex-row gap-8'>
                     <div className='w-full lg:w-1/2'>
                         <div className='flex flex-col sm:flex-row gap-2'>
@@ -125,6 +126,9 @@ const ProductDetailPage = () => {
                     <Categories />
                     <Products limit={4} />
                 </section>
+                <div className='mt-16'>
+                    <Faqs />
+                </div>
             </div>
             {isOverlayOpen && (
                 <Overlay

@@ -88,7 +88,9 @@ const OrgNode: React.FC<OrgNodeProps> = ({ node, level, isRoot = false }) => {
     return (
         <div className='flex flex-col items-center'>
             <div
-                className={`${getCardColor()} rounded-lg shadow-sm p-2 flex items-center gap-2 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300`}
+                className={`${getCardColor()} ${
+                    !hasChildren && "text-center"
+                } max-sm:w-80 rounded-lg shadow-sm p-2 flex items-center gap-2 cursor-pointer hover:shadow-md hover:-translate-y-1 transition-all duration-300`}
                 onClick={toggleExpand}
                 style={{ minWidth: "180px" }}
             >
@@ -201,6 +203,7 @@ const OrganizationChartPage: React.FC = () => {
             {
                 name: "Shishir Sharma Neupane",
                 title: "General Manager",
+                img: "/images/shishir.jpg",
                 layout: "horizontal",
                 children: [
                     {

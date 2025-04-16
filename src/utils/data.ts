@@ -9,53 +9,53 @@ import {
     seoIcon,
     shareRequestIcon,
     teamIcon,
-} from '@/assets/svg';
+} from "@/assets/svg";
 
 // Define menu item structure
 
 export const chairPerson = [
     {
-        image: '/images/dipen.png',
-        name: 'Dipen Rai',
-        position: 'Spokesperson',
-        contact: '9851348164',
+        image: "/images/dipen.png",
+        name: "Dipen Rai",
+        position: "Spokesperson",
+        contact: "9851348164",
     },
 ];
 
 export const stakeHoldersLogos = [
     {
-        image: '/logos/prabhu-holdings.png',
-        name: 'Prabhu Holdings',
-        link: 'https://www.holdingshydro.com',
+        image: "/logos/prabhu-holdings.png",
+        name: "Prabhu Holdings",
+        link: "https://www.holdingshydro.com",
     },
     {
-        image: '/logos/prabhu-urja-krishi.png',
-        name: 'Steel Urja',
-        link: 'https://www.holdingsprabhu.com',
+        image: "/logos/prabhu-urja-krishi.png",
+        name: "Steel Urja",
+        link: "https://www.holdingsprabhu.com",
     },
     {
-        image: '/logos/hydro-holdings.png',
-        name: 'Hydro Steel',
+        image: "/logos/hydro-holdings.png",
+        name: "Hydro Steel",
         link: null,
     },
 ];
 
 export const associatesLogos = [
     {
-        image: '/logos/prabhu-cable-car.png',
-        name: 'Prabhu Cable Car',
+        image: "/logos/prabhu-cable-car.png",
+        name: "Prabhu Cable Car",
     },
     {
-        image: '/logos/prabhu-groups.png',
-        name: 'Prabhu Groups',
+        image: "/logos/prabhu-groups.png",
+        name: "Prabhu Groups",
     },
     {
-        image: '/logos/prabhu-jabiddhut-bikash.png',
-        name: 'Prabhu Jabiddhut',
+        image: "/logos/prabhu-jabiddhut-bikash.png",
+        name: "Prabhu Jabiddhut",
     },
     {
-        image: '/logos/prabhu-aawas.png',
-        name: 'Prabhu Aawas',
+        image: "/logos/prabhu-aawas.png",
+        name: "Prabhu Aawas",
     },
 ];
 
@@ -69,53 +69,65 @@ interface MenuItem {
 
 export const menuItems: MenuItem[] = [
     {
-        id: 'dashboard',
-        title: 'Dashboard',
+        id: "dashboard",
+        title: "Dashboard",
         icon: dashboardIcon,
-        path: '/admin/dashboard',
+        path: "/admin/dashboard",
     },
     {
-        id: 'banner',
-        title: 'Banner',
+        id: "banner",
+        title: "Banner",
         icon: bannerIcon,
-        path: '/admin/banner',
+        path: "/admin/banner",
     },
-    { id: 'popup', title: 'Popup', icon: popUpIcon, path: '/admin/popup' },
+    { id: "popup", title: "Popup", icon: popUpIcon, path: "/admin/popup" },
     {
-        id: 'gallery',
-        title: 'Gallery',
-        icon: galleryIcon,
-        path: '/admin/gallery',
+        id: "about",
+        title: "About Us",
+        icon: null,
+        path: "/admin/about",
     },
     {
-        id: 'portfolio',
-        title: 'Portfolio',
+        id: "products",
+        title: "Products",
+        icon: null,
+        path: "/admin/products",
+    },
+    {
+        id: "services",
+        title: "Services",
+        icon: null,
+        path: "/admin/services",
+    },
+    {
+        id: "portfolio",
+        title: "Portfolio",
         icon: portfolioIcon,
-        path: '/admin/portfolio',
+        path: "/admin/portfolio",
     },
-    { id: 'team', title: 'Team', icon: teamIcon, path: '/admin/team' },
+    { id: "team", title: "Team", icon: teamIcon, path: "/admin/team" },
     {
-        id: 'documents',
-        title: 'Documents & Notice',
+        id: "documents",
+        title: "Documents & Notice",
         icon: documentsIcon,
-        path: '/admin/documents&notice',
+        path: "/admin/documents&notice",
     },
     {
-        id: 'contact',
-        title: 'Contact List',
+        id: "contact",
+        title: "Contact List",
         icon: contactIcon,
-        path: '/admin/contact-list',
+        path: "/admin/contact-list",
     },
     {
-        id: 'share',
-        title: 'Share Request',
+        id: "share",
+        title: "Share Request",
         icon: shareRequestIcon,
-        path: '/admin/share-request',
+        path: "/admin/share-request",
     },
     {
-        id: 'seo',
-        title: 'SEO Settings',
+        id: "seo",
+        title: "SEO Settings",
         icon: seoIcon,
-        path: '/admin/seo',
+        path: "/admin/seo",
     },
 ];

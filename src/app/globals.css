@@ -76,11 +76,15 @@
     }
 
     .active-button {
-        @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-lg;
+        @apply text-primary whitespace-nowrap bg-primary/10 text-sm border-2 border-primary px-2 py-1 rounded-lg cursor-pointer;
     }
 
     .inactive-button {
-        @apply text-gray-700 whitespace-nowrap bg-black/5 text-sm border-2 border-gray-300 px-2 py-1 rounded-xl;
+        @apply text-gray-700 whitespace-nowrap bg-black/5 text-sm border-2 border-gray-300 px-2 py-1 rounded-xl cursor-pointer;
+    }
+
+    .cancel-button {
+        @apply text-white bg-red-500 border  rounded-lg px-4 py-2;
     }
 
     .custom-transition {

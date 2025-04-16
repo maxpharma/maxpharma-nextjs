@@ -1,30 +1,30 @@
-import axios from 'axios';
-import { store, Actions } from '../store';
-import { toast } from 'react-toastify';
-import helper from './helper';
-import { usePathname, useRouter } from 'next/navigation';
+import axios from "axios";
+import { store, Actions } from "../store";
+import { toast } from "react-toastify";
+import helper from "./helper";
+import { usePathname, useRouter } from "next/navigation";
 
-const isBrowser = typeof window !== 'undefined'; // ✅ Safe check
+const isBrowser = typeof window !== "undefined"; // ✅ Safe check
 
-const APP_BASE_URL: string = process.env.NEXT_PUBLIC_APP_BASE_URL || '';
+const APP_BASE_URL: string = process.env.NEXT_PUBLIC_APP_BASE_URL || "";
 
 const storeProcess = async (config: any, data: any) => {
     if (!isBrowser) return; // Ensure this runs only in the browser, for seo
-    const actionType: 'set' | 'append' | 'update' | 'remove' | 'reset' =
+    const actionType: "set" | "append" | "update" | "remove" | "reset" =
         config.action;
-    if (actionType !== 'reset') {
+    if (actionType !== "reset") {
         store.dispatch(Actions[actionType](config.key, data));
     } else {
-        store.dispatch(Actions['reset'](config.key));
+        store.dispatch(Actions["reset"](config.key));
     }
 };
 
 const loadingProcess = async (config: any, loading = false) => {
     if (!isBrowser) return; // Skip in server
     if (!!config?.store) {
-        const actionType: 'set' | 'update' | 'remove' | 'reset' =
+        const actionType: "set" | "update" | "remove" | "reset" =
             config?.store?.action;
-        if (actionType === 'set' || actionType === 'update') {
+        if (actionType === "set" || actionType === "update") {
             const loadingData: any = {
                 loading: loading,
                 loadingState: true,
@@ -40,24 +40,24 @@ const request = async (configuration: any) => {
     const { authorization, config, ...restConfiguration } = configuration;
 
     const defaultHeader: any = {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'Api-Key': process.env.API_KEY,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Api-Key": process.env.API_KEY,
     };
 
-    let adminPath = '';
+    let adminPath = "";
     if (isBrowser) {
         adminPath = window.location.pathname;
     }
 
-    if (!!authorization && adminPath.startsWith('/admin/')) {
-        const user = helper.getUser();
-        if (!user?.token) {
-            toast.error('No token found');
-            throw new Error('No token found');
-        }
-        defaultHeader.Authorization = `Bearer ${user?.token}`;
-    }
+    // if (!!authorization && adminPath.startsWith('/admin/')) {
+    //     const user = helper.getUser();
+    //     if (!user?.token) {
+    //         toast.error('No token found');
+    //         throw new Error('No token found');
+    //     }
+    //     defaultHeader.Authorization = `Bearer ${user?.token}`;
+    // }
 
     await loadingProcess(configuration, true);
     return await axios({
@@ -86,7 +86,7 @@ const request = async (configuration: any) => {
             if (!!config?.showErr) {
                 toast.error(message);
             }
-            if (err?.response?.status === 401 || message == 'Unauthorized') {
+            if (err?.response?.status === 401 || message == "Unauthorized") {
             } else {
                 await loadingProcess(config, false);
             }
