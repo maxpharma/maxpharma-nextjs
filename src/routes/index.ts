@@ -5,7 +5,6 @@ import  serviceRoutes from "./service"
 import galleryRoutes from "./gallery";
 import settingRoutes from "./setting"
 import teamRoutes from "./team";
-import ImageRoutes from "./image"
 import portfolioRoutes from "./portfolio"
 import dashboardRoutes from "./dashboard"
 import { SUCCESS_MESSAGES } from "../utils/messages";
@@ -31,7 +30,6 @@ export const routes = [
   ...galleryRoutes,
   ...settingRoutes,
   ...teamRoutes,
-  ...ImageRoutes,
   ...portfolioRoutes,
   ...dashboardRoutes,
   ...PopupRoutes
