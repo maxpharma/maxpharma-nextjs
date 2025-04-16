@@ -97,7 +97,13 @@ export const menuItems: MenuItem[] = [
         id: "services",
         title: "Services",
         icon: null,
-        path: "/admin/services",
+        path: "/admin/service",
+    },
+    {
+        id: "faqs",
+        title: "FAQs",
+        icon: null,
+        path: "/admin/faqs",
     },
     {
         id: "portfolio",
@@ -123,6 +129,12 @@ export const menuItems: MenuItem[] = [
         title: "Share Request",
         icon: shareRequestIcon,
         path: "/admin/share-request",
+    },
+    {
+        id: "settings",
+        title: "Settings",
+        icon: null,
+        path: "/admin/settings",
     },
     {
         id: "seo",

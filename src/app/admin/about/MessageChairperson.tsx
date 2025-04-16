@@ -1,5 +1,8 @@
+"use client";
+
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
+import MyEditor from "@/components/fields/MyEditor";
 import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
 import { Form, Formik } from "formik";
@@ -14,7 +17,10 @@ const MessageChairperson = ({ type }: any) => {
         message: "",
     });
 
-    const submitHandler = async (values: any, { resetForm }: any) => {};
+    const submitHandler = async (values: any, { resetForm }: any) => {
+        console.log("Form submitted with values:", values);
+        // Handle submission logic here
+    };
 
     return (
         <div>
@@ -51,10 +57,10 @@ const MessageChairperson = ({ type }: any) => {
                         label='Title'
                         placeholder='Enter title here'
                     />
-                    <TextArea
+                    <MyEditor
                         name='message'
                         label='Message'
-                        placeholder='Enter your message here'
+                        placeholder='Enter your message here...'
                     />
 
                     <Button variant='submit'>Submit</Button>

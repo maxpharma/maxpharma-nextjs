@@ -11,6 +11,8 @@
   "dependencies": {
     "@dabeng/react-orgchart": "^1.0.3",
     "@reduxjs/toolkit": "^2.6.0",
+    "@tiptap/react": "^2.11.7",
+    "@tiptap/starter-kit": "^2.11.7",
     "axios": "^1.8.2",
     "formik": "^2.4.6",
     "framer-motion": "^12.4.10",

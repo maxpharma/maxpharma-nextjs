@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { Menu, ChevronDown, ChevronRight } from 'lucide-react';
+import React, { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { Menu, ChevronDown, ChevronRight } from "lucide-react";
 
-import { menuItems } from '@/utils/data';
-import SvgIcon from './SvgIcon';
-import { dashboardIcon } from '@/assets/svg';
+import { menuItems } from "@/utils/data";
+import SvgIcon from "./SvgIcon";
+import { dashboardIcon } from "@/assets/svg";
 
 const Sidebar: React.FC = () => {
     const pathname = usePathname();
@@ -42,13 +42,13 @@ const Sidebar: React.FC = () => {
     return (
         <div
             className={`${
-                isCollapsed ? 'w-16' : 'w-64'
+                isCollapsed ? "w-16" : "w-64"
             } h-screen bg-white border-r border-gray-200 pt-6 pb-3 flex flex-col transition-all duration-300 ease-in-out`}
         >
             {/* Header with Logo and Toggle Button */}
             <div
                 className={`px-4 mb-6 flex ${
-                    isCollapsed ? 'justify-center' : 'justify-between'
+                    isCollapsed ? "justify-center" : "justify-between"
                 } items-center`}
             >
                 {!isCollapsed && (
@@ -87,24 +87,22 @@ const Sidebar: React.FC = () => {
                                             }
                                             className={`flex items-center w-full ${
                                                 isCollapsed
-                                                    ? 'px-3 justify-center'
-                                                    : 'px-6'
+                                                    ? "px-3 justify-center"
+                                                    : "px-6"
                                             } py-3 text-left cursor-pointer ${
                                                 isItemActive ||
                                                 expandedItem === item.id
-                                                    ? 'bg-blue-50 text-blue-600'
-                                                    : 'text-gray-700 hover:bg-gray-100'
+                                                    ? "bg-blue-50 text-blue-600"
+                                                    : "text-gray-700 hover:bg-gray-100"
                                             }`}
                                         >
                                             {/* Icon */}
                                             <span
                                                 className={`inline-flex items-center justify-center ${
-                                                    isCollapsed ? '' : 'mr-3'
+                                                    isCollapsed ? "" : "mr-3"
                                                 }`}
                                             >
-                                                {/* Render the proper icon component based on the item's icon prop */}
                                                 {item.icon && (
-                                                    // Use dynamic import or proper component reference here
                                                     <SvgIcon
                                                         src={dashboardIcon}
                                                     />
@@ -146,8 +144,8 @@ const Sidebar: React.FC = () => {
                                                                         isActive(
                                                                             child.path
                                                                         )
-                                                                            ? 'text-blue-600 font-medium'
-                                                                            : 'text-gray-600 hover:text-blue-600'
+                                                                            ? "text-blue-600 font-medium"
+                                                                            : "text-gray-600 hover:text-blue-600"
                                                                     }`}
                                                                 >
                                                                     {
@@ -165,18 +163,18 @@ const Sidebar: React.FC = () => {
                                         href={item.path}
                                         className={`flex items-center ${
                                             isCollapsed
-                                                ? 'px-3 justify-center'
-                                                : 'px-6'
+                                                ? "px-3 justify-center"
+                                                : "px-6"
                                         } py-3 ${
                                             isActive(item.path)
-                                                ? 'bg-blue-50 text-primary'
-                                                : 'text-gray-700 hover:bg-gray-100'
+                                                ? "bg-blue-50 text-primary"
+                                                : "text-gray-700 hover:bg-gray-100"
                                         }`}
-                                        title={isCollapsed ? item.title : ''}
+                                        title={isCollapsed ? item.title : ""}
                                     >
                                         <span
                                             className={` w-5 h-5 ${
-                                                isCollapsed ? '' : 'mr-3'
+                                                isCollapsed ? "" : "mr-3"
                                             }`}
                                         >
                                             {/* Render the icon properly */}
