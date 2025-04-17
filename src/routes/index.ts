@@ -1,5 +1,5 @@
 import adminRoutes from "./admin";
-import applicationRoutes from "./application";
+import themeRoutes from "./theme";
 import contactRoutes from "./contact";
 import  serviceRoutes from "./service";
 import galleryRoutes from "./gallery";
@@ -11,6 +11,7 @@ import dashboardRoutes from "./dashboard"
 import { SUCCESS_MESSAGES } from "../utils/messages";
 import checkAuthentication from "../middleware/checkAuthentication";
 import PopupRoutes from "./popup"
+import inquiryRoutes from "./inquiry"
 
 export interface IAuthRequest extends Request {
   query: any;
@@ -25,7 +26,7 @@ export interface IAuthRequest extends Request {
 }
 export const routes = [
   ...adminRoutes,
-  ...applicationRoutes,
+  ...themeRoutes,
   ...contactRoutes,
   ...serviceRoutes,
   ...galleryRoutes,
@@ -34,7 +35,8 @@ export const routes = [
   ...aboutUsRoutes,
   ...dashboardRoutes,
   ...PopupRoutes,
-  ...noticeRoutes
+  ...noticeRoutes,
+  ...inquiryRoutes
 ];
 export interface IRoute {
   method: "get" | "post" | "put" | "delete" | "patch";

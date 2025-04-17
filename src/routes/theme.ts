@@ -1,37 +1,36 @@
-import Controller from "../modules/applications/controller";
+import Controller from "../modules/themes/controller";
 const routes = [
   {
     method: "get",
-    path: "applications",
+    path: "themes",
     controller: Controller.get,
-    authorization: true,
-    authCheckType: ["admin", "user"]
+    authorization: false,
   },
   {
     method: "get",
-    path: "applications/:id",
+    path: "themes/:id",
     controller: Controller.find,
     authorization: true,
-    authCheckType: ["admin", "user"]
+    authCheckType: ["admin"]
   },
   {
     method: "post",
-    path: "applications",
+    path: "themes",
     controller: Controller.create,
   },
   {
     method: "patch",
-    path: "applications/:id",
+    path: "themes/:id",
     controller: Controller.update,
     authorization: true,
-    authCheckType: ["admin", "user"],
+    authCheckType: ["admin"],
   },
   {
     method: "delete",
-    path: "applications/:id",
+    path: "themes/:id",
     controller: Controller.delete,
     authorization: true,
-    authCheckType: ["admin", "user"],
+    authCheckType: ["admin"],
   },
 ];
 

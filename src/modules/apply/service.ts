@@ -1,13 +1,13 @@
-import Application from "./model";
+import Notice from "./model";
 import Repository from "./repository";
 import { createValidationSchema } from "./validationSchema";
 import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
-import { Constant } from "../../utils";
 import uploadMultipleImage from "../../utils/uploadMultipleFile";
-const model = Application
+import { Constant } from "../../utils";
+const model = Notice
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
@@ -34,9 +34,22 @@ const create = async (input: any) => {
     if (!!error) {
       throw new Error(error.details[0].message);
     }
-    if(!!input.files){
-      console.log('inside image')
-      input.files = await uploadMultipleImage(input?.files, 'galleries')
+    if (!!input?.file) {
+      if(Constant.imageValidationExtensions.includes(input?.file.extension)){
+        const { file } = input;
+        input.file = await uploadFile({
+          filePath: `notices`,
+          fileName: `${Date.now()}-notice.${file.extension}`,
+          base64: file.base64,
+        });
+      } else if (Constant.fileValidationExtensions.includes(input?.file.extension)){
+        const { file } = input;
+        input.file = await uploadFile({
+          filePath: `notices`,
+          fileName: `${Date.now()}-notice.${file.extension}`,
+          base64: file.base64,
+        });
+      }
     }
     const data = await model.create(input);
     return data;
@@ -45,9 +58,11 @@ const create = async (input: any) => {
   }
 };
 
-const find = async (params:any) => {
+const find = async (id: any) => {
   try {
-    const filter: any = await Repository.buildFindFilter(params);
+    const filter: any = await Repository.buildFindFilter({
+      id: id,
+    });
     const data = await model.findOne(filter);
     if (!data) {
       throw new Error(ERROR_MESSAGES.DATA_NOT_FOUND);
@@ -68,11 +83,26 @@ const update = async (input: any, id: number) => {
     if (!!error) {
       throw new Error(error.details[0].message);
     }
-    const data: any = await find({
-      id:id
-    });
-    if(!!input?.files){
-      input.files = await uploadMultipleImage(input?.files, 'galleries', data?.files)
+    const data: any = await find(id);
+    if (!!input?.file) {
+      if (Constant.imageValidationExtensions.includes(input?.file.extension)){
+        const { file } = input;
+        input.file = await uploadFile({
+          filePath: `notices`,
+          fileName: `${Date.now()}-notice.${file.extension}`,
+          base64: file.base64,
+        });
+      } else if (Constant.fileValidationExtensions.includes(input?.file.extension)){
+        const { file } = input;
+        input.file = await uploadFile({
+          filePath: `notices`,
+          fileName: `${Date.now()}-notice.${file.extension}`,
+          base64: file.base64,
+        });
+      }
+      if (data.file) {
+        await removeFile({ filePath: data.file });
+      }
     }
     await data.update(input);
     return data;
@@ -83,13 +113,9 @@ const update = async (input: any, id: number) => {
 
 const remove = async (id: number) => {
   try {
-    const data: any = await find({
-      id: id
-    });
-    if (!!data?.files) {
-      data.files.map(async(item:any)=> {
-        await removeFile({filePath: item})
-      })
+    const data: any = await find(id);
+    if (!!data.files) {
+      await removeFile({ filePath: data.image });
     }
     await data.destroy();
     return data;
@@ -97,7 +123,6 @@ const remove = async (id: number) => {
     throw new Error(err);
   }
 };
-
 const count = async () => {
   try {
     const data: any = await model.count()

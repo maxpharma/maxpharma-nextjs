@@ -7,24 +7,24 @@ export const imageInputSchema = Joi.object({
     .required(),
 })
 const validationSchema = Joi.object({
-  name: Joi.string().required(),
-  phone: Joi.string().length(10).required(),
+  footerText: Joi.string().required(),
+  primaryColor: Joi.string().required(),
+  secondaryColor: Joi.string().required(),
+  primaryLightColor: Joi.string().required(),
 }).when(Joi.ref("$method"), {
   switch: [
     {
       is: "POST",
       then: Joi.object({
-        citizenship: imageInputSchema.required(),
-        bankDeposit: imageInputSchema.required(),
-        requestForm: imageInputSchema.required(),
+        header: imageInputSchema.required(),
+        footer: imageInputSchema.required(),
       }),
     },
     {
       is: "PATCH",
       then: Joi.object({
-        citizenship: imageInputSchema.optional(),
-        bankDeposit: imageInputSchema.optional(),
-        requestForm: imageInputSchema.optional(),
+        header: imageInputSchema.optional(),
+        footer: imageInputSchema.optional(),
       }),
     },
   ],

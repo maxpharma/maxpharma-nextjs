@@ -1,12 +1,12 @@
 import { QueryInterface } from "sequelize";
-import { applicationAttributes } from "./attributes";
+import { themeAttributes } from "./attributes";
 
 const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable("applications", applicationAttributes);
+  await queryInterface.createTable("themes", themeAttributes);
 };
 
 const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable("applications");
+  await queryInterface.dropTable("themes");
 };
 
 export { up, down };

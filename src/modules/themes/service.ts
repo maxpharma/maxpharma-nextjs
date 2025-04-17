@@ -1,11 +1,11 @@
-import Application from "./model";
+import Theme from "./model";
 import Repository from "./repository";
 import { validationSchema } from "./validationSchema";
 import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
-const model = Application
+const model = Theme
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
@@ -35,24 +35,16 @@ const create = async (input: any) => {
     const uploadDocument = async (field:any, folder:any) => {
       if (!input?.[field]) return;
       const { extension, base64 } = input[field];
-      const filePath = extension === "pdf"
-        ? await uploadFile({
-            filePath: folder,
-            fileName: `${Date.now()}-${field}.${extension}`,
-            base64,
-          })
-        : await uploadImage({
-            filePath: folder,
-            fileName: `${Date.now()}-${field}.${extension}`,
-            base64,
-          });
-    
+      const filePath = await uploadFile({
+        filePath: folder,
+        fileName: `${Date.now()}-${field}.${extension}`,
+        base64,
+      })
       input[field] = filePath;
     };
     
-    await uploadDocument("citizenship", "applications");
-    await uploadDocument("bankDeposit", "applications");
-    await uploadDocument("requestForm", "applications");
+    await uploadDocument("header", "themes");
+    await uploadDocument("footer", "themes");
     
     const data = await model.create(input);
     return data;
@@ -91,27 +83,19 @@ const update = async (input: any, id: number) => {
     const uploadAndReplaceFile = async ( field: string, folder:string) => {
         if(!input?.[field]) return ;
         const {extension, base64} = input[field]
-        const filePath = extension === "pdf" ? 
-         await uploadFile({
+        const filePath = await uploadFile({
           filePath: folder,
           fileName: `${Date.now()}-${field}.${extension}`,
           base64,
-         }) : 
-         await uploadImage({
-          filePath: folder,
-          fileName: `${Date.now()}-${field}.${extension}`,
-          base64,
-         });
+         })
 
         if(!!data[field]){
           await removeFile({filePath: data[field]})
         }
         input[field] = filePath   
     }
-    
-    await uploadAndReplaceFile("citizenship", "applications"),
-    await uploadAndReplaceFile("bankDeposit", "applications"),
-    await uploadAndReplaceFile("requestForm", "applications")
+    await uploadAndReplaceFile("header", "themes");
+    await uploadAndReplaceFile("footer", "themes");
 
     const update = data.update(input)
     return update;

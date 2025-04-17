@@ -1,23 +1,26 @@
 import { DataTypes } from "sequelize";
-const applicationAttributes = {
+const themeAttributes = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  name: {
+  header: {
     type: DataTypes.STRING,
   },
-  phone: {
+  footer: {
     type: DataTypes.STRING,
   },
-  citizenship: {
+  footerText: {
     type: DataTypes.STRING,
   },
-  bankDeposit: {
+  primaryColor: {
     type: DataTypes.STRING,
   },
-  requestForm: {
+  primaryLightcolor: {
+    type: DataTypes.STRING,
+  },
+  secondaryColor: {
     type: DataTypes.STRING,
   },
   createdAt: {
@@ -28,4 +31,4 @@ const applicationAttributes = {
   },
 };
 
-export { applicationAttributes };
+export { themeAttributes };

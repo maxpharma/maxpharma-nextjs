@@ -1,4 +1,4 @@
-import ApplicationService from "../applications/service";
+import ApplicationService from "../themes/service";
 import ContactService from "../contacts/service";
 import GalleryService from "../galleries/service";
 import DocumentService from "../services/service";
