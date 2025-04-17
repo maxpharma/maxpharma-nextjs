@@ -11,9 +11,13 @@ const serviceAttributes = {
   description: {
     type: DataTypes.STRING,
   },
-  type: {
-    type: DataTypes.STRING,
-    unique:true,
+  categoryId: {
+    type: DataTypes.INTEGER,
+    reference: {
+      model:"general_settings",
+      key:"id",
+      index:true
+    },
     allowNull: false
   },
   files: {

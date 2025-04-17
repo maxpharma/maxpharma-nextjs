@@ -5,7 +5,7 @@ import  serviceRoutes from "./service"
 import galleryRoutes from "./gallery";
 import settingRoutes from "./setting"
 import teamRoutes from "./team";
-import portfolioRoutes from "./portfolio"
+import aboutUsRoutes from "./aboutUs"
 import dashboardRoutes from "./dashboard"
 import { SUCCESS_MESSAGES } from "../utils/messages";
 import checkAuthentication from "../middleware/checkAuthentication";
@@ -30,7 +30,7 @@ export const routes = [
   ...galleryRoutes,
   ...settingRoutes,
   ...teamRoutes,
-  ...portfolioRoutes,
+  ...aboutUsRoutes,
   ...dashboardRoutes,
   ...PopupRoutes
 ];

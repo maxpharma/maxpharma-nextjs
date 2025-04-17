@@ -1,34 +1,34 @@
-import Controller from "../modules/portfolios/controller";
+import Controller from "../modules/aboutUs/controller";
 const routes = [
   {
     method: "get",
-    path: "portfolios",
+    path: "about-us",
     controller: Controller.get,
 
   },
   {
     method: "get",
-    path: "portfolios/:id",
+    path: "about-us/:id",
     controller: Controller.find,
 
   },
   {
     method: "post",
-    path: "portfolios",
+    path: "about-us",
     controller: Controller.create,
     authorization: true,
     authCheckType: ["admin"]
   },
   {
     method: "patch",
-    path: "portfolios/:id",
+    path: "about-us/:id",
     controller: Controller.update,
     authorization: true,
     authCheckType: ["admin"],
   },
   {
     method: "delete",
-    path: "portfolios/:id",
+    path: "about-us/:id",
     controller: Controller.delete,
     authorization: true,
     authCheckType: ["admin"],

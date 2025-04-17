@@ -30,8 +30,8 @@ const create = async (input: any) => {
     if (!!error) {
       throw new Error(error.details[0].message);
     }
-    if(Constant.imageValidationExtensions.includes(input?.files?.extension)){
-      await uploadMultipleImage(input?.files, 'services')
+    if(!!input?.files){
+      input.files = await uploadMultipleImage(input?.files, 'services')
     }
     const data = await model.create(input);
     return data;

@@ -5,7 +5,7 @@ const controller = {
       const { query }: any = req;
       const data = await Service.list({
         search: query?.search || null,
-        type: query?.type || null,
+        categoryId: query?.categoryId || null,
       });
       return data;
     } catch (err: any) {
@@ -17,7 +17,7 @@ const controller = {
           const { user, params }: any = req;
           const data = await Service.find({
             id: params?.id,
-            type: params?.type
+            categoryId: params?.categoryId
           });
           return data;
         } catch (err: any) {

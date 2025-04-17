@@ -29,6 +29,15 @@ const generalSettingAttributes = {
     type: DataTypes.STRING,
     allowNull: true,
   },
+  infos: {
+    type: DataTypes.JSON,
+    allowNull:true
+  },
+  isShow: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  },
   createdAt: {
     type: DataTypes.DATE,
   },

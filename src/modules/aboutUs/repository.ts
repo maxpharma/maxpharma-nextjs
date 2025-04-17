@@ -19,10 +19,6 @@ const buildListFilter = async (params: any) => {
         category: { [Op.like]: `%${params.search}%` },
       };
     }
-    
-    if (params?.userId) {
-      filter.where = { ...filter.where, createdBy: params?.userId };
-    }
 
     if(params?.type){
         filter.where = {

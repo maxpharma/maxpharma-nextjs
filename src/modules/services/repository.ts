@@ -11,10 +11,10 @@ const buildListFilter = async (params: any) => {
       name: { [Op.like]: `%${params.search}%` },
     };
   }
-  if(params?.type){
+  if(params?.categoryId){
     filter.where = {
       ...filter.where,
-      type: params?.type
+      categoryId: params?.categoryId
    }
 }
 

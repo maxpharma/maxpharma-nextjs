@@ -6,6 +6,11 @@ const routes = [
     controller: Controller.get,
   },
   {
+    method: "get",
+    path: "services/:id",
+    controller: Controller.find,
+  },
+  {
     method: "post",
     path: "services",
     controller: Controller.create,

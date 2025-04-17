@@ -1,12 +1,12 @@
 import { QueryInterface } from 'sequelize'
-import { portfolioAttributes } from './attributes'
+import { aboutUsAttributes } from './attributes'
 
 const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('portfolios', portfolioAttributes)
+  await queryInterface.createTable('about_us', aboutUsAttributes)
 }
 
 const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('portfolios')
+  await queryInterface.dropTable('about_us')
 }
 
 export { up, down }

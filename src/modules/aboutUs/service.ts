@@ -1,11 +1,12 @@
-import Application from "./model";
+import AboutUs from "./model";
 import Repository from "./repository";
 import { createValidationSchema } from "./validationSchema";
 import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
-const model = Application
+import uploadMultipleImage from "../../utils/uploadMultipleFile";
+const model = AboutUs
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
@@ -32,24 +33,8 @@ const create = async (input: any) => {
     if (!!error) {
       throw new Error(error.details[0].message);
     }
-    if (!!input?.file) {
-      if(input?.file?.extension === "pdf"){
-        const { file } = input;
-        const filePath = await uploadFile({
-          filePath: `portfolios`,
-          fileName: `${Date.now()}-image.${file.extension}`,
-          base64: file.base64,
-        });
-        input.file = filePath;
-      } else {
-        const { file } = input;
-        const filePath = await uploadImage({
-          filePath: `portfolios`,
-          fileName: `${Date.now()}-image.${file.extension}`,
-          base64: file.base64,
-        });
-        input.file = filePath;
-      }
+    if (!!input?.files) {
+       input.files = await uploadMultipleImage(input.files, 'aboutUs')
     }
     const data = await model.create(input);
     return data;
@@ -85,26 +70,7 @@ const update = async (input: any, id: number) => {
     }
     const data: any = await find(id);
     if (!!input?.file) {
-      if (input?.file?.image === "pdf"){
-        const { file } = input;
-        const filePath = await uploadFile({
-          filePath: `portfolios`,
-          fileName: `${Date.now()}-image.${file.extension}`,
-          base64: file.base64,
-        });
-        input.file = filePath;
-      } else {
-        const { file } = input;
-        const filePath = await uploadImage({
-          filePath: `portfolios`,
-          fileName: `${Date.now()}-image.${file.extension}`,
-          base64: file.base64,
-        });
-        input.file = filePath;
-      }
-      if (data.file) {
-        await removeFile({ filePath: data.file });
-      }
+      input.file = await uploadMultipleImage(input?.files, 'aboutUs', data?.files)
     }
     await data.update(input);
     return data;

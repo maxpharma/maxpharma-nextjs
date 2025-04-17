@@ -14,6 +14,8 @@ const validationSchema = Joi.object({
   value: Joi.string().required(),
   title: Joi.string().optional(),
   file: imageInputSchema,
+  infos: Joi.object().optional(),
+  isShow: Joi.boolean().optional()
 })
 
 export { validationSchema }

@@ -13,8 +13,7 @@ export const imageInputSchema = Joi.alternatives().try(
 const createValidationSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
-  type: Joi.string().required(),
-  date: Joi.string().required(),
+  categoryId: Joi.number().required(),
   files: Joi.array().items(imageInputSchema.allow("").allow(null)).optional()
 })
 
