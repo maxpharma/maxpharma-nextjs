@@ -4,7 +4,7 @@ import contactRoutes from "./contact";
 import  serviceRoutes from "./service"
 import galleryRoutes from "./gallery";
 import settingRoutes from "./setting"
-import teamRoutes from "./team";
+import productRoutes from "./product";
 import aboutUsRoutes from "./aboutUs"
 import dashboardRoutes from "./dashboard"
 import { SUCCESS_MESSAGES } from "../utils/messages";
@@ -29,7 +29,7 @@ export const routes = [
   ...serviceRoutes,
   ...galleryRoutes,
   ...settingRoutes,
-  ...teamRoutes,
+  ...productRoutes,
   ...aboutUsRoutes,
   ...dashboardRoutes,
   ...PopupRoutes

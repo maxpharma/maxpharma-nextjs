@@ -4,7 +4,7 @@ import GalleryService from "../galleries/service";
 import DocumentService from "../services/service";
 import SettingService from "../generalSettings/service";
 import PortfolioService from "../aboutUs/service";
-import TeamService from "../teams/service";
+import TeamService from "../products/service";
 const getMainDashboard = async (params:any) => {
     const totalApplications = await ApplicationService.count()
     const totalGallery  = await GalleryService.count()

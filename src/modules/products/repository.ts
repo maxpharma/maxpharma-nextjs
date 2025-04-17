@@ -19,6 +19,12 @@ const buildListFilter = async (params: any) => {
     }
   }
 
+  if (!!params?.categoryId){
+    filter.where= {
+        ...filter.where,
+        categoryId: params?.categoryId,
+    }
+  }
   return filter;
 };
 

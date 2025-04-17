@@ -5,6 +5,7 @@ import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
+import uploadMultipleImage from "../../utils/uploadMultipleFile";
 const model = Application
 const list = async (params: any) => {
   try {
@@ -24,33 +25,12 @@ const list = async (params: any) => {
 
 const create = async (input: any) => {
   try {
-    console.log("inzide")
-    const { error } = await createValidationSchema.validateAsync(input, {
-      context: {
-        method: "POST",
-      },
-    });
+    const { error } = await createValidationSchema.validateAsync(input)
     if (!!error) {
       throw new Error(error.details[0].message);
     }
-    if (!!input?.image) {
-      if(input?.image.extension === "pdf"){
-        const { image } = input;
-        const filePath = await uploadFile({
-          filePath: `teams`,
-          fileName: `${Date.now()}-teams.${image.extension}`,
-          base64: image.base64,
-        });
-        input.image = filePath;
-      } else {
-        const { image } = input;
-        const filePath = await uploadImage({
-          filePath: `teams`,
-          fileName: `${Date.now()}-teams.${image.extension}`,
-          base64: image.base64,
-         });
-        input.image = filePath;
-      }
+    if (!!input?.files) {
+      input.files = await uploadMultipleImage(input?.files, 'products')
     }
     const data = await model.create(input);
     return data;
@@ -76,42 +56,18 @@ const find = async (id: any) => {
 
 const update = async (input: any, id: number) => {
   try {
-    const { error } = await createValidationSchema.validateAsync(input, {
-      context: {
-        method: "PATCH",
-      },
-    });
+    const { error } = await createValidationSchema.validateAsync(input)
     if (!!error) {
       throw new Error(error.details[0].message);
     }
     const data: any = await find(id);
-    if (!!input?.image) {
-      if(input?.image?.extension === "pdf"){
-        const { image } = input;
-        const filePath = await uploadFile({
-          filePath: `teams`,
-          fileName: `${Date.now()}-teams.${image.extension}`,
-          base64: image.base64,
-        });
-        input.image = filePath;
-      } else {
-        const { image } = input;
-        const filePath = await uploadImage({
-          filePath: `teams`,
-          fileName: `${Date.now()}-teams.${image.extension}`,
-          base64: image.base64,
-        });
-        input.image = filePath;
-      }
-      
-      if (data?.image) {
-        await removeFile({ filePath: data.image });
-      }
+    if (!!input?.files) {
+      input.files = await uploadMultipleImage(input?.files, 'products', data?.files)
     }
     const final = {
       ...input,
       additionalInfo: {
-        ...data.additionalInfo,
+       ...data.additionalInfo,
        ...input.additionalInfo,
       },
     }
@@ -125,7 +81,7 @@ const update = async (input: any, id: number) => {
 const remove = async (id: number) => {
   try {
     const data: any = await find(id);
-    if (data.image) {
+    if (!!data.files) {
       await removeFile({ filePath: data.image });
     }
     await data.destroy();

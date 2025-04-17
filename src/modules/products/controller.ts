@@ -4,8 +4,9 @@ const controller = {
     try {
       const { query }: any = req;
       const data = await Service.list({
-        search: query?.search || "",
-        type: query?.type || ""
+        search: query?.search || null,
+        type: query?.type || null,
+        categoryId: query?.categoryId || null
       });
       return data;
     } catch (err: any) {

@@ -1,32 +1,32 @@
-import Controller from "../modules/teams/controller";
+import Controller from "../modules/products/controller";
 const routes = [
   {
     method: "get",
-    path: "teams",
+    path: "products",
     controller: Controller.get,
   },
   {
     method: "get",
-    path: "teams/:id",
+    path: "products/:id",
     controller: Controller.find,
   },
   {
     method: "post",
-    path: "teams",
+    path: "products",
     controller: Controller.create,
     authorization: true,
     authCheckType: ["admin"]
   },
   {
     method: "patch",
-    path: "teams/:id",
+    path: "products/:id",
     controller: Controller.update,
     authorization: true,
     authCheckType: ["admin"],
   },
   {
     method: "delete",
-    path: "teams/:id",
+    path: "products/:id",
     controller: Controller.delete,
     authorization: true,
     authCheckType: ["admin"],
