@@ -5,9 +5,9 @@ const migrations: string[] = [
     "../modules/services/migration.ts",
     "../modules/aboutUs/migration.ts",
     "../modules/products/migration.ts",
-    // "../modules/contacts/migration.ts",
+    "../modules/notices/migration.ts",
+    "../modules/contacts/migration.ts",
     // "../modules/documents/migration.ts",
-    // "../modules/portfolios/migration.ts",
     // "../modules/popup/migration.ts"
 ];
   

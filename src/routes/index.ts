@@ -1,10 +1,11 @@
 import adminRoutes from "./admin";
-import applicationRoutes from "./application"
+import applicationRoutes from "./application";
 import contactRoutes from "./contact";
-import  serviceRoutes from "./service"
+import  serviceRoutes from "./service";
 import galleryRoutes from "./gallery";
 import settingRoutes from "./setting"
 import productRoutes from "./product";
+import noticeRoutes from "./notice"
 import aboutUsRoutes from "./aboutUs"
 import dashboardRoutes from "./dashboard"
 import { SUCCESS_MESSAGES } from "../utils/messages";
@@ -32,7 +33,8 @@ export const routes = [
   ...productRoutes,
   ...aboutUsRoutes,
   ...dashboardRoutes,
-  ...PopupRoutes
+  ...PopupRoutes,
+  ...noticeRoutes
 ];
 export interface IRoute {
   method: "get" | "post" | "put" | "delete" | "patch";

@@ -8,6 +8,7 @@ const productAttributes = {
   },
   type: {
     type: DataTypes.STRING,
+    unique:true
   },
   name: {
     type: DataTypes.STRING,
