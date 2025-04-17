@@ -14,6 +14,15 @@ const controller = {
       throw new Error(err);
     }
   },
+    find: async (req: Request) => {
+          try {
+            const { user, params }: any = req;
+            const data = await Service.find(params?.id);
+            return data;
+          } catch (err: any) {
+            throw new Error(err);
+          }
+        },
   create: async (req: IAuthRequest) => {
     try {
       const { body }: any = req;

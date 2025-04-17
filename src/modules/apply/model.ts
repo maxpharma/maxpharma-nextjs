@@ -1,10 +1,10 @@
 import db from "../../config/db";
-import { noticeAttributes } from "./attributes";
-const Notice = db.define("notices", noticeAttributes, {
-  tableName: "notices",
+import { applyAttributes } from "./attributes";
+const Apply = db.define("applies", applyAttributes, {
+  tableName: "applies",
   timestamps: true,
   createdAt: "createdAt",
   updatedAt: "updatedAt",
 });
 
-export default Notice;
+export default Apply;

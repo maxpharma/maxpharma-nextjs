@@ -5,7 +5,7 @@ const createValidationSchema = Joi.object({
   productId: Joi.number().required(),
   phone: Joi.string().required(),
   email: Joi.string().required(),
-  subject: Joi.string().required(),
+  location: Joi.string().required(),
   message: Joi.string().required(),
 })
 

@@ -9,6 +9,7 @@ const migrations: string[] = [
     "../modules/contacts/migration.ts",
     "../modules/themes/migration.ts",
     "../modules/inquiries/migration.ts",
+    "../modules/apply/migration.ts",
     // "../modules/popup/migration.ts"
 ];
   

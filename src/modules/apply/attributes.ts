@@ -1,19 +1,30 @@
 import { allocUnsafe } from "bun";
 import { DataTypes } from "sequelize";
-const noticeAttributes = {
+const applyAttributes = {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  documentType: {
+  name:{
     type: DataTypes.STRING,
+    allowNull: false,
   },
-  title: {
+  phone:{
     type: DataTypes.STRING,
+    allowNull: false,
   },
-  date: {
-    type: DataTypes.DATE,
+  location: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  message: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   file: {
     type: DataTypes.STRING,
@@ -27,4 +38,4 @@ const noticeAttributes = {
   },
 };
 
-export { noticeAttributes };
+export { applyAttributes };

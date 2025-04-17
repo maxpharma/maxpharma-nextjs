@@ -38,15 +38,15 @@ const create = async (input: any) => {
       if(Constant.imageValidationExtensions.includes(input?.file.extension)){
         const { file } = input;
         input.file = await uploadFile({
-          filePath: `notices`,
-          fileName: `${Date.now()}-notice.${file.extension}`,
+          filePath: `applies`,
+          fileName: `${Date.now()}-apply.${file.extension}`,
           base64: file.base64,
         });
       } else if (Constant.fileValidationExtensions.includes(input?.file.extension)){
         const { file } = input;
         input.file = await uploadFile({
-          filePath: `notices`,
-          fileName: `${Date.now()}-notice.${file.extension}`,
+          filePath: `applies`,
+          fileName: `${Date.now()}-apply.${file.extension}`,
           base64: file.base64,
         });
       }
@@ -88,15 +88,15 @@ const update = async (input: any, id: number) => {
       if (Constant.imageValidationExtensions.includes(input?.file.extension)){
         const { file } = input;
         input.file = await uploadFile({
-          filePath: `notices`,
-          fileName: `${Date.now()}-notice.${file.extension}`,
+          filePath: `applies`,
+          fileName: `${Date.now()}-apply.${file.extension}`,
           base64: file.base64,
         });
       } else if (Constant.fileValidationExtensions.includes(input?.file.extension)){
         const { file } = input;
         input.file = await uploadFile({
-          filePath: `notices`,
-          fileName: `${Date.now()}-notice.${file.extension}`,
+          filePath: `applies`,
+          fileName: `${Date.now()}-apply.${file.extension}`,
           base64: file.base64,
         });
       }

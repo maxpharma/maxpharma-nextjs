@@ -8,9 +8,11 @@ export const imageInputSchema = Joi.object({
 })
   
 const createValidationSchema = Joi.object({
-  documentType: Joi.string().required(),
-  title: Joi.string().required(),
-  date: Joi.string().required(),
+  name: Joi.string().required(),
+  phone: Joi.string().length(10).required(),
+  email: Joi.string().required(),
+  location: Joi.string().required(),
+  message: Joi.string().required(),
 }).when(Joi.ref("$method"), {
   switch: [
     {

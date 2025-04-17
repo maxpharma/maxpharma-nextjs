@@ -12,6 +12,7 @@ import { SUCCESS_MESSAGES } from "../utils/messages";
 import checkAuthentication from "../middleware/checkAuthentication";
 import PopupRoutes from "./popup"
 import inquiryRoutes from "./inquiry"
+import ApplyRoutes from "./apply"
 
 export interface IAuthRequest extends Request {
   query: any;
@@ -36,7 +37,8 @@ export const routes = [
   ...dashboardRoutes,
   ...PopupRoutes,
   ...noticeRoutes,
-  ...inquiryRoutes
+  ...inquiryRoutes,
+  ...ApplyRoutes
 ];
 export interface IRoute {
   method: "get" | "post" | "put" | "delete" | "patch";

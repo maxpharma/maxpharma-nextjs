@@ -29,7 +29,7 @@ const inquiryAttributes = {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  subject: {
+  location: {
     type: DataTypes.STRING,
     allowNull: false,
   },
