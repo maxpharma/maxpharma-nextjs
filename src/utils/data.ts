@@ -1,12 +1,17 @@
 import {
+    aboutUsIcon,
     bannerIcon,
     contactIcon,
     dashboardIcon,
     documentsIcon,
+    faqsIcon,
     galleryIcon,
     popUpIcon,
     portfolioIcon,
+    productsIcon,
     seoIcon,
+    servicesIcon,
+    settingsIcon,
     shareRequestIcon,
     teamIcon,
 } from "@/assets/svg";
@@ -84,25 +89,25 @@ export const menuItems: MenuItem[] = [
     {
         id: "about",
         title: "About Us",
-        icon: null,
+        icon: aboutUsIcon,
         path: "/admin/about",
     },
     {
         id: "products",
         title: "Products",
-        icon: null,
+        icon: productsIcon,
         path: "/admin/products",
     },
     {
         id: "services",
         title: "Services",
-        icon: null,
+        icon: servicesIcon,
         path: "/admin/service",
     },
     {
         id: "faqs",
         title: "FAQs",
-        icon: null,
+        icon: faqsIcon,
         path: "/admin/faqs",
     },
     {
@@ -133,7 +138,7 @@ export const menuItems: MenuItem[] = [
     {
         id: "settings",
         title: "Settings",
-        icon: null,
+        icon: settingsIcon,
         path: "/admin/settings",
     },
     {

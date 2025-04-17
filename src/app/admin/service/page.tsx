@@ -40,7 +40,7 @@ const ServicePage = () => {
 
     return (
         <div className='space-y-6'>
-            <h1 className='text-xl font-bold text-green-700'>Add Services</h1>
+            <h1>Add Services</h1>
 
             <div className='flex justify-between items-center'>
                 <div className='flex flex-wrap gap-2 items-center'>
@@ -74,7 +74,7 @@ const ServicePage = () => {
             >
                 <Form className='space-y-4'>
                     <div>
-                        <label className='block mb-2 font-medium text-green-700'>
+                        <label className='block mb-2 font-medium '>
                             {selectedCategory} Title
                         </label>
                         <Input
@@ -106,13 +106,15 @@ const ServicePage = () => {
                                 name='bannerImage1'
                                 label=''
                                 placeholder='Upload Image'
-                                className='flex-1 '
+                                className='flex-1'
+                                size={200}
                             />
                             <Upload
                                 name='bannerImage2'
                                 label=''
                                 placeholder='Upload Image'
-                                className='flex-1 '
+                                className='flex-1'
+                                size={200}
                             />
                         </div>
                     </div>

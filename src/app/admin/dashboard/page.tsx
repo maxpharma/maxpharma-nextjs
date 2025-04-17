@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import Dashboard from '@/api/dashboard';
+import Dashboard from "@/api/dashboard";
 import {
     documentsIcon,
     galleryIcon,
@@ -8,18 +8,18 @@ import {
     portfolioIcon,
     shareIcon,
     teamIcon,
-} from '@/assets/svg';
-import DataTable from '@/components/DataTable';
-import StatsGrid from '@/components/StatsGrid';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+} from "@/assets/svg";
+import DataTable from "@/components/DataTable";
+import StatsGrid from "@/components/StatsGrid";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const DashboardPage = () => {
     const router = useRouter();
 
     const fetchData = async () => {
-        await Dashboard.getData('dashboard', 'dashboard');
+        await Dashboard.getData("dashboard", "dashboard");
     };
 
     const { data: dashboardData } = useSelector(
@@ -32,82 +32,82 @@ const DashboardPage = () => {
         }
     }, [dashboardData?.length]);
 
-    console.log('dashboardData', dashboardData);
+    console.log("dashboardData", dashboardData);
 
     const dummyStats = [
         {
-            title: 'New Share Requests Apply',
+            title: "New Share Requests Apply",
             value: dashboardData?.totalApplications,
             icon: shareIcon,
-            iconBgColor: 'bg-blue-100',
-            iconColor: 'text-blue-600',
+            iconBgColor: "bg-blue-100",
+            iconColor: "text-blue-600",
         },
         {
-            title: 'Total Share Requests',
+            title: "Total Share Requests",
             value: dashboardData?.totalShareRequest?.items?.length,
             icon: shareIcon,
-            iconBgColor: 'bg-green-100',
-            iconColor: 'text-green-600',
+            iconBgColor: "bg-green-100",
+            iconColor: "text-green-600",
         },
         {
-            title: 'Total Inquirey',
+            title: "Total Inquirey",
             value: dashboardData?.totalInquiry?.items?.length,
             icon: groupIcon,
-            iconBgColor: 'bg-yellow-100',
-            iconColor: 'text-yellow-600',
+            iconBgColor: "bg-yellow-100",
+            iconColor: "text-yellow-600",
         },
         {
-            title: 'TotalDocuments',
+            title: "TotalDocuments",
             value: dashboardData?.totalDocuments,
             icon: documentsIcon,
-            iconBgColor: 'bg-purple-100',
-            iconColor: 'text-purple-600',
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
         },
         {
-            title: 'Total Portfolio',
+            title: "Total Portfolio",
             value: dashboardData?.totalPortfolio,
             icon: portfolioIcon,
-            iconBgColor: 'bg-purple-100',
-            iconColor: 'text-purple-600',
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
         },
         {
-            title: 'Total Gallery',
+            title: "Total Gallery",
             value: dashboardData?.totalGallery,
             icon: galleryIcon,
-            iconBgColor: 'bg-purple-100',
-            iconColor: 'text-purple-600',
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
         },
         {
-            title: 'Total Team',
+            title: "Total Team",
             value: dashboardData?.totalTeam,
             icon: teamIcon,
-            iconBgColor: 'bg-purple-100',
-            iconColor: 'text-purple-600',
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
         },
         {
-            title: 'Total Settings',
+            title: "Total Settings",
             value: dashboardData?.totalSetting,
             icon: teamIcon,
-            iconBgColor: 'bg-purple-100',
-            iconColor: 'text-purple-600',
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
         },
     ];
 
     const shareRequestColumns = [
         {
-            id: 'name',
-            header: 'Name/Business Name',
-            accessor: 'name',
+            id: "name",
+            header: "Name/Business Name",
+            accessor: "name",
             minWidth: 80,
         },
         {
-            id: 'phone',
-            header: 'Phone Number',
-            accessor: 'phone',
+            id: "phone",
+            header: "Phone Number",
+            accessor: "phone",
             minWidth: 80,
         },
-        { id: 'file', header: 'File', accessor: 'file', minWidth: 80 },
-        { id: 'action', header: 'Action', accessor: 'action', minWidth: 80 },
+        { id: "file", header: "File", accessor: "file", minWidth: 80 },
+        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
     ];
 
     const shareRequestRows = dashboardData?.totalShareRequest?.items?.map(
@@ -123,7 +123,7 @@ const DashboardPage = () => {
                 action: (
                     <button
                         onClick={() => {
-                            router.push('/admin/share-request');
+                            router.push("/admin/share-request");
                         }}
                         className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
                     >
@@ -136,18 +136,18 @@ const DashboardPage = () => {
 
     const newInquiryColums = [
         {
-            id: 'name',
-            header: 'Name',
-            accessor: 'name',
+            id: "name",
+            header: "Name",
+            accessor: "name",
             minWidth: 80,
         },
         {
-            id: 'phone',
-            header: 'Phone Number',
-            accessor: 'phone',
+            id: "phone",
+            header: "Phone Number",
+            accessor: "phone",
             minWidth: 80,
         },
-        { id: 'action', header: 'Action', accessor: 'action', minWidth: 80 },
+        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
     ];
 
     const newInquiryRows = dashboardData?.totalInquiry?.items?.map(
@@ -158,7 +158,7 @@ const DashboardPage = () => {
                 action: (
                     <button
                         onClick={() => {
-                            router.push('/admin/contact-list');
+                            router.push("/admin/contact-list");
                         }}
                         className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
                     >
@@ -173,7 +173,7 @@ const DashboardPage = () => {
         <div className='p-6'>
             <StatsGrid stats={dummyStats} />
 
-            <div className='mt-8 flex gap-2 justify-between'>
+            <div className='mt-8 flex max-lg:flex-col gap-2 justify-between'>
                 <DataTable
                     title='Recent Share Requests'
                     columns={shareRequestColumns}

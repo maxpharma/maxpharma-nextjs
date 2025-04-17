@@ -10,6 +10,7 @@ import {
     profileImageIcon,
     smallProfileImageIcon,
 } from "@/assets/commonSvg";
+import CustomImage from "../CustomImage";
 // Note: You'll provide the SvgIcon component yourself
 
 interface UploadProps {
@@ -22,6 +23,7 @@ interface UploadProps {
     size?: number | null;
     styleLabel?: string;
     className?: string;
+    inputClassName?: string;
     maxFiles?: number;
     acceptFiles?: boolean;
     acceptType?: string;
@@ -39,6 +41,7 @@ const Upload: FC<UploadProps> = ({
     onChange,
     styleLabel = "",
     className = "",
+    inputClassName = "",
     maxFiles = 25,
     acceptFiles = false,
     acceptType = "",
@@ -278,7 +281,7 @@ const Upload: FC<UploadProps> = ({
                         {variant === "dashed" && (
                             <div
                                 onClick={openFilePicker}
-                                className={`w-full bg-white flex items-center justify-center cursor-pointer overflow-hidden rounded-md border-2 border-dashed ${
+                                className={`w-full  bg-white flex items-center justify-center cursor-pointer overflow-hidden rounded-md border-2 border-dashed ${
                                     hasError
                                         ? "border-red-500"
                                         : "border-gray-500"
@@ -326,7 +329,7 @@ const Upload: FC<UploadProps> = ({
                                 ) : value ? (
                                     <div className='w-full h-full relative'>
                                         <Image
-                                            src={value}
+                                            src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${value}`}
                                             alt='Preview'
                                             layout='fill'
                                             objectFit='contain'

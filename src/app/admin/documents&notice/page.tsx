@@ -1,6 +1,6 @@
 "use client";
 
-import Documents from "@/api/documents";
+import Documents from "@/api/notice";
 import ActionButton from "@/components/ActionButton";
 import Dropdown from "@/components/ui/Dropdown";
 
@@ -25,14 +25,7 @@ const DocumentsPage = () => {
     console.log(dropdownValue, "dropdownValue");
     const [loading, setLoading] = useState(false);
 
-    const documentOptions = [
-        "Notice Board",
-        "Company News",
-        "Press & Media Release",
-        "Procurement Notices",
-        "Career News",
-        "Downloads",
-    ];
+    const documentOptions = ["Important Notice", "Career Notice"];
 
     const handleDocumentTypeChange = (selectedOption: string) => {
         setDropdownValue(selectedOption);
@@ -88,24 +81,24 @@ const DocumentsPage = () => {
 
         const payload = {
             title: values.title,
-            type: dropdownValue,
+            documentType: dropdownValue,
             date: values.date,
             file: {
                 base64: values.file.base64,
                 extension: values.file.extension,
             },
         };
+        resetForm();
 
         try {
             if (updateIdData?.id) {
                 await Documents.update("documents", payload, updateIdData?.id);
             } else {
-                await Documents.create("documents", payload);
+                await Documents.create(payload);
             }
         } catch (error) {
             console.error("Error uploading file:", error);
         } finally {
-            resetForm();
             setUpdateIdData(null);
             setLoading(false);
         }

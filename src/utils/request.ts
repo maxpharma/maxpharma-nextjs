@@ -50,14 +50,14 @@ const request = async (configuration: any) => {
         adminPath = window.location.pathname;
     }
 
-    // if (!!authorization && adminPath.startsWith('/admin/')) {
-    //     const user = helper.getUser();
-    //     if (!user?.token) {
-    //         toast.error('No token found');
-    //         throw new Error('No token found');
-    //     }
-    //     defaultHeader.Authorization = `Bearer ${user?.token}`;
-    // }
+    if (!!authorization && adminPath.startsWith("/admin/")) {
+        const user = helper.getUser();
+        if (!user?.token) {
+            toast.error("No token found");
+            throw new Error("No token found");
+        }
+        defaultHeader.Authorization = `Bearer ${user?.token}`;
+    }
 
     await loadingProcess(configuration, true);
     return await axios({

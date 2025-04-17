@@ -1,5 +1,3 @@
-import { s } from 'framer-motion/client';
-
 const initialState: any = {
     user: {
         data: {},
@@ -10,6 +8,20 @@ const initialState: any = {
         data: {},
         loading: true,
         loadingState: true,
+    },
+    aboutUs: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
+    products: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
     },
     banners: {
         data: [],
@@ -40,7 +52,7 @@ const initialState: any = {
         loading: true,
         loadingState: true,
     },
-    documents: {
+    notices: {
         items: [],
         loading: true,
         loadingState: true,

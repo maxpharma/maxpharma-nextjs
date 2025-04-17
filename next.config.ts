@@ -3,8 +3,8 @@ const nextConfig = {
     images: {
         remotePatterns: [
             {
-                protocol: 'https',
-                hostname: 'beta.prabhusteel.com',
+                protocol: "https",
+                hostname: "maxpharma.inflancer.com",
             },
         ],
     },

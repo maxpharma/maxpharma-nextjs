@@ -1,19 +1,19 @@
-import request from '@/utils/request';
-import { ReturnType } from './types';
+import request from "@/utils/request";
+import { ReturnType } from "./types";
 
-const create = async (state: string, data: any) => {
+const create = async (data: any) => {
     try {
         const config: ReturnType = {
-            url: `documents`,
-            method: 'post',
+            url: `notices`,
+            method: "post",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Created Successfully',
+                successMsg: "Created Successfully",
                 store: {
-                    action: 'prepend',
-                    key: state,
+                    action: "prepend",
+                    key: "notices",
                 },
             },
         };
@@ -24,18 +24,17 @@ const create = async (state: string, data: any) => {
     }
 };
 
-const getData = async (state: string) => {
+const get = async () => {
     try {
         const config: ReturnType = {
-            url: `documents`,
-            method: 'get',
+            url: `notices`,
+            method: "get",
             authorization: true,
             config: {
                 showErr: true,
-
                 store: {
-                    action: 'set',
-                    key: state,
+                    action: "set",
+                    key: "notices",
                 },
             },
         };
@@ -49,15 +48,15 @@ const getData = async (state: string) => {
 const deleteItem = async (id: number) => {
     try {
         const config: ReturnType = {
-            url: `documents/${id}`,
-            method: 'delete',
+            url: `notices/${id}`,
+            method: "delete",
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Deleted Successfully',
+                successMsg: "Deleted Successfully",
                 store: {
-                    action: 'set',
-                    key: '',
+                    action: "remove",
+                    key: "notices",
                 },
             },
         };
@@ -72,14 +71,14 @@ const update = async (state: string, data: any, id: number) => {
     try {
         const config: ReturnType = {
             url: `documents/${id}`,
-            method: 'patch',
+            method: "patch",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Updated Successfully',
+                successMsg: "Updated Successfully",
                 store: {
-                    action: 'update',
+                    action: "update",
                     key: state,
                 },
             },
@@ -91,6 +90,6 @@ const update = async (state: string, data: any, id: number) => {
     }
 };
 
-const Documents = { create, getData, deleteItem, update };
+const Notice = { create, get, deleteItem, update };
 
-export default Documents;
+export default Notice;

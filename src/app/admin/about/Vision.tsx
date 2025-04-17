@@ -1,11 +1,28 @@
+import AboutUs from "@/api/aboutUs";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const Vision = ({ type }: any) => {
+const Vision = ({ type }: { type: string }) => {
+    const [loading, setLoading] = useState(false);
+    const { data: aboutUsData } = useSelector((state: any) => state.aboutUs);
+
+    console.log(type, "type");
+
+    const fetchData = async () => {
+        await AboutUs.get("Our Vision");
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    console.log(aboutUsData, "aboutUsData");
+
     const [initialValues, setInitialValues] = useState({
         title: "",
         ourMission: "",
@@ -13,7 +30,14 @@ const Vision = ({ type }: any) => {
     });
 
     const submitHandler = async (values: any, { resetForm }: any) => {
-        console.log(values);
+        setLoading(true);
+
+        const payload = {
+            title: values.title,
+            description: values.ourMission,
+            goal: values.goal,
+        };
+
         resetForm();
     };
 

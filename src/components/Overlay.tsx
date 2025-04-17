@@ -147,11 +147,11 @@ const Overlay: React.FC<OverlayProps> = ({
             {/* Content container */}
             <div
                 ref={contentRef}
-                className={`relative z-10 bg-light-primary overflow-hidden w-full sm:w-11/12 sm:max-w-2xl
+                className={`relative z-10 bg-light-primary overflow-y-auto w-full sm:w-11/12 sm:max-w-2xl
                   ${
                       isMobile
                           ? "max-h-[90vh] rounded-t-xl"
-                          : "rounded-lg shadow-xl"
+                          : "max-h-[90vh] rounded-lg shadow-xl"
                   }`}
                 style={
                     isMobile
