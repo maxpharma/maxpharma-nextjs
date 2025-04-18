@@ -132,7 +132,10 @@ const remove = async (id: number) => {
 const count = async (params:any) => {
   try {
     const data: any = await Model.count({
-      type: params?.type
+      where: {
+        group: params?.type,
+        isShow: true,
+      }
     })
     return data;
   } catch (err: any) {

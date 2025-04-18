@@ -1,39 +1,50 @@
-import ApplicationService from "../themes/service";
 import ContactService from "../contacts/service";
 import GalleryService from "../galleries/service";
 import DocumentService from "../services/service";
 import SettingService from "../generalSettings/service";
-import PortfolioService from "../aboutUs/service";
-import TeamService from "../products/service";
+import ApplyService from "../apply/service";
+import ProductService from "../products/service";
+import InquiryService from "../inquiries/service"
+import NoticeService from "../notices/service"
+import Services from "../services/service"
+
+
 const getMainDashboard = async (params:any) => {
-    const totalApplications = await ApplicationService.count()
-    const totalGallery  = await GalleryService.count()
+    const totalInquiry = await InquiryService.count()
     const totalContact  = await ContactService.count()
-    const totalDocuments  = await DocumentService.count()
+    const totalProduct  = await ProductService.count()
+    const totalApply = await ApplyService.count()
+
+    const totalServices = await Services.count()
+
+    const totalNotices = await NoticeService.count()
+    const totalGallery  = await GalleryService.count()
     const totalSetting  = await SettingService.count({
-        type: ""
+        type: "PopUp"
     })
-    const totalPortfolio  = await PortfolioService.count()
-    const totalTeam = await TeamService.count()
-    const totalShareRequest = await ApplicationService.list({
+
+
+    const inquiryData = await InquiryService.list({
         limit:5,
         page:1
     })
-    const totalInquiry = await ContactService.list({
+    const applyData = await  ApplyService.list({
         limit: 5,
         page: 1
     })
 
     return {
-        totalApplications,
+        totalApply,
         totalGallery,
         totalContact,
-        totalDocuments,
-        totalSetting,   
-        totalPortfolio,
-        totalTeam,
-        totalShareRequest,
-        totalInquiry
+        totalServices,
+        totalSetting, 
+        totalNotices,  
+        totalProduct,
+        totalInquiry,
+
+        inquiryData,
+        applyData,
     }
 }
 
