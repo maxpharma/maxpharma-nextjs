@@ -6,24 +6,25 @@ import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
 import { FieldArray, Form, Formik } from "formik";
+import { desc } from "framer-motion/client";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Overview = ({ type }: { type: string }) => {
     const [loading, setLoading] = useState(false);
-    const { items: aboutUsData } = useSelector((state: any) => state.aboutUs);
-
-    console.log(type, "type");
+    const { items: aboutUsData } = useSelector(
+        (state: any) => state.aboutUsOverview
+    );
 
     const fetchData = async () => {
-        await AboutUs.get(type);
+        await AboutUs.get("aboutUsOverview", type);
     };
 
     useEffect(() => {
         if (!aboutUsData?.length) {
             fetchData();
         }
-    }, [aboutUsData?.length]);
+    }, [aboutUsData?.length, type]);
 
     const [initialValues, setInitialValues] = useState({
         title: "",
@@ -41,26 +42,70 @@ const Overview = ({ type }: { type: string }) => {
         }
     }, [aboutUsData?.length, aboutUsData]);
 
-    console.log(initialValues, "initialValues");
-
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
 
-        const payload = {
+        const isUpdate = aboutUsData?.length > 0 && aboutUsData[0]?.id;
+        const original = aboutUsData?.[0] || {};
+
+        const defaultSend = {
             title: values.title,
-            description: values.description,
             type: "Overview",
-            files: values.files.map((file: any) => ({
-                extension: file?.extension,
-                base64: file?.base64,
-            })),
+            description: values.description,
         };
 
-        console.log(payload);
+        const getUpdatedFields = () => {
+            if (!isUpdate) {
+                return {
+                    description: values.description,
+                    files: values.files.map((file: any) => ({
+                        extension: file?.extension,
+                        base64: file?.base64,
+                    })),
+                };
+            }
+            const changed: any = {};
+            if (values.title !== original.title) changed.title = values.title;
+            if (values.description !== original.description)
+                changed.description = values.description;
+            // Compare files array shallowly
+            if (
+                JSON.stringify(
+                    values.files.map((f: any) => ({
+                        extension: f?.extension,
+                        base64: f?.base64,
+                    }))
+                ) !==
+                JSON.stringify(
+                    (original.files || []).map((f: any) => ({
+                        extension: f?.extension,
+                        base64: f?.base64,
+                    }))
+                )
+            ) {
+                changed.files = values.files.map((file: any) => ({
+                    extension: file?.extension,
+                    base64: file?.base64,
+                }));
+            }
+            return changed;
+        };
+
+        const updatedFields = getUpdatedFields();
+        const payload = { ...defaultSend, ...updatedFields };
+
+        if (isUpdate && Object.keys(updatedFields).length === 0) {
+            setLoading(false);
+            return;
+        }
 
         try {
-            await AboutUs.create(payload);
-            resetForm();
+            if (isUpdate) {
+                await AboutUs.update("aboutUsOverview", original.id, payload);
+            } else {
+                await AboutUs.create("aboutUsOverview", payload);
+                resetForm();
+            }
         } catch (error) {
             console.error("Error submitting data:", error);
         }

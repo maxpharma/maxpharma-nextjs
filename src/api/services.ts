@@ -1,10 +1,10 @@
 import request from "@/utils/request";
 import { ReturnType } from "./types";
 
-const create = async (state: string, data: any) => {
+const create = async (data: any) => {
     try {
         const config: ReturnType = {
-            url: `about-us`,
+            url: `services`,
             method: "post",
             data,
             authorization: true,
@@ -13,7 +13,7 @@ const create = async (state: string, data: any) => {
                 successMsg: "Created Successfully",
                 store: {
                     action: "set",
-                    key: state,
+                    key: "services",
                 },
             },
         };
@@ -24,17 +24,17 @@ const create = async (state: string, data: any) => {
     }
 };
 
-const get = async (state: string, type: string) => {
+const get = async (id?: number) => {
     try {
         const config: ReturnType = {
-            url: `about-us?type=${type}`,
+            url: `services?categoryId=${id}`,
             method: "get",
             authorization: true,
             config: {
                 showErr: true,
                 store: {
                     action: "set",
-                    key: state,
+                    key: "services",
                 },
             },
         };
@@ -45,33 +45,6 @@ const get = async (state: string, type: string) => {
     }
 };
 
-const update = async (state: string, id: number, data: any) => {
-    try {
-        const config: ReturnType = {
-            url: `about-us/${id}`,
-            method: "patch",
-            data,
-            authorization: true,
-            config: {
-                showErr: true,
-                successMsg: "Updated Successfully",
-                store: {
-                    action: "update",
-                    key: state,
-                },
-            },
-        };
-        const response = await request(config);
-        return response;
-    } catch (err: any) {
-        throw new Error(err.message);
-    }
-};
+const Services = { create, get };
 
-const AboutUs = {
-    create,
-    get,
-    update,
-};
-
-export default AboutUs;
+export default Services;

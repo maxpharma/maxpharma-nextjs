@@ -1,3 +1,6 @@
+import HomeFAQs from "@/app/admin/faqs/HomeFAQs";
+import Categories from "@/features/Categories";
+
 const initialState: any = {
     user: {
         data: {},
@@ -9,12 +12,36 @@ const initialState: any = {
         loading: true,
         loadingState: true,
     },
-    aboutUs: {
+    aboutUsOverview: {
         items: [],
         loading: true,
         loadingState: true,
         totalItems: 0,
         totalPages: 0,
+    },
+    aboutUsOurVision: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
+    aboutUsMessageFromChairperson: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
+    categories: {
+        data: [],
+        loading: true,
+        loadingState: true,
+    },
+    serviceCategories: {
+        data: [],
+        loading: true,
+        loadingState: true,
     },
     products: {
         items: [],
@@ -27,6 +54,35 @@ const initialState: any = {
         data: [],
         loading: true,
         loadingState: true,
+    },
+    services: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
+    homeFAQs: {
+        data: [],
+        loading: true,
+        loadingState: true,
+    },
+    productFAQs: {
+        data: [],
+        loading: true,
+        loadingState: true,
+    },
+    contactFAQs: {
+        data: [],
+        loading: true,
+        loadingState: true,
+    },
+    themes: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
     },
     gallery: {
         items: [],

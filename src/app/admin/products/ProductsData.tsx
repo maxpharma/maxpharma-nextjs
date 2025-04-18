@@ -9,12 +9,18 @@ import SvgIcon from "@/components/SvgIcon";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const ProductsData = ({ setUpdateIdData }: any) => {
+const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
     const fetchData = async () => {
         await Products.get();
     };
 
     const { items: ProductsData } = useSelector((state: any) => state.products);
+    const { data: categoriesData } = useSelector(
+        (state: any) => state.categories
+    );
+
+    console.log("categoriesData", categoriesData);
+    console.log("ProductsData", ProductsData);
 
     useEffect(() => {
         if (!ProductsData?.length) {
@@ -41,7 +47,20 @@ const ProductsData = ({ setUpdateIdData }: any) => {
         { id: "action", header: "Action", accessor: "action", minWidth: 120 },
     ];
 
-    const rows = ProductsData?.map((item: any) => {
+    // Remove filtering, just use all ProductsData
+    // const filteredProducts = (ProductsData || []).filter((item: any) => {
+    //     let typeMatch = true;
+    //     let categoryMatch = true;
+    //     if (filterType && filterType !== "All Products") {
+    //         typeMatch = item.type === filterType;
+    //     }
+    //     if (filterCategory && filterCategory !== "All Products") {
+    //         categoryMatch = item.categoryName === filterCategory;
+    //     }
+    //     return typeMatch && categoryMatch;
+    // });
+
+    const rows = (ProductsData || []).map((item: any) => {
         // Format specifications to show first two items
         const specs = item?.additionalInfo || {};
         const specEntries = Object.entries(specs);
@@ -50,7 +69,9 @@ const ProductsData = ({ setUpdateIdData }: any) => {
         return {
             name: item?.name,
             type: item?.type,
-            category: item?.categoryName,
+            category:
+                categoriesData?.find((cat: any) => cat.id === item.categoryId)
+                    ?.value || "-",
             specifications: (
                 <div className='space-y-1 text-sm'>
                     {firstTwoSpecs.length > 0 ? (
@@ -76,14 +97,24 @@ const ProductsData = ({ setUpdateIdData }: any) => {
                     )}
                 </div>
             ),
+
             image: (
-                <div>
-                    {item?.files && item?.files.length > 0 && (
-                        <CustomImage
-                            src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${item?.files[0]}`}
-                            size='small'
-                        />
-                    )}
+                <div className='flex gap-1 flex-wrap'>
+                    {item?.files && item?.files.length > 0
+                        ? item.files
+                              .slice(0, 5)
+                              .map((file: string, idx: number) => (
+                                  <CustomImage
+                                      key={file + idx}
+                                      src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
+                                      alt={item?.name}
+                                      size='small'
+                                      orientation='landscape'
+                                      fit='cover'
+                                      className='w-24 h-16'
+                                  />
+                              ))
+                        : null}
                 </div>
             ),
             action: (

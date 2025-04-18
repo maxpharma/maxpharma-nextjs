@@ -1,23 +1,65 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
 import Button from "@/components/Button";
+import SpecificationTable from "@/components/fields/SpecificationTable";
+import GeneralSettings from "@/api/generalSettings";
+import { useSelector } from "react-redux";
 
 interface HomeFAQsProps {
-    type: string;
+    type: any;
 }
 
 const HomeFAQs: React.FC<HomeFAQsProps> = ({ type }) => {
+    const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState({
-        question: "",
-        answer: "",
+        faqs: {},
     });
 
+    console.log(initialValues, "initialValues");
+
+    const { data: homeFAQs } = useSelector(
+        (state: any) => state.homeFAQs || []
+    );
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup("homeFAQs", "homeFAQs");
+    };
+
+    useEffect(() => {
+        if (!homeFAQs?.length) {
+            fetchData();
+        }
+    }, [homeFAQs?.length]);
+
+    console.log(homeFAQs, "homeFAQs");
+
+    useEffect(() => {
+        if (homeFAQs?.length) {
+            setInitialValues({
+                faqs: homeFAQs[0]?.infos || {},
+            });
+        }
+    }, [homeFAQs]);
+
     const submitHandler = async (values: any, { resetForm }: any) => {
-        console.log({ type, ...values });
-        // Here you would add logic to save the FAQ to your backend
-        resetForm();
+        setLoading(true);
+        const payload = {
+            group: "homeFAQs",
+            key: Date.now().toString(),
+            value: "home faqs",
+            title: "home faqs",
+            infos: values.faqs,
+        };
+
+        try {
+            await GeneralSettings.create("homeFAQs", payload);
+            resetForm();
+        } catch (error: any) {
+            console.error("Error adding Home FAQs:", error);
+        }
+        setLoading(false);
     };
 
     return (
@@ -30,18 +72,15 @@ const HomeFAQs: React.FC<HomeFAQsProps> = ({ type }) => {
                 enableReinitialize
             >
                 <Form className='space-y-4 mb-6'>
-                    <Input
-                        name='question'
-                        label='Question'
-                        placeholder='Enter question here'
-                        type='text'
+                    <SpecificationTable
+                        name='faqs'
+                        label='FAQs'
+                        valuePlaceholder='Answer'
+                        keyPlaceholder='Question'
                     />
-                    <TextArea
-                        name='answer'
-                        label='Answer'
-                        placeholder='Enter answer here'
-                    />
-                    <Button variant='submit'>Add FAQ</Button>
+                    <Button loading={loading} variant='submit'>
+                        Submit
+                    </Button>
                 </Form>
             </Formik>
 

@@ -1,16 +1,16 @@
-import request from '@/utils/request';
-import { ReturnType } from './types';
+import request from "@/utils/request";
+import { ReturnType } from "./types";
 
-const getByGroup = async (state: string, group: string, type: string) => {
+const getByGroup = async (state: string, group: string, type?: string) => {
     try {
         const config: ReturnType = {
             url: `generalSettings/group/${group}?type=${type}`,
-            method: 'get',
+            method: "get",
             authorization: true,
             config: {
                 showErr: true,
                 store: {
-                    action: 'set',
+                    action: "set",
                     key: state,
                 },
             },
@@ -26,12 +26,12 @@ const getByKey = async (state: string, key: string) => {
     try {
         const config: ReturnType = {
             url: `generalSettings/key/${key}`,
-            method: 'get',
+            method: "get",
             authorization: true,
             config: {
                 showErr: true,
                 store: {
-                    action: 'set',
+                    action: "set",
                     key: state,
                 },
             },
@@ -47,14 +47,14 @@ const create = async (state: string, data: any) => {
     try {
         const config: ReturnType = {
             url: `generalSettings`,
-            method: 'post',
+            method: "post",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Created Successfully',
+                successMsg: "Data Created Successfully",
                 store: {
-                    action: 'prepend',
+                    action: "prepend",
                     key: state,
                 },
             },
@@ -70,14 +70,14 @@ const update = async (state: string, data: any, id: number) => {
     try {
         const config: ReturnType = {
             url: `generalSettings/${id}`,
-            method: 'patch',
+            method: "patch",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Updated Successfully',
+                successMsg: "Updated Successfully",
                 store: {
-                    action: 'update',
+                    action: "update",
                     key: state,
                 },
             },
@@ -92,14 +92,14 @@ const update = async (state: string, data: any, id: number) => {
 const remove = async (state: string, id: any) => {
     try {
         const config: ReturnType = {
-            url: `generalSettings/${id}}`,
-            method: 'delete',
+            url: `generalSettings/${id}`,
+            method: "delete",
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Deleted Successfully',
+                successMsg: "Deleted Successfully",
                 store: {
-                    action: 'remove',
+                    action: "reset",
                     key: state,
                 },
             },

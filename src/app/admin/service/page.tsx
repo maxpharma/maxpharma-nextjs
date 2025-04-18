@@ -1,41 +1,125 @@
 "use client";
 
-import React, { useState } from "react";
-import { Formik, Form } from "formik";
+import React, { useState, useEffect } from "react";
+import { Formik, Form, FieldArray } from "formik";
 import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
 import Button from "@/components/Button";
 import Overlay from "@/components/Overlay";
+import { useSelector } from "react-redux";
+import GeneralSettings from "@/api/generalSettings";
+import { Trash2 } from "lucide-react";
+import AddServiceCategory from "./AddServiceCategory";
+import Services from "@/api/services";
+import MyEditor from "@/components/fields/MyEditor";
 
 const ServicePage = () => {
-    // Predefined service categories
-    const categories = [
-        "Production Department",
-        "Quality Assurance",
-        "Quality Control",
-        "Research & Development",
-        "Store & Logistics",
-    ];
-
-    const [selectedCategory, setSelectedCategory] = useState(
-        "Production Department"
+    const { data: serviceCategories } = useSelector(
+        (state: any) => state.serviceCategories || []
     );
+
+    const { items: servicesData } = useSelector(
+        (state: any) => state.services || []
+    );
+
+    const [loading, setLoading] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<any>(null);
     const [initialValues, setInitialValues] = useState({
         title: "",
         description: "",
-        bannerImage1: "",
-        bannerImage2: "",
+        files: [],
     });
-    const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
-    const handleCategoryClick = (category: string) => {
+    useEffect(() => {
+        if (servicesData?.length) {
+            setInitialValues({
+                title: servicesData[0]?.title || "",
+                description: servicesData[0]?.description || "",
+                files: servicesData[0]?.files || [],
+            });
+        } else {
+            setInitialValues({
+                title: "",
+                description: "",
+                files: [],
+            });
+        }
+    }, [servicesData, selectedCategory?.id]);
+
+    const [isEditCategoriesOpen, setIsEditCategoriesOpen] = useState(false);
+    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
+
+    const fetchCategories = async () => {
+        await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
+    };
+
+    const fetchServicesData = async () => {
+        console.log(selectedCategory?.id, "selectedCategory");
+
+        const response = await Services.get(selectedCategory?.id);
+        console.log("response", response);
+    };
+
+    useEffect(() => {
+        if (selectedCategory?.id) {
+            fetchServicesData();
+        }
+    }, [selectedCategory, selectedCategory?.id]);
+
+    console.log("servicesData", servicesData);
+
+    useEffect(() => {
+        if (!serviceCategories?.length) {
+            fetchCategories();
+        }
+    }, [serviceCategories?.length]);
+
+    useEffect(() => {
+        if (serviceCategories.length && !selectedCategory) {
+            setSelectedCategory(serviceCategories[0]);
+        }
+    }, [serviceCategories, selectedCategory]);
+
+    const handleCategoryClick = (category: any) => {
         setSelectedCategory(category);
     };
 
-    const submitHandler = (values: any, { resetForm }: any) => {
-        console.log("Submitting data for category:", selectedCategory);
-        console.log(values);
+    const submitHandler = async (values: any, { resetForm }: any) => {
+        setLoading(true);
+        const payload = {
+            title: values.title,
+            description: values.description,
+            files: values.files.map((file: any) => ({
+                extension: file?.extension,
+                base64: file?.base64,
+            })),
+            categoryId: selectedCategory?.id,
+        };
+
+        try {
+            await Services.create(payload);
+            resetForm();
+        } catch (error) {
+            console.error("Error creating service:", error);
+        }
+        setLoading(false);
+    };
+
+    const handleDeleteCategory = async (id: number) => {
+        setDeleteLoading(id);
+        try {
+            await GeneralSettings.remove("serviceCategories", id);
+            await fetchCategories();
+        } catch (err) {
+            console.error("Error deleting category:", err);
+        } finally {
+            setDeleteLoading(null);
+        }
     };
 
     return (
@@ -44,28 +128,79 @@ const ServicePage = () => {
 
             <div className='flex justify-between items-center'>
                 <div className='flex flex-wrap gap-2 items-center'>
-                    {categories.map((category) => (
+                    {serviceCategories.map((category: any) => (
                         <button
-                            key={category}
+                            key={category.id}
                             className={`px-4 py-2 rounded-md ${
-                                selectedCategory === category
+                                selectedCategory?.id === category.id
                                     ? "active-button"
                                     : "inactive-button"
                             }`}
                             onClick={() => handleCategoryClick(category)}
                         >
-                            {category}
+                            {category?.value}
                         </button>
                     ))}
                 </div>
-                <button
-                    className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
-                    onClick={() => setIsOverlayOpen(true)}
-                >
-                    Add Category
-                    <span className='ml-1 text-xl'>+</span>
-                </button>
+                <div className='flex gap-2'>
+                    <button
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        onClick={() => setIsEditCategoriesOpen(true)}
+                    >
+                        Edit Categories
+                    </button>
+                    <button
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        onClick={() => setIsAddCategoryOpen(true)}
+                    >
+                        Add Category
+                        <span className='ml-1 text-xl'>+</span>
+                    </button>
+                </div>
             </div>
+
+            {/* Edit Categories Overlay */}
+            {isEditCategoriesOpen && (
+                <Overlay
+                    isOpen={isEditCategoriesOpen}
+                    onClose={() => setIsEditCategoriesOpen(false)}
+                >
+                    <div className='space-y-4 min-w-[300px]'>
+                        <h2 className='text-lg font-semibold mb-2'>
+                            Edit Service Categories
+                        </h2>
+                        <ul className='divide-y'>
+                            {(serviceCategories || []).map((cat: any) => (
+                                <li
+                                    key={cat.id}
+                                    className='flex items-center justify-between py-2'
+                                >
+                                    <span>{cat.value}</span>
+                                    <button
+                                        onClick={() =>
+                                            handleDeleteCategory(cat.id)
+                                        }
+                                        disabled={deleteLoading === cat.id}
+                                        className='text-red-500 hover:text-red-700'
+                                        title='Delete'
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className='flex justify-end'>
+                            <Button
+                                type='button'
+                                onClick={() => setIsEditCategoriesOpen(false)}
+                                variant='submit'
+                            >
+                                Close
+                            </Button>
+                        </div>
+                    </div>
+                </Overlay>
+            )}
 
             <Formik
                 initialValues={initialValues}
@@ -73,49 +208,44 @@ const ServicePage = () => {
                 enableReinitialize
             >
                 <Form className='space-y-4'>
-                    <div>
-                        <label className='block mb-2 font-medium '>
-                            {selectedCategory} Title
-                        </label>
-                        <Input
-                            name='title'
-                            placeholder='Title'
-                            label=''
-                            type='text'
-                        />
-                    </div>
+                    <Input
+                        name='title'
+                        placeholder='Title'
+                        label={selectedCategory?.value}
+                        type='text'
+                    />
 
-                    <div>
-                        <label className='block mb-2 font-medium'>
-                            Description
-                        </label>
-                        <TextArea
-                            name='description'
-                            placeholder='Type description'
-                            label=''
-                            rows={6}
-                        />
-                    </div>
+                    <MyEditor
+                        name='description'
+                        label='Description'
+                        placeholder='Description'
+                    />
 
                     <div>
                         <label className='block mb-2 font-medium'>
                             Banner Images
                         </label>
-                        <div className='flex space-x-4'>
-                            <Upload
-                                name='bannerImage1'
-                                label=''
-                                placeholder='Upload Image'
-                                className='flex-1'
-                                size={200}
-                            />
-                            <Upload
-                                name='bannerImage2'
-                                label=''
-                                placeholder='Upload Image'
-                                className='flex-1'
-                                size={200}
-                            />
+                        <div className='flex gap-4 w-full'>
+                            <FieldArray name='files'>
+                                {() => (
+                                    <>
+                                        {[0, 1].map((index) => (
+                                            <Upload
+                                                key={index}
+                                                name={`files[${index}]`}
+                                                label='Upload Images'
+                                                placeholder='Upload Images'
+                                                className='flex-1'
+                                                variant='dashed'
+                                                size={200}
+                                                value={
+                                                    initialValues.files[index]
+                                                }
+                                            />
+                                        ))}
+                                    </>
+                                )}
+                            </FieldArray>
                         </div>
                     </div>
 
@@ -125,45 +255,15 @@ const ServicePage = () => {
                 </Form>
             </Formik>
 
-            {isOverlayOpen && (
-                <Overlay
-                    isOpen={isOverlayOpen}
-                    onClose={() => setIsOverlayOpen(false)}
-                >
-                    <div className='space-y-4'>
-                        <h1>Add Service Category</h1>
-                        <Formik
-                            initialValues={{ category: "" }}
-                            onSubmit={(values) => {
-                                console.log("New category:", values.category);
-                                // Logic to add the new category
-                                setIsOverlayOpen(false);
-                            }}
-                        >
-                            <Form>
-                                <Input
-                                    name='category'
-                                    label='Add new Category'
-                                    placeholder='Category Name'
-                                    type='text'
-                                />
-                                <div className='flex gap-4 mt-4'>
-                                    <Button variant='submit'>
-                                        Add Category
-                                    </Button>
-                                    <button
-                                        type='button'
-                                        onClick={() => setIsOverlayOpen(false)}
-                                        className='px-4 py-2 border rounded-md'
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </Form>
-                        </Formik>
-                    </div>
-                </Overlay>
-            )}
+            {/* AddServiceCategory Overlay */}
+            <AddServiceCategory
+                isOpen={isAddCategoryOpen}
+                onClose={() => setIsAddCategoryOpen(false)}
+                onCategoryAdded={() => {
+                    setIsAddCategoryOpen(false);
+                    fetchCategories();
+                }}
+            />
         </div>
     );
 };

@@ -1,15 +1,15 @@
-import GeneralSettings from '@/api/generalSettings';
-import { deleteIcon, editIcon } from '@/assets/svg';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
-import CustomImage from '@/components/CustomImage';
-import DataTable from '@/components/DataTable';
-import SvgIcon from '@/components/SvgIcon';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import GeneralSettings from "@/api/generalSettings";
+import { deleteIcon, editIcon } from "@/assets/svg";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
+import CustomImage from "@/components/CustomImage";
+import DataTable from "@/components/DataTable";
+import SvgIcon from "@/components/SvgIcon";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const BannerData = ({ setUpdateIdData }: any) => {
+const BannerData = ({ setUpdateIdData, openForm }: any) => {
     const fetchBanner = async () => {
-        await GeneralSettings.getByGroup('banners', 'banner', '')
+        await GeneralSettings.getByGroup("banners", "banner", "")
             .then(() => {})
             .catch(() => {});
     };
@@ -21,13 +21,13 @@ const BannerData = ({ setUpdateIdData }: any) => {
     }, [banners?.length]);
 
     const columns = [
-        { id: 'title', header: 'Title', accessor: 'title', maxWidth: 300 },
-        { id: 'link', header: 'Link', accessor: 'link', maxWidth: 300 },
-        { id: 'banner', header: 'Banner', accessor: 'banner', maxWidth: 300 },
+        { id: "title", header: "Title", accessor: "title", maxWidth: 300 },
+        { id: "link", header: "Link", accessor: "link", maxWidth: 300 },
+        { id: "banner", header: "Banner", accessor: "banner", maxWidth: 300 },
         {
-            id: 'actions',
-            header: 'Actions',
-            accessor: 'actions',
+            id: "actions",
+            header: "Actions",
+            accessor: "actions",
             maxWidth: 300,
         },
     ];
@@ -55,6 +55,7 @@ const BannerData = ({ setUpdateIdData }: any) => {
                                   link: banner.value,
                                   file: banner.file,
                               });
+                              if (openForm) openForm();
                           }}
                       >
                           <SvgIcon src={editIcon} />
@@ -80,7 +81,7 @@ const BannerData = ({ setUpdateIdData }: any) => {
 
     const handleDelete = async () => {
         if (itemToDelete !== null) {
-            await GeneralSettings.remove('banners', itemToDelete);
+            await GeneralSettings.remove("banners", itemToDelete);
             setShowConfirmation(false);
         }
     };
@@ -88,7 +89,6 @@ const BannerData = ({ setUpdateIdData }: any) => {
     return (
         <>
             <div>
-                {' '}
                 <DataTable
                     title='Banners'
                     columns={columns}

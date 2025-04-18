@@ -1,23 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
-import Input from "@/components/fields/Input";
-import TextArea from "@/components/fields/TextArea";
 import Button from "@/components/Button";
+import SpecificationTable from "@/components/fields/SpecificationTable";
+import GeneralSettings from "@/api/generalSettings";
+import { useSelector } from "react-redux";
 
 interface ProductFAQsProps {
-    type: string;
+    type: any;
 }
 
 const ProductFAQs: React.FC<ProductFAQsProps> = ({ type }) => {
+    const [loading, setLoading] = useState(false);
     const [initialValues, setInitialValues] = useState({
-        question: "",
-        answer: "",
+        faqs: {},
     });
 
+    const { data: productFAQs } = useSelector(
+        (state: any) => state.productFAQs || []
+    );
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup("productFAQs", "productFAQs");
+    };
+
+    useEffect(() => {
+        if (!productFAQs?.length) {
+            fetchData();
+        }
+    }, [productFAQs?.length]);
+
+    useEffect(() => {
+        if (productFAQs?.length) {
+            setInitialValues({
+                faqs: productFAQs[0]?.infos || {},
+            });
+        }
+    }, [productFAQs]);
+
     const submitHandler = async (values: any, { resetForm }: any) => {
-        console.log({ type, ...values });
-        // Here you would add logic to save the FAQ to your backend
-        resetForm();
+        setLoading(true);
+        const payload = {
+            group: "productFAQs",
+            key: Date.now().toString(),
+            value: "product faqs",
+            title: "product faqs",
+            infos: values.faqs,
+        };
+
+        try {
+            await GeneralSettings.create("productFAQs", payload);
+            resetForm();
+        } catch (error: any) {
+            console.error("Error adding Product FAQs:", error);
+        }
+        setLoading(false);
     };
 
     return (
@@ -30,18 +66,15 @@ const ProductFAQs: React.FC<ProductFAQsProps> = ({ type }) => {
                 enableReinitialize
             >
                 <Form className='space-y-4 mb-6'>
-                    <Input
-                        name='question'
-                        label='Question'
-                        placeholder='Enter question here'
-                        type='text'
+                    <SpecificationTable
+                        name='faqs'
+                        label='FAQs'
+                        valuePlaceholder='Answer'
+                        keyPlaceholder='Question'
                     />
-                    <TextArea
-                        name='answer'
-                        label='Answer'
-                        placeholder='Enter answer here'
-                    />
-                    <Button variant='submit'>Add FAQ</Button>
+                    <Button loading={loading} variant='submit'>
+                        Submit
+                    </Button>
                 </Form>
             </Formik>
 

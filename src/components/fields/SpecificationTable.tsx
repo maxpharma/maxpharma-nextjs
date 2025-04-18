@@ -33,17 +33,29 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
     useEffect(() => {
         const fieldValue = values[name] || {};
 
-        // Only initialize if specPairs is empty (first render)
-        if (specPairs.length === 0) {
-            const pairs: SpecPair[] = Object.entries(fieldValue).map(
-                ([key, value], index) => ({
-                    id: `spec-${index}`,
-                    key,
-                    value: value as string,
-                })
+        // Convert fieldValue to SpecPair[]
+        const pairs: SpecPair[] = Object.entries(fieldValue).map(
+            ([key, value], index) => ({
+                id: `spec-${index}`,
+                key,
+                value: value as string,
+            })
+        );
+
+        // Only update if the keys/values have changed
+        const currentPairs = specPairs.filter(
+            (p) => p.key !== "" || p.value !== ""
+        );
+        const isSame =
+            pairs.length === currentPairs.length &&
+            pairs.every(
+                (p, i) =>
+                    p.key === currentPairs[i]?.key &&
+                    p.value === currentPairs[i]?.value
             );
 
-            // Ensure we have at least 2 rows initially
+        if (!isSame) {
+            // Ensure at least 2 rows
             if (pairs.length === 0) {
                 pairs.push(
                     { id: `spec-new-1`, key: "", value: "" },
@@ -52,10 +64,10 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
             } else if (pairs.length === 1) {
                 pairs.push({ id: `spec-new-1`, key: "", value: "" });
             }
-
             setSpecPairs(pairs);
         }
-    }, []); // Only run once on component mount
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [values[name]]); // Re-run when Formik field value changes
 
     // Update the Formik field value
     const updateFormikValue = (newPairs: SpecPair[]) => {
@@ -162,32 +174,56 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
                         }`}
                     >
                         <div className='flex-1 flex items-center'>
-                            <input
+                            {/* Use textarea for key (question) with auto-resize */}
+                            <textarea
                                 id={`key-${pair.id}`}
-                                type='text'
-                                className='w-full h-full py-2 px-4 focus:outline-none'
+                                className='w-full h-auto min-h-[32px] max-h-40 py-2 px-4 focus:outline-none resize-none'
                                 placeholder={keyPlaceholder}
                                 value={pair.key}
-                                onChange={(e) =>
-                                    handleKeyChange(pair.id, e.target.value)
-                                }
+                                onChange={(e) => {
+                                    handleKeyChange(pair.id, e.target.value);
+                                    e.target.style.height = "auto";
+                                    e.target.style.height =
+                                        e.target.scrollHeight + "px";
+                                }}
+                                rows={1}
+                                style={{ overflow: "hidden" }}
+                                ref={(el) => {
+                                    if (el) {
+                                        el.style.height = "auto";
+                                        el.style.height =
+                                            el.scrollHeight + "px";
+                                    }
+                                }}
                             />
                         </div>
                         <div className='w-px bg-gray-200'></div>
                         <div className='flex-1 flex items-center'>
-                            <input
-                                type='text'
-                                className={`w-full h-full py-2 px-4 focus:outline-none ${
+                            {/* Use textarea for value (answer) with auto-resize */}
+                            <textarea
+                                className={`w-full h-auto min-h-[40px] max-h-40 py-2 px-4 focus:outline-none resize-none ${
                                     !pair.key
                                         ? "bg-[#f9fbff] text-gray-400"
                                         : ""
                                 }`}
                                 placeholder={valuePlaceholder}
                                 value={pair.value}
-                                onChange={(e) =>
-                                    handleValueChange(pair.id, e.target.value)
-                                }
+                                onChange={(e) => {
+                                    handleValueChange(pair.id, e.target.value);
+                                    e.target.style.height = "auto";
+                                    e.target.style.height =
+                                        e.target.scrollHeight + "px";
+                                }}
                                 disabled={!pair.key}
+                                rows={1}
+                                style={{ overflow: "hidden" }}
+                                ref={(el) => {
+                                    if (el) {
+                                        el.style.height = "auto";
+                                        el.style.height =
+                                            el.scrollHeight + "px";
+                                    }
+                                }}
                             />
                         </div>
                         <button
@@ -221,7 +257,7 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
                     onClick={handleAddSpec}
                 >
                     <Plus size={16} />
-                    <span>Add Specification</span>
+                    <span>Add Row</span>
                 </button>
             </div>
         </div>

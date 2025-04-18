@@ -10,6 +10,11 @@ import Upload from "@/components/fields/Upload";
 import SpecificationTable from "@/components/fields/SpecificationTable";
 import Products from "@/api/product";
 import ProductsData from "./ProductsData";
+import AddCategory from "./AddCategory";
+import { useSelector } from "react-redux";
+import GeneralSettings from "@/api/generalSettings";
+import { Trash2 } from "lucide-react";
+import Dropdown from "@/components/ui/Dropdown";
 
 const ProductPage = () => {
     const [loading, setLoading] = useState(false);
@@ -18,14 +23,24 @@ const ProductPage = () => {
     const [isCategoryOverlayOpen, setIsCategoryOverlayOpen] = useState(false);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
     const [updateIdData, setUpdateIdData] = useState<any>(null);
+    console.log("updateIdData", updateIdData);
+    const [isEditCategoriesOpen, setIsEditCategoriesOpen] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
 
-    const categories = [
-        "All Products",
-        "Antibiotics & Antimicrobials",
-        "Pain & Fever Management",
-        "Cancer & Bone Health",
-        "Hormonal Medications",
-    ];
+    const { data: categoriesRaw } = useSelector(
+        (state: any) => state.categories || []
+    );
+    const categories = categoriesRaw?.map((cat: any) => cat.value) || [];
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup("categories", "categories");
+    };
+
+    useEffect(() => {
+        if (!categories?.length) {
+            fetchData();
+        }
+    }, [categories?.length]);
 
     const [initialValues, setInitialValues] = useState({
         productName: "",
@@ -72,9 +87,17 @@ const ProductPage = () => {
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
-        const payload = {
-            type: type,
-            categoryId: 2,
+
+        // Find selected category object
+        const selectedCategoryObj = (categoriesRaw || []).find(
+            (cat: any) => cat.value === values.category
+        );
+        const selectedCategoryId = selectedCategoryObj?.id;
+
+        // Prepare payload for create
+        const basePayload = {
+            type: values.type,
+            categoryId: selectedCategoryId,
             name: values.productName,
             description: values.productOverview,
             additionalInfo: values.specifications,
@@ -88,15 +111,45 @@ const ProductPage = () => {
 
         try {
             if (updateIdData?.id) {
-                await Products.update(updateIdData.id, payload);
+                // Only send changed fields for update
+                const changed: any = {};
+                if (values.type !== updateIdData.type)
+                    changed.type = values.type;
+                if (values.category !== updateIdData.category)
+                    changed.categoryId = selectedCategoryId;
+                if (values.productName !== updateIdData.productName)
+                    changed.name = values.productName;
+                if (values.productOverview !== updateIdData.productOverview)
+                    changed.description = values.productOverview;
+                if (
+                    JSON.stringify(values.specifications) !==
+                    JSON.stringify(updateIdData.specifications)
+                )
+                    changed.additionalInfo = values.specifications;
+                if (
+                    JSON.stringify(
+                        (values.images || []).map((f: any) => f.base64)
+                    ) !==
+                    JSON.stringify(
+                        (updateIdData.images || []).map((f: any) => f.base64)
+                    )
+                ) {
+                    changed.files = values.images.map((file: any) => ({
+                        extension: file?.extension,
+                        base64: file?.base64,
+                    }));
+                }
+                if (Object.keys(changed).length === 0) {
+                    setLoading(false);
+                    return;
+                }
+                await Products.update(updateIdData.id, changed);
                 success = true;
             } else {
                 try {
-                    await Products.create(payload);
+                    await Products.create(basePayload);
                     success = true;
                 } catch (createError) {
-                    // If this is the specific error about reading 'data' property
-                    // but the product was actually created, still mark as success
                     if (
                         createError instanceof Error &&
                         createError.message.includes(
@@ -128,6 +181,24 @@ const ProductPage = () => {
                     console.error("Error refreshing products data:", err);
                 });
             }
+        }
+    };
+
+    // Optionally, handle category refresh after add
+    const handleCategoryAdded = () => {
+        setIsCategoryOverlayOpen(false); // This hides the overlay
+        // Optionally refresh categories here if dynamic
+    };
+
+    const handleDeleteCategory = async (id: number) => {
+        setDeleteLoading(id);
+        try {
+            await GeneralSettings.remove("categories", id);
+            await fetchData();
+        } catch (err) {
+            console.error("Error deleting category:", err);
+        } finally {
+            setDeleteLoading(null);
         }
     };
 
@@ -167,32 +238,82 @@ const ProductPage = () => {
             {/* Categories */}
             <div className='flex justify-between'>
                 <div className='flex gap-2 items-center flex-wrap'>
-                    {categories.map((cat) => (
-                        <button
+                    {categories.map((cat: any) => (
+                        <span
                             key={cat}
-                            className={`py-1 px-3 text-sm rounded-full border ${
-                                category === cat
-                                    ? "active-button"
-                                    : "inactive-button"
-                            }`}
-                            onClick={() => setCategory(cat)}
+                            className='py-1 px-3 text-sm rounded-full border inactive-button'
                         >
                             {cat}
-                        </button>
+                        </span>
                     ))}
                 </div>
-                <button
-                    className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
-                    onClick={() => setIsCategoryOverlayOpen(true)}
-                >
-                    <span>Add Category</span>
-                    <span className='text-xl'>+</span>
-                </button>
+                <div className='flex gap-2'>
+                    <button
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        onClick={() => setIsEditCategoriesOpen(true)}
+                    >
+                        <span>Edit Categories</span>
+                    </button>
+                    <button
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        onClick={() => setIsCategoryOverlayOpen(true)}
+                    >
+                        <span>Add Category</span>
+                        <span className='text-xl'>+</span>
+                    </button>
+                </div>
             </div>
+
+            {/* Edit Categories Overlay */}
+            {isEditCategoriesOpen && (
+                <Overlay
+                    isOpen={isEditCategoriesOpen}
+                    onClose={() => setIsEditCategoriesOpen(false)}
+                >
+                    <div className='space-y-4 min-w-[300px]'>
+                        <h2 className='text-lg font-semibold mb-2'>
+                            Edit Categories
+                        </h2>
+                        <ul className='divide-y'>
+                            {(categoriesRaw || []).map((cat: any) => (
+                                <li
+                                    key={cat.id}
+                                    className='flex items-center justify-between py-2'
+                                >
+                                    <span>{cat.value}</span>
+                                    <button
+                                        onClick={() =>
+                                            handleDeleteCategory(cat.id)
+                                        }
+                                        disabled={deleteLoading === cat.id}
+                                        className='text-red-500 hover:text-red-700'
+                                        title='Delete'
+                                    >
+                                        <Trash2 size={18} />
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className='flex justify-end'>
+                            <Button
+                                type='button'
+                                onClick={() => setIsEditCategoriesOpen(false)}
+                                variant='submit'
+                            >
+                                Close
+                            </Button>
+                        </div>
+                    </div>
+                </Overlay>
+            )}
 
             {/* Products Data Table */}
             <div className='mt-8'>
-                <ProductsData setUpdateIdData={setUpdateIdData} />
+                <ProductsData
+                    setUpdateIdData={setUpdateIdData}
+                    filterType={type}
+                    filterCategory={category}
+                />
             </div>
 
             {/* Product Form Overlay */}
@@ -205,12 +326,78 @@ const ProductPage = () => {
                                 : "Create Product"}
                         </h2>
                         <Formik
-                            initialValues={initialValues}
+                            initialValues={{
+                                ...initialValues,
+                                type: type,
+                                category: category,
+                            }}
                             onSubmit={submitHandler}
                             enableReinitialize
                         >
-                            {({ values }) => (
+                            {({ values, setFieldValue }) => (
                                 <Form>
+                                    {/* Type */}
+                                    <div className='mb-4'>
+                                        <label className='font-medium mb-1 block'>
+                                            Type
+                                        </label>
+                                        {/* Keep type as tab toggle, do not use dropdown */}
+                                        <div className='flex gap-4'>
+                                            <button
+                                                type='button'
+                                                className={`py-2 px-4 rounded ${
+                                                    values.type ===
+                                                    "Imported Products"
+                                                        ? "active-button"
+                                                        : "inactive-button"
+                                                }`}
+                                                onClick={() => {
+                                                    setType(
+                                                        "Imported Products"
+                                                    );
+                                                    setFieldValue(
+                                                        "type",
+                                                        "Imported Products"
+                                                    );
+                                                }}
+                                            >
+                                                Imported Products
+                                            </button>
+                                            <button
+                                                type='button'
+                                                className={`py-2 px-4 rounded ${
+                                                    values.type ===
+                                                    "Manufactured Products"
+                                                        ? "active-button"
+                                                        : "inactive-button"
+                                                }`}
+                                                onClick={() => {
+                                                    setType(
+                                                        "Manufactured Products"
+                                                    );
+                                                    setFieldValue(
+                                                        "type",
+                                                        "Manufactured Products"
+                                                    );
+                                                }}
+                                            >
+                                                Manufactured Products
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {/* Category */}
+                                    <div className='mb-4'>
+                                        <Dropdown
+                                            label='Category'
+                                            options={categories}
+                                            value={values.category}
+                                            onChange={(val) => {
+                                                setCategory(val);
+                                                setFieldValue("category", val);
+                                            }}
+                                            placeholder='Select category'
+                                        />
+                                    </div>
                                     {/* Product Name */}
                                     <div className='mb-4'>
                                         <Input
@@ -220,7 +407,6 @@ const ProductPage = () => {
                                             type='text'
                                         />
                                     </div>
-
                                     {/* Product Overview */}
                                     <div className='mb-4'>
                                         <TextArea
@@ -229,7 +415,6 @@ const ProductPage = () => {
                                             placeholder='Write product details...'
                                         />
                                     </div>
-
                                     {/* Image Upload */}
                                     <div className='mb-4'>
                                         <div className='flex justify-between items-center mb-2'>
@@ -242,9 +427,14 @@ const ProductPage = () => {
                                             label=''
                                             placeholder='Add Multiple Images'
                                             variant='multiple'
+                                            value={
+                                                updateIdData?.images &&
+                                                updateIdData?.images.map(
+                                                    (img: any) => img.base64
+                                                )
+                                            }
                                         />
                                     </div>
-
                                     {/* Specifications */}
                                     <div className='mb-4'>
                                         <SpecificationTable
@@ -254,7 +444,6 @@ const ProductPage = () => {
                                             valuePlaceholder='Enter value'
                                         />
                                     </div>
-
                                     {/* Action Buttons */}
                                     <div className='flex justify-end gap-3'>
                                         <Button
@@ -280,43 +469,12 @@ const ProductPage = () => {
                 </Overlay>
             )}
 
-            {/* Add Category Overlay */}
-            {isCategoryOverlayOpen && (
-                <Overlay
-                    isOpen={isCategoryOverlayOpen}
-                    onClose={() => setIsCategoryOverlayOpen(false)}
-                >
-                    <div className='space-y-4'>
-                        <h1>Add Category</h1>
-                        <Formik
-                            initialValues={{ category: "" }}
-                            onSubmit={() => {}}
-                        >
-                            <Form>
-                                <Input
-                                    name='category'
-                                    label='Add new Category'
-                                    placeholder='Category'
-                                />
-                                <div className='flex gap-4'>
-                                    <Button variant='submit'>
-                                        Add Category
-                                    </Button>
-                                    <button
-                                        type='button'
-                                        onClick={() =>
-                                            setIsCategoryOverlayOpen(false)
-                                        }
-                                        className='cancel-button'
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </Form>
-                        </Formik>
-                    </div>
-                </Overlay>
-            )}
+            {/* AddCategory Overlay */}
+            <AddCategory
+                isOpen={isCategoryOverlayOpen}
+                onClose={() => setIsCategoryOverlayOpen(false)}
+                onCategoryAdded={handleCategoryAdded}
+            />
         </div>
     );
 };

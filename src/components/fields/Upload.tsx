@@ -434,131 +434,136 @@ const Upload: FC<UploadProps> = ({
                             <div className='w-full'>
                                 {/* Grid to display uploaded files */}
                                 <div className='grid grid-cols-6 gap-3 mb-3'>
-                                    {/* Show newly uploaded files */}
-                                    {existingFiles.map(
-                                        (file: any, index: number) => (
-                                            <div
-                                                key={`new-${index}`}
-                                                className='relative  aspect-video border border-gray-200 rounded-md overflow-hidden'
-                                            >
-                                                {isImageFile(
-                                                    file.type || ""
-                                                ) ? (
-                                                    <Image
-                                                        src={`${file.info},${file.base64}`}
-                                                        alt={`File ${
-                                                            index + 1
-                                                        }`}
-                                                        layout='fill'
-                                                        objectFit='cover'
-                                                    />
-                                                ) : isVideoFile(
-                                                      file.type || ""
-                                                  ) ? (
-                                                    <video
-                                                        controls
-                                                        className='w-full h-full object-contain'
-                                                        src={`${file.info},${file.base64}`}
-                                                    >
-                                                        Your browser does not
-                                                        support the video tag.
-                                                    </video>
-                                                ) : (
-                                                    <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
-                                                        <div className='text-2xl mb-1'>
-                                                            {getFileIcon(
-                                                                file.extension
-                                                            )}
-                                                        </div>
-                                                        <p className='text-xs text-gray-700 truncate w-full text-center'>
-                                                            {file.fileName}
-                                                        </p>
-                                                        <p className='text-xs text-gray-500 mt-1'>
-                                                            {formatFileSize(
-                                                                file.size || 0
-                                                            )}
-                                                        </p>
-                                                    </div>
-                                                )}
-                                                <button
-                                                    type='button'
-                                                    className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        removeImage(
-                                                            form,
-                                                            index
-                                                        );
-                                                    }}
-                                                >
-                                                    ×
-                                                </button>
-                                            </div>
-                                        )
-                                    )}
-
-                                    {/* Show pre-existing files */}
-                                    {Array.isArray(value) &&
-                                        value.map(
-                                            (file: any, index: number) => (
-                                                <div
-                                                    key={`existing-${index}`}
-                                                    className='relative aspect-video border border-gray-200 rounded-md overflow-hidden'
-                                                >
-                                                    {typeof file ===
-                                                    "string" ? (
-                                                        <Image
-                                                            src={file}
-                                                            alt={`File ${
-                                                                index + 1
-                                                            }`}
-                                                            layout='fill'
-                                                            objectFit='cover'
-                                                        />
-                                                    ) : file.url ? (
-                                                        <Image
-                                                            src={file.url}
-                                                            alt={`File ${
-                                                                index + 1
-                                                            }`}
-                                                            layout='fill'
-                                                            objectFit='cover'
-                                                        />
-                                                    ) : (
-                                                        <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
-                                                            <div className='text-2xl mb-1'>
-                                                                📎
-                                                            </div>
-                                                            <p className='text-xs text-gray-700 truncate w-full text-center'>
-                                                                {file.fileName ||
-                                                                    "Unknown file"}
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                    <button
-                                                        type='button'
-                                                        className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            // Handle removing pre-existing files
-                                                            if (onChange) {
-                                                                const newValue =
-                                                                    [...value];
-                                                                newValue.splice(
-                                                                    index,
-                                                                    1
-                                                                );
-                                                                onChange(
-                                                                    newValue
-                                                                );
-                                                            }
-                                                        }}
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </div>
-                                            )
-                                        )}
+                                    {/* Show newly uploaded files or pre-existing files */}
+                                    {!value
+                                        ? existingFiles.map(
+                                              (file: any, index: number) => (
+                                                  <div
+                                                      key={`new-${index}`}
+                                                      className='relative  aspect-video border border-gray-200 rounded-md overflow-hidden'
+                                                  >
+                                                      {isImageFile(
+                                                          file.type || ""
+                                                      ) ? (
+                                                          <Image
+                                                              src={`${file.info},${file.base64}`}
+                                                              alt={`File ${
+                                                                  index + 1
+                                                              }`}
+                                                              layout='fill'
+                                                              objectFit='cover'
+                                                          />
+                                                      ) : isVideoFile(
+                                                            file.type || ""
+                                                        ) ? (
+                                                          <video
+                                                              controls
+                                                              className='w-full h-full object-contain'
+                                                              src={`${file.info},${file.base64}`}
+                                                          >
+                                                              Your browser does
+                                                              not support the
+                                                              video tag.
+                                                          </video>
+                                                      ) : (
+                                                          <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
+                                                              <div className='text-2xl mb-1'>
+                                                                  {getFileIcon(
+                                                                      file.extension
+                                                                  )}
+                                                              </div>
+                                                              <p className='text-xs text-gray-700 truncate w-full text-center'>
+                                                                  {
+                                                                      file.fileName
+                                                                  }
+                                                              </p>
+                                                              <p className='text-xs text-gray-500 mt-1'>
+                                                                  {formatFileSize(
+                                                                      file.size ||
+                                                                          0
+                                                                  )}
+                                                              </p>
+                                                          </div>
+                                                      )}
+                                                      <button
+                                                          type='button'
+                                                          className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
+                                                          onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              removeImage(
+                                                                  form,
+                                                                  index
+                                                              );
+                                                          }}
+                                                      >
+                                                          ×
+                                                      </button>
+                                                  </div>
+                                              )
+                                          )
+                                        : Array.isArray(value) &&
+                                          value.map(
+                                              (file: any, index: number) => (
+                                                  <div
+                                                      key={`existing-${index}`}
+                                                      className='relative aspect-video border border-gray-200 rounded-md overflow-hidden'
+                                                  >
+                                                      {typeof file ===
+                                                      "string" ? (
+                                                          <Image
+                                                              src={file}
+                                                              alt={`File ${
+                                                                  index + 1
+                                                              }`}
+                                                              layout='fill'
+                                                              objectFit='cover'
+                                                          />
+                                                      ) : file.url ? (
+                                                          <Image
+                                                              src={file.url}
+                                                              alt={`File ${
+                                                                  index + 1
+                                                              }`}
+                                                              layout='fill'
+                                                              objectFit='cover'
+                                                          />
+                                                      ) : (
+                                                          <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
+                                                              <div className='text-2xl mb-1'>
+                                                                  📎
+                                                              </div>
+                                                              <p className='text-xs text-gray-700 truncate w-full text-center'>
+                                                                  {file.fileName ||
+                                                                      "Unknown file"}
+                                                              </p>
+                                                          </div>
+                                                      )}
+                                                      <button
+                                                          type='button'
+                                                          className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
+                                                          onClick={(e) => {
+                                                              e.stopPropagation();
+                                                              // Handle removing pre-existing files
+                                                              if (onChange) {
+                                                                  const newValue =
+                                                                      [
+                                                                          ...value,
+                                                                      ];
+                                                                  newValue.splice(
+                                                                      index,
+                                                                      1
+                                                                  );
+                                                                  onChange(
+                                                                      newValue
+                                                                  );
+                                                              }
+                                                          }}
+                                                      >
+                                                          ×
+                                                      </button>
+                                                  </div>
+                                              )
+                                          )}
                                 </div>
 
                                 {/* Upload button */}
