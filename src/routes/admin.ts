@@ -25,6 +25,7 @@ const routes = [
     method: "post",
     path: "admins/login",
     controller: Controller.login,
+    authorization: false
   },
   {
     method: "get",

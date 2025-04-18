@@ -25,11 +25,7 @@ const list = async (params: any) => {
 
 const create = async (input: any) => {
   try {
-    const { error } = await createValidationSchema.validateAsync(input, {
-      context: {
-        method: "POST",
-      },
-    });
+    const { error } = await createValidationSchema.validateAsync(input)
     if (!!error) {
       throw new Error(error.details[0].message);
     }
@@ -60,17 +56,13 @@ const find = async (id: any) => {
 
 const update = async (input: any, id: number) => {
   try {
-    const { error } = await createValidationSchema.validateAsync(input, {
-      context: {
-        method: "PATCH",
-      },
-    });
+    const { error } = await createValidationSchema.validateAsync(input)
     if (!!error) {
       throw new Error(error.details[0].message);
     }
     const data: any = await find(id);
-    if (!!input?.file) {
-      input.file = await uploadMultipleImage(input?.files, 'aboutUs', data?.files)
+    if (!!input?.files) {
+      input.files = await uploadMultipleImage(input?.files, 'aboutUs', data?.files)
     }
     await data.update(input);
     return data;
