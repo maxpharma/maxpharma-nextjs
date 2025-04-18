@@ -33,6 +33,7 @@ const inquiryAttributes = {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  
   message: {
     type: DataTypes.STRING,
     allowNull: false,
