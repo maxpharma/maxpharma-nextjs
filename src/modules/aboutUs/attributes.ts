@@ -24,6 +24,7 @@ const aboutUsAttributes = {
     allowNull: false,
     unique: true
   },
+  
   infos: {
     type: DataTypes.JSON,
     allowNull: true,
