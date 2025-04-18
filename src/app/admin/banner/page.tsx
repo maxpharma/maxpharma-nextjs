@@ -73,7 +73,19 @@ const Banner = () => {
 
         // Helper: check what changed
         const getUpdatedFields = () => {
-            if (!updateIdData?.id) return values; // New entry: send all fields
+            if (!updateIdData?.id) {
+                // New entry: sanitize file if present
+                const sanitized = { ...values };
+                if (sanitized.file && typeof sanitized.file === "object") {
+                    sanitized.file = {
+                        extension: sanitized.file.extension,
+                        base64: sanitized.file.base64,
+                    };
+                }
+                // Remove link from payload
+                delete sanitized.link;
+                return sanitized;
+            }
 
             const changed: any = {};
 
@@ -81,10 +93,9 @@ const Banner = () => {
                 changed.title = values.title;
             if (values.link !== updateIdData.link) changed.value = values.link;
 
-            // If file is a new one (not a string), assume it's changed
             if (
                 values.file &&
-                typeof values.file !== "string" &&
+                typeof values.file === "object" &&
                 values.file.base64
             ) {
                 changed.file = {
