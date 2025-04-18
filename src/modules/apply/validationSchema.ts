@@ -10,6 +10,7 @@ export const imageInputSchema = Joi.object({
 const createValidationSchema = Joi.object({
   name: Joi.string().required(),
   phone: Joi.string().length(10).required(),
+  noticeId: Joi.number().required(),
   email: Joi.string().required(),
   location: Joi.string().required(),
   message: Joi.string().required(),

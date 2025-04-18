@@ -6,6 +6,15 @@ const applyAttributes = {
     primaryKey: true,
     autoIncrement: true,
   },
+  noticeId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model:"notices",
+      key:"id",
+      index:true
+    },
+    onDelete: "SET NULL"
+  },
   name:{
     type: DataTypes.STRING,
     allowNull: false,

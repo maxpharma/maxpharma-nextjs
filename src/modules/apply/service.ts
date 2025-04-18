@@ -11,7 +11,7 @@ const model = Notice
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
-    const data = await model.findAndCountAll(filter);
+    const data = await model.scope(["withNotice"]).findAndCountAll(filter);
     return {
       items: data.rows,
       page: params.page,
