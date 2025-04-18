@@ -52,7 +52,7 @@ server
     // await checkApiKey(request);
   })
 
-  .get("/test", () => {
+  .get("/api", () => {
     return {
       message: "Api is Working",
     };
