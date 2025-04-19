@@ -9,7 +9,7 @@ const serviceAttributes = {
     type: DataTypes.STRING,
   },
   description: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
   },
   categoryId: {
     type: DataTypes.INTEGER,
