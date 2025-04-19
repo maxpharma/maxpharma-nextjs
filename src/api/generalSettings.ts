@@ -54,7 +54,7 @@ const create = async (state: string, data: any) => {
                 showErr: true,
                 successMsg: "Data Created Successfully",
                 store: {
-                    action: "prepend",
+                    action: "set",
                     key: state,
                 },
             },

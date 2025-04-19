@@ -105,18 +105,18 @@ export const menuItems: MenuItem[] = [
         path: "/admin/service",
     },
     {
+        id: "gallery",
+        title: "Gallery",
+        icon: galleryIcon,
+        path: "/admin/gallery",
+    },
+    {
         id: "faqs",
         title: "FAQs",
         icon: faqsIcon,
         path: "/admin/faqs",
     },
-    {
-        id: "portfolio",
-        title: "Portfolio",
-        icon: portfolioIcon,
-        path: "/admin/portfolio",
-    },
-    { id: "team", title: "Team", icon: teamIcon, path: "/admin/team" },
+
     {
         id: "documents",
         title: "Documents & Notice",
@@ -130,10 +130,10 @@ export const menuItems: MenuItem[] = [
         path: "/admin/contact-list",
     },
     {
-        id: "share",
-        title: "Share Request",
+        id: "inquiry",
+        title: "Inquiry Request",
         icon: shareRequestIcon,
-        path: "/admin/share-request",
+        path: "/admin/inquiry-request",
     },
     {
         id: "settings",

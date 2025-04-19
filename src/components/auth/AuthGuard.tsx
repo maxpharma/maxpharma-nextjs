@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Helper } from '@/utils';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Helper } from "@/utils";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface AuthGuardProps {
     children: React.ReactNode;
@@ -14,14 +14,11 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const storedUser = Helper.getUser(); // ✅ Only access localStorage on the client
+        const storedUser = Helper.getUser();
         setUser(storedUser);
         setLoading(false);
-
-        if (!storedUser?.token) {
-            router.push('/admin');
-        }
-    }, [router]);
+        console.log("AuthGuard", storedUser); // <-- log here
+    }, []);
 
     if (loading) {
         return (

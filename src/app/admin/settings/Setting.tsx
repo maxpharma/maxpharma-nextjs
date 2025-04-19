@@ -1,9 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Form } from "formik";
 import Input from "@/components/fields/Input";
 import Button from "@/components/Button";
+import GeneralSettings from "@/api/generalSettings";
+import { useSelector } from "react-redux";
 
 const Setting = () => {
+    const [loading, setLoading] = useState(false);
+    const { data: settingsData } = useSelector((state: any) => state.settings);
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup("settings", "max-pharma-settings");
+    };
+
+    useEffect(() => {
+        if (!settingsData?.length) {
+            fetchData();
+        }
+    }, [settingsData?.length]);
+
+    console.log(settingsData, "settingsData");
+
     const [initialValues, setInitialValues] = useState({
         phoneNumber: "",
         phoneNumberII: "",
@@ -19,9 +36,44 @@ const Setting = () => {
         youtubeLink: "",
     });
 
+    // Set initial values from settingsData[0]?.infos if available
+    useEffect(() => {
+        if (settingsData?.length && settingsData[0]?.infos) {
+            setInitialValues({
+                ...initialValues,
+                ...settingsData[0].infos,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [settingsData]);
+
     const submitHandler = async (values: any, { resetForm }: any) => {
-        console.log("Settings:", values);
-        // Handle submission logic here
+        setLoading(true);
+
+        const isUpdate = settingsData?.length > 0 && settingsData[0]?.id;
+        const original = settingsData?.[0] || {};
+
+        const payload = {
+            group: "max-pharma-settings",
+            key: "max-pharma-settings",
+            title: "Settings",
+            value: "settings",
+            infos: {
+                ...values,
+            },
+        };
+
+        try {
+            if (isUpdate) {
+                await GeneralSettings.update("settings", payload, original.id);
+            } else {
+                await GeneralSettings.create("settings", payload);
+                resetForm();
+            }
+        } catch (error) {
+            console.error("Error saving settings:", error);
+        }
+        setLoading(false);
     };
 
     return (
@@ -161,7 +213,9 @@ const Setting = () => {
                     </div>
 
                     <div className='flex justify-end'>
-                        <Button variant='submit'>Save</Button>
+                        <Button loading={loading} variant='submit'>
+                            Save
+                        </Button>
                     </div>
                 </Form>
             </Formik>

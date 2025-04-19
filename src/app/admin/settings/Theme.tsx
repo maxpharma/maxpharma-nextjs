@@ -4,8 +4,8 @@ import Upload from "@/components/fields/Upload";
 import TextArea from "@/components/fields/TextArea";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
-import Settings from "@/api/theme";
 import { useSelector } from "react-redux";
+import ThemeApi from "@/api/theme";
 
 const Theme = () => {
     const [loading, setLoading] = useState(false);
@@ -14,7 +14,7 @@ const Theme = () => {
     );
 
     const fetchData = async () => {
-        await Settings.get();
+        await ThemeApi.get();
     };
 
     useEffect(() => {
@@ -50,36 +50,87 @@ const Theme = () => {
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
-        const payload = {
-            header: values.headerLogo
-                ? {
-                      extension: values.headerLogo.extension,
-                      base64: values.headerLogo.base64,
-                  }
-                : initialValues.headerLogo,
-            footer: values.footerLogo
-                ? {
-                      extension: values.footerLogo.extension,
-                      base64: values.footerLogo.base64,
-                  }
-                : initialValues.footerLogo,
-            footerText: values.footerText
-                ? values.footerText
-                : initialValues.footerText,
-            primaryColor: values.primaryColor ? values.primaryColor : "#FFFFFF",
-            primaryLightColor: values.primaryLightColor
-                ? values.primaryLightColor
-                : "#FFFFFF",
-            secondaryColor: values.secondaryColor
-                ? values.secondaryColor
-                : "#FFFFFF",
+
+        const isUpdate = themeSettings?.length > 0 && themeSettings[0]?.id;
+        const original = themeSettings?.[0] || {};
+
+        // Helper to compare logo fields (object or string)
+        const isLogoChanged = (newLogo: any, origLogo: any) => {
+            if (!newLogo && !origLogo) return false;
+            if (typeof newLogo === "string" && typeof origLogo === "string") {
+                return newLogo !== origLogo;
+            }
+            if (typeof newLogo === "object" && typeof origLogo === "object") {
+                return (
+                    newLogo.base64 !== origLogo.base64 ||
+                    newLogo.extension !== origLogo.extension
+                );
+            }
+            return true;
         };
 
+        const getPayload = () => {
+            const payload: any = {
+                footerText: values.footerText,
+                primaryColor: values.primaryColor,
+                primaryLightColor: values.primaryLightColor,
+                secondaryColor: values.secondaryColor,
+            };
+
+            // Header Logo
+            if (
+                !isUpdate ||
+                isLogoChanged(values.headerLogo, original.header)
+            ) {
+                payload.header = values.headerLogo
+                    ? {
+                          extension: values.headerLogo.extension,
+                          base64: values.headerLogo.base64,
+                      }
+                    : "";
+            }
+
+            // Footer Logo
+            if (
+                !isUpdate ||
+                isLogoChanged(values.footerLogo, original.footer)
+            ) {
+                payload.footer = values.footerLogo
+                    ? {
+                          extension: values.footerLogo.extension,
+                          base64: values.footerLogo.base64,
+                      }
+                    : "";
+            }
+
+            return payload;
+        };
+
+        const payload = getPayload();
+
+        // For update, if only the always-included fields are present and unchanged, skip update
+        if (
+            isUpdate &&
+            !isLogoChanged(values.headerLogo, original.header) &&
+            !isLogoChanged(values.footerLogo, original.footer) &&
+            values.footerText === original.footerText &&
+            values.primaryColor === original.primaryColor &&
+            values.primaryLightColor === original.primaryLightColor &&
+            values.secondaryColor === original.secondaryColor
+        ) {
+            setLoading(false);
+            return;
+        }
+
         try {
-            await Settings.create(payload);
-            resetForm();
+            if (isUpdate) {
+                await ThemeApi.update(original.id, payload);
+            } else {
+                await ThemeApi.create(payload);
+                resetForm();
+            }
         } catch (error: any) {
-            console.error("Error adding Theme:", error);
+            console.error("Error submitting Theme:", error);
         }
 
         setLoading(false);

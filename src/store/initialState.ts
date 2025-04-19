@@ -1,6 +1,3 @@
-import HomeFAQs from "@/app/admin/faqs/HomeFAQs";
-import Categories from "@/features/Categories";
-
 const initialState: any = {
     user: {
         data: {},
@@ -115,6 +112,18 @@ const initialState: any = {
         totalItems: 0,
         totalPages: 0,
     },
+    inquiries: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
+    settings: {
+        data: [],
+        loading: true,
+        loadingState: true,
+    },
     portfolioType: {
         data: [],
         loading: true,
@@ -160,6 +169,7 @@ const initialState: any = {
         totalItems: 0,
         totalPages: 0,
     },
+    // SEO states matching the `pages` array
     homeSeo: {
         data: {},
         loading: true,
@@ -170,32 +180,47 @@ const initialState: any = {
         loading: true,
         loadingState: true,
     },
-    strategicObjectiveSeo: {
+    messageFromChairmanSeo: {
         data: {},
         loading: true,
         loadingState: true,
     },
-    corporateGovernanceSeo: {
+    organizationHistorySeo: {
         data: {},
         loading: true,
         loadingState: true,
     },
-    boardOfDirectorsSeo: {
+    importedProductsSeo: {
         data: {},
         loading: true,
         loadingState: true,
     },
-    managementTeamSeo: {
+    manufacturedProductsSeo: {
         data: {},
         loading: true,
         loadingState: true,
     },
-    noticeBoardSeo: {
+    noticeSeo: {
         data: {},
         loading: true,
         loadingState: true,
     },
-    projectsSeo: {
+    productionDepartmentSeo: {
+        data: {},
+        loading: true,
+        loadingState: true,
+    },
+    qualityAssuranceSeo: {
+        data: {},
+        loading: true,
+        loadingState: true,
+    },
+    qualityControlSeo: {
+        data: {},
+        loading: true,
+        loadingState: true,
+    },
+    storeAndLogisticsSeo: {
         data: {},
         loading: true,
         loadingState: true,
@@ -205,17 +230,7 @@ const initialState: any = {
         loading: true,
         loadingState: true,
     },
-    portfolioSeo: {
-        data: {},
-        loading: true,
-        loadingState: true,
-    },
     contactSeo: {
-        data: {},
-        loading: true,
-        loadingState: true,
-    },
-    requestShareSeo: {
         data: {},
         loading: true,
         loadingState: true,

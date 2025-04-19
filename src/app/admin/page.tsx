@@ -34,7 +34,7 @@ const AdminLogin = () => {
 
             Helper.saveUser(res);
             if (res?.token) {
-                router.push("/admin/dashboard");
+                window.location.replace("/admin/dashboard"); // <-- Use replace for hard reload
             }
         } catch (err) {
             console.error("Login Error:", err);
@@ -42,14 +42,6 @@ const AdminLogin = () => {
 
         setLoading(false);
     };
-
-    // useEffect(() => {
-    //     const user = Helper.getUser();
-    //     console.log(user, 'user data');
-    //     if (user?.token) {
-    //        router.replace('/admin/dashboard');
-    //     }
-    // }, []);
 
     return (
         <>

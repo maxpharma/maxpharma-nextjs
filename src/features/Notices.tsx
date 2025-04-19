@@ -3,27 +3,15 @@
 import Button from "@/components/Button";
 import Upload from "@/components/fields/Upload";
 import Overlay from "@/components/Overlay";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ApplyNow from "./ApplyNow";
+import { useSelector } from "react-redux";
+import Notice from "@/api/notice";
 
 // Define types for our data
-interface NoticeItem {
-    date: string;
-    title: string;
-    description: string;
-    link: string;
-}
 
 // Define variants for the Items component
 type ItemVariant = "notice" | "job";
-
-interface ItemsProps {
-    date: string;
-    title: string;
-    link: string;
-    description?: string;
-    variant?: ItemVariant;
-}
 
 const Notices = ({
     limit,
@@ -32,14 +20,26 @@ const Notices = ({
     limit: number;
     variant?: ItemVariant;
 }) => {
-    const data: NoticeItem[] = [
-        {
-            date: "2023-10-01",
-            title: "Notice 1",
-            description: "Description for notice 1",
-            link: "https://example.com/notice1",
-        },
-    ];
+    const { items: noticesData } = useSelector((state: any) => state.notices);
+
+    const fetchData = async () => {
+        await Notice.get();
+    };
+
+    useEffect(() => {
+        if (!noticesData.length) {
+            fetchData();
+        }
+    }, [noticesData.length]);
+
+    const importantNoticeData = noticesData.filter(
+        (item: any) => item?.documentType === "Important Notice"
+    );
+
+    const careerNoticeData = noticesData.filter(
+        (item: any) => item?.documentType === "Career Notice"
+    );
+    console.log("careerNoticeData", careerNoticeData);
 
     return (
         <div
@@ -49,25 +49,22 @@ const Notices = ({
                     : "max-w-4xl mx-auto flex flex-col gap-8"
             }`}
         >
-            {Array(limit)
-                .fill(data)
-                .map((item, index) => (
-                    <Items key={index} {...item[0]} variant={variant} />
-                ))}
+            {(variant === "notice"
+                ? importantNoticeData.slice(0, limit)
+                : careerNoticeData.slice(0, limit)
+            ).map((item: any, index: number) => (
+                <Items key={index} {...item} variant={variant} />
+            ))}
         </div>
     );
 };
 
 export default Notices;
 
-const Items = ({
-    date,
-    title,
-    link,
-    description,
-    variant = "notice",
-}: ItemsProps) => {
+const Items = ({ date, title, link, variant = "notice", id }: any) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const [jobId, setJobId] = useState<number | null>(null);
+    console.log("jobId", jobId);
 
     return (
         <>
@@ -99,6 +96,7 @@ const Items = ({
                                     className='button'
                                     onClick={() => {
                                         setIsOverlayOpen(true);
+                                        setJobId(id);
                                     }}
                                 >
                                     Apply now
@@ -114,7 +112,10 @@ const Items = ({
                     isOpen={isOverlayOpen}
                     onClose={() => setIsOverlayOpen(false)}
                 >
-                    <ApplyNow />
+                    <ApplyNow
+                        id={jobId}
+                        onSuccess={() => setIsOverlayOpen(false)}
+                    />
                 </Overlay>
             )}
         </>

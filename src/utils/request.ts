@@ -2,7 +2,6 @@ import axios from "axios";
 import { store, Actions } from "../store";
 import { toast } from "react-toastify";
 import helper from "./helper";
-import { usePathname, useRouter } from "next/navigation";
 
 const isBrowser = typeof window !== "undefined"; // ✅ Safe check
 
@@ -80,18 +79,26 @@ const request = async (configuration: any) => {
         })
         .catch(async (err) => {
             const message =
-                err.response.data.message ||
-                err.response.data.errors[0]?.message ||
+                err.response?.data?.message ||
+                err.response?.data?.errors?.[0]?.message ||
                 err?.message;
+
             if (!!config?.showErr) {
                 toast.error(message);
             }
+
             if (err?.response?.status === 401 || message == "Unauthorized") {
+                if (
+                    isBrowser &&
+                    window.location.pathname.startsWith("/admin")
+                ) {
+                    window.location.href = "/admin";
+                }
             } else {
                 await loadingProcess(config, false);
             }
 
-            throw new Error(err);
+            throw new Error(message); // ✅ throw the message string, not the whole error
         });
 };
 

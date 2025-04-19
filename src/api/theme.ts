@@ -45,6 +45,29 @@ const get = async () => {
     }
 };
 
-const Settings = { create, get };
+const update = async (id: number, data: any) => {
+    try {
+        const config: ReturnType = {
+            url: `themes/${id}`,
+            method: "patch",
+            data,
+            authorization: true,
+            config: {
+                showErr: true,
+                successMsg: "Updated Successfully",
+                store: {
+                    action: "update",
+                    key: "themes",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
 
-export default Settings;
+const ThemeApi = { create, get, update };
+
+export default ThemeApi;

@@ -15,11 +15,30 @@ import { sub } from "framer-motion/client";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 import { BsWhatsapp } from "react-icons/bs";
+import { useSelector } from "react-redux";
 
 const ProductDetailPage = () => {
     const { productId } = useParams();
-
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+
+    // Get products from redux store
+    const { items: productsData } = useSelector((state: any) => state.products);
+
+    // Find the product matching the productId
+    const product = productsData.find(
+        (item: any) => String(item.id) === String(productId)
+    );
+
+    // Prepare additionalInfo text
+    const additionalInfoText =
+        product?.additionalInfo && typeof product.additionalInfo === "object"
+            ? Object.values(product.additionalInfo).join(", ")
+            : product?.additionalInfo ?? "";
+
+    // If product not found, show a message
+    if (!product) {
+        return <div className='py-10 text-center'>Product not found.</div>;
+    }
 
     return (
         <>
@@ -28,21 +47,24 @@ const ProductDetailPage = () => {
                     <div className='w-full lg:w-1/2'>
                         <div className='flex flex-col sm:flex-row gap-2'>
                             <div className='flex sm:flex-col order-2 sm:order-1 gap-4 overflow-x-auto sm:overflow-y-auto sm:h-100 '>
-                                {[1, 2, 3, 4].map((index) => (
-                                    <CustomImage
-                                        key={index}
-                                        src='/images/medicine.png'
-                                        className='w-22 h-22 sm:w-16  md:w-20  lg:w-24  flex-shrink-0 cursor-pointer border border-gray-200 rounded-sm hover:border-gray-400'
-                                        fit='cover'
-                                    />
-                                ))}
+                                {product.files?.map(
+                                    (file: string, idx: number) => (
+                                        <CustomImage
+                                            key={idx}
+                                            src={file}
+                                            className='w-22 h-22 sm:w-16  md:w-20  lg:w-24  flex-shrink-0 cursor-pointer border border-gray-200 rounded-sm hover:border-gray-400'
+                                            fit='cover'
+                                            variant='live'
+                                        />
+                                    )
+                                )}
                             </div>
-
                             <div className='order-1 sm:order-2 flex-grow'>
                                 <CustomImage
-                                    src='/images/medicine.png'
+                                    src={product.files?.[0]}
                                     className='w-full h-64 sm:h-100   rounded-lg'
                                     fit='cover'
+                                    variant='live'
                                 />
                             </div>
                         </div>
@@ -50,33 +72,36 @@ const ProductDetailPage = () => {
 
                     <div className='flex flex-col space-y-4 w-full lg:w-1/2'>
                         <span className='font-medium text-sm'>
-                            Antibiotics & Antimicrobials
+                            {product.type}
                         </span>
 
                         <div className='text-xl sm:text-2xl font-semibold'>
-                            Levotech IV-500mg
+                            {product.name}
                         </div>
 
                         <div className='spacey-y-1'>
                             <div className='text-lg font-medium'>
                                 Specifications
                             </div>
-
                             <table className='w-full border-collapse'>
                                 <tbody>
-                                    {[1, 2, 3, 4, 5].map((index) => (
-                                        <tr
-                                            key={index}
-                                            className='border-b border-gray-100 flex flex-row justify-between py-2 '
-                                        >
-                                            <td className='text-gray-600 text-sm sm:text-base'>
-                                                Brand name
-                                            </td>
-                                            <td className='font-medium text-sm sm:text-base'>
-                                                Brand name
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {/* Example: Render additionalInfo as key-value rows */}
+                                    {product.additionalInfo &&
+                                        Object.entries(
+                                            product.additionalInfo
+                                        ).map(([key, value]: [string, any]) => (
+                                            <tr
+                                                key={key}
+                                                className='border-b border-gray-100 flex flex-row justify-between py-2 '
+                                            >
+                                                <td className='text-gray-600 text-sm sm:text-base'>
+                                                    {key}
+                                                </td>
+                                                <td className='font-medium text-sm sm:text-base'>
+                                                    {String(value)}
+                                                </td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>
@@ -109,17 +134,7 @@ const ProductDetailPage = () => {
                 </div>
                 <div className='space-y-2'>
                     <h1>Product Overview</h1>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur. Urna etiam
-                        posuere dui non viverra nullam. Egestas nisl adipiscing
-                        platea velit diam quam ullamcorper. Pellentesque enim
-                        risus eget augue massa. Metus sem vulputate euismod
-                        dolor. Mattis odio dolor et sed facilisis lectus orci
-                        elit. Vel volutpat in duis turpis id enim donec feugiat
-                        pulvinar. Amet adipiscing a donec quis potenti
-                        vulputate. Ut vestibulum enim ultrices sed augue pretium
-                        adipiscing aliquam feugiat.
-                    </p>
+                    <p>{product.description}</p>
                 </div>
                 <section className='space-y-4'>
                     <h1>Our Products</h1>
@@ -135,7 +150,7 @@ const ProductDetailPage = () => {
                     onClose={() => setIsOverlayOpen(false)}
                     isOpen={isOverlayOpen}
                 >
-                    <SendInquiry />
+                    <SendInquiry onSuccess={() => setIsOverlayOpen(false)} />
                 </Overlay>
             )}
         </>

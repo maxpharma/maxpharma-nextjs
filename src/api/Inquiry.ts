@@ -4,16 +4,16 @@ import { ReturnType } from "./types";
 const create = async (data: any) => {
     try {
         const config: ReturnType = {
-            url: `products`,
+            url: `inquiries`,
             method: "post",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: "Created Successfully",
+                successMsg: "Data sent Successfully",
                 store: {
                     action: "set",
-                    key: "products",
+                    key: "inquiries",
                 },
             },
         };
@@ -27,51 +27,28 @@ const create = async (data: any) => {
 const get = async () => {
     try {
         const config: ReturnType = {
-            url: `products`,
+            url: `inquiries`,
             method: "get",
             authorization: true,
             config: {
                 showErr: true,
                 store: {
                     action: "set",
-                    key: "products",
+                    key: "inquiries",
                 },
             },
         };
         const response = await request(config);
         return response;
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-};
-
-const update = async (id: number, data: any) => {
-    try {
-        const config: ReturnType = {
-            url: `products/${id}`,
-            method: "patch",
-            data,
-            authorization: true,
-            config: {
-                showErr: true,
-                successMsg: "Updated Successfully",
-                store: {
-                    action: "update",
-                    key: "products",
-                },
-            },
-        };
-        const response = await request(config);
-        return response;
-    } catch (error: any) {
-        throw new Error(error.message);
+    } catch (err: any) {
+        throw new Error(err.message);
     }
 };
 
 const deleteItem = async (id: number) => {
     try {
         const config: ReturnType = {
-            url: `products/${id}`,
+            url: `inquiries/${id}`,
             method: "delete",
             authorization: true,
             config: {
@@ -79,17 +56,17 @@ const deleteItem = async (id: number) => {
                 successMsg: "Deleted Successfully",
                 store: {
                     action: "remove",
-                    key: "products",
+                    key: "inquiries",
                 },
             },
         };
         const response = await request(config);
         return response;
-    } catch (error: any) {
-        throw new Error(error.message);
+    } catch (err: any) {
+        throw new Error(err.message);
     }
 };
 
-const Products = { create, get, update, deleteItem };
+const Inquiry = { create, get, deleteItem };
 
-export default Products;
+export default Inquiry;

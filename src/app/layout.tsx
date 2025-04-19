@@ -6,17 +6,17 @@ import "./globals.css";
 import Providers from "./providers";
 
 export async function generateMetadata(): Promise<Metadata> {
-    const data: any = await fetchByKey("homeSeo");
+    // const data: any = await fetchByKey("homeSeo");
 
-    const parsedData = JSON.parse(data?.value || "{}");
+    // const parsedData = JSON.parse(data?.value || "{}");
 
     return {
-        title: {
-            default: parsedData?.title || "Max Pharma",
-            template: `%s - ${parsedData?.title}`,
-        },
-        description: parsedData?.description,
-        keywords: parsedData?.keywords,
+        // title: {
+        //     default: parsedData?.title || "Max Pharma",
+        //     template: `%s - ${parsedData?.title}`,
+        // },
+        // description: parsedData?.description,
+        // keywords: parsedData?.keywords,
         icons: {
             icon: "/favicon.ico",
             apple: "/favicon.ico",

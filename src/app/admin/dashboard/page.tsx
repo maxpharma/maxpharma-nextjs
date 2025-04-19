@@ -36,39 +36,11 @@ const DashboardPage = () => {
 
     const dummyStats = [
         {
-            title: "New Share Requests Apply",
-            value: dashboardData?.totalApplications,
+            title: "New Apply Requests",
+            value: dashboardData?.totalApply,
             icon: shareIcon,
             iconBgColor: "bg-blue-100",
             iconColor: "text-blue-600",
-        },
-        {
-            title: "Total Share Requests",
-            value: dashboardData?.totalShareRequest?.items?.length,
-            icon: shareIcon,
-            iconBgColor: "bg-green-100",
-            iconColor: "text-green-600",
-        },
-        {
-            title: "Total Inquirey",
-            value: dashboardData?.totalInquiry?.items?.length,
-            icon: groupIcon,
-            iconBgColor: "bg-yellow-100",
-            iconColor: "text-yellow-600",
-        },
-        {
-            title: "TotalDocuments",
-            value: dashboardData?.totalDocuments,
-            icon: documentsIcon,
-            iconBgColor: "bg-purple-100",
-            iconColor: "text-purple-600",
-        },
-        {
-            title: "Total Portfolio",
-            value: dashboardData?.totalPortfolio,
-            icon: portfolioIcon,
-            iconBgColor: "bg-purple-100",
-            iconColor: "text-purple-600",
         },
         {
             title: "Total Gallery",
@@ -78,9 +50,16 @@ const DashboardPage = () => {
             iconColor: "text-purple-600",
         },
         {
-            title: "Total Team",
-            value: dashboardData?.totalTeam,
-            icon: teamIcon,
+            title: "Total Contact",
+            value: dashboardData?.totalContact,
+            icon: groupIcon,
+            iconBgColor: "bg-yellow-100",
+            iconColor: "text-yellow-600",
+        },
+        {
+            title: "Total Services",
+            value: dashboardData?.totalServices,
+            icon: documentsIcon,
             iconBgColor: "bg-purple-100",
             iconColor: "text-purple-600",
         },
@@ -91,12 +70,33 @@ const DashboardPage = () => {
             iconBgColor: "bg-purple-100",
             iconColor: "text-purple-600",
         },
+        {
+            title: "Total Notices",
+            value: dashboardData?.totalNotices,
+            icon: documentsIcon,
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
+        },
+        {
+            title: "Total Products",
+            value: dashboardData?.totalProduct,
+            icon: portfolioIcon,
+            iconBgColor: "bg-purple-100",
+            iconColor: "text-purple-600",
+        },
+        {
+            title: "Total Inquiry",
+            value: dashboardData?.totalInquiry,
+            icon: groupIcon,
+            iconBgColor: "bg-yellow-100",
+            iconColor: "text-yellow-600",
+        },
     ];
 
-    const shareRequestColumns = [
+    const applyColumns = [
         {
             id: "name",
-            header: "Name/Business Name",
+            header: "Name",
             accessor: "name",
             minWidth: 80,
         },
@@ -110,31 +110,34 @@ const DashboardPage = () => {
         { id: "action", header: "Action", accessor: "action", minWidth: 80 },
     ];
 
-    const shareRequestRows = dashboardData?.totalShareRequest?.items?.map(
-        (item: any) => {
-            return {
-                name: item?.name,
-                phone: item?.phone,
-                file: (
-                    <div className='text-white bg-blue-400 rounded-lg p-1'>
-                        Share Apply
-                    </div>
-                ),
-                action: (
-                    <button
-                        onClick={() => {
-                            router.push("/admin/share-request");
-                        }}
-                        className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
-                    >
-                        View
-                    </button>
-                ),
-            };
-        }
-    );
+    const applyRows = dashboardData?.applyData?.items?.map((item: any) => {
+        return {
+            name: item?.name,
+            phone: item?.phone,
+            file: (
+                <a
+                    href={`/${item?.file}`}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-white bg-blue-400 rounded-lg p-1'
+                >
+                    Download
+                </a>
+            ),
+            action: (
+                <button
+                    onClick={() => {
+                        router.push("/admin/apply-list");
+                    }}
+                    className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                >
+                    View
+                </button>
+            ),
+        };
+    });
 
-    const newInquiryColums = [
+    const inquiryColumns = [
         {
             id: "name",
             header: "Name",
@@ -150,24 +153,22 @@ const DashboardPage = () => {
         { id: "action", header: "Action", accessor: "action", minWidth: 80 },
     ];
 
-    const newInquiryRows = dashboardData?.totalInquiry?.items?.map(
-        (item: any) => {
-            return {
-                name: item?.name,
-                phone: item?.phone,
-                action: (
-                    <button
-                        onClick={() => {
-                            router.push("/admin/contact-list");
-                        }}
-                        className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
-                    >
-                        View
-                    </button>
-                ),
-            };
-        }
-    );
+    const inquiryRows = dashboardData?.inquiryData?.items?.map((item: any) => {
+        return {
+            name: item?.name,
+            phone: item?.phone,
+            action: (
+                <button
+                    onClick={() => {
+                        router.push("/admin/contact-list");
+                    }}
+                    className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                >
+                    View
+                </button>
+            ),
+        };
+    });
 
     return (
         <div className='p-6'>
@@ -175,16 +176,16 @@ const DashboardPage = () => {
 
             <div className='mt-8 flex max-lg:flex-col gap-2 justify-between'>
                 <DataTable
-                    title='Recent Share Requests'
-                    columns={shareRequestColumns}
-                    data={shareRequestRows}
-                    emptyMessage='No share requests found'
+                    title='Recent Apply Requests'
+                    columns={applyColumns}
+                    data={applyRows}
+                    emptyMessage='No apply requests found'
                 />
                 <DataTable
-                    title='New Inquirey'
-                    columns={newInquiryColums}
-                    data={newInquiryRows}
-                    emptyMessage='No Inquiry requests found'
+                    title='New Inquiry'
+                    columns={inquiryColumns}
+                    data={inquiryRows}
+                    emptyMessage='No inquiry requests found'
                 />
             </div>
         </div>
