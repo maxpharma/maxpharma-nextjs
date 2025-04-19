@@ -13,8 +13,8 @@ const productAttributes = {
   name: {
     type: DataTypes.STRING,
   },
-  descripiton: {
-    type: DataTypes.STRING,
+  description: {
+    type: DataTypes.TEXT('long'),
   },
   categoryId: {
     type: DataTypes.INTEGER,
