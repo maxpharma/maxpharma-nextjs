@@ -11,6 +11,7 @@ const routes = [
     method: "post",
     path: "contacts",
     controller: Controller.create,
+    authorization:false
   },
   {
     method: "delete",
