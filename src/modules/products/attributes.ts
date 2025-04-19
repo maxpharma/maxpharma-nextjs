@@ -12,9 +12,11 @@ const productAttributes = {
   },
   name: {
     type: DataTypes.STRING,
+    allowNull:true
   },
-  	description: {
+  description: {
     type: DataTypes.TEXT('long'),
+    allowNull:true
   },
   categoryId: {
     type: DataTypes.INTEGER,
