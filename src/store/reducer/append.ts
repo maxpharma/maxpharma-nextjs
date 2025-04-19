@@ -41,3 +41,5 @@ const append = ({
         return [...safeOldData, ...safeNewData];
     }
 };
+
+export default append
