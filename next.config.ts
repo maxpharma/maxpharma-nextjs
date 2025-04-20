@@ -4,7 +4,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: "https",
-                hostname: "maxpharma.inflancer.com",
+                hostname: "maxpharma.com.np",
             },
         ],
     },
