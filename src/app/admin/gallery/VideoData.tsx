@@ -1,33 +1,21 @@
-import GeneralSettings from '@/api/generalSettings';
-import { deleteIcon, editIcon } from '@/assets/svg';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
-import DataTable from '@/components/DataTable';
-import SvgIcon from '@/components/SvgIcon';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import GeneralSettings from "@/api/generalSettings";
+import { deleteIcon, editIcon } from "@/assets/svg";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
+import DataTable from "@/components/DataTable";
+import SvgIcon from "@/components/SvgIcon";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
-const VideoData = ({ setUpdateIdData }: any) => {
-    const { data: videoData } = useSelector(
-        (state: any) => state.videos || { data: [] }
-    );
-
-    const fetchData = async () => {
-        await GeneralSettings.getByGroup('videos', 'video', '');
-    };
-
-    useEffect(() => {
-        if (!videoData?.length) {
-            fetchData();
-        }
-    }, [videoData?.length]);
+const VideoData = ({ setUpdateIdData, fetchVideos }: any) => {
+    const { data: videoData } = useSelector((state: any) => state.videos);
 
     const columns = [
-        { id: 'title', header: 'Title', accessor: 'title', minWidth: 170 },
-        { id: 'link', header: 'Link', accessor: 'link', minWidth: 170 },
+        { id: "title", header: "Title", accessor: "title", minWidth: 170 },
+        { id: "link", header: "Link", accessor: "link", minWidth: 170 },
         {
-            id: 'action',
-            header: 'Action',
-            accessor: 'action',
+            id: "action",
+            header: "Action",
+            accessor: "action",
             minWidth: 170,
         },
     ];
@@ -72,8 +60,9 @@ const VideoData = ({ setUpdateIdData }: any) => {
 
     const handleDelete = async () => {
         if (itemToDelete !== null) {
-            await GeneralSettings.remove('videos', itemToDelete);
+            await GeneralSettings.remove("videos", itemToDelete);
             setShowConfirmation(false);
+            await fetchVideos(); // Refresh table after delete
         }
     };
 
@@ -92,7 +81,7 @@ const VideoData = ({ setUpdateIdData }: any) => {
                     message='Are you Sure you want to Delete This Data ?'
                     confirmText='YES'
                     cancelText='NO'
-                    onConfirm={() => handleDelete()} // Pass as a function reference
+                    onConfirm={() => handleDelete()}
                     onCancel={() => setShowConfirmation(false)}
                 />
             )}

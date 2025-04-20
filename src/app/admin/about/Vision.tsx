@@ -1,6 +1,7 @@
 import AboutUs from "@/api/aboutUs";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
+import MyEditor from "@/components/fields/MyEditor";
 import TextArea from "@/components/fields/TextArea";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -118,17 +119,15 @@ const Vision = ({ type }: { type: string }) => {
                         label='Description'
                         placeholder='Enter description here'
                     />
-                    <Input
+                    <MyEditor
                         name='ourMission'
                         label='Our Mission'
                         placeholder='Enter our mission here'
-                        type='text'
                     />
-                    <Input
+                    <MyEditor
                         name='goal'
                         label='Goal'
                         placeholder='Enter goal here'
-                        type='text'
                     />
                     <Button variant='submit' loading={loading}>
                         Submit

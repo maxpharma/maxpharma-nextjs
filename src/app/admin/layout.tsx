@@ -1,18 +1,27 @@
 "use client";
 
 import Admin from "@/api/admin";
+import CustomImage from "@/components/CustomImage";
 import Sidebar from "@/components/Sidebar";
-import { Helper } from "@/utils";
+import websiteData from "@/features/data";
 import helpers from "@/utils/helper";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { PropsWithChildren, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function AdminLayout({ children }: PropsWithChildren) {
+export default function AdminLayout({
+    children,
+}: {
+    children: React.ReactNode;
+}) {
     const pathname = usePathname();
     const router = useRouter();
 
     const [user, setUser] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const profileRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const storedUser = helpers.getUser();
@@ -32,7 +41,33 @@ export default function AdminLayout({ children }: PropsWithChildren) {
         }
     }, [loading, user, pathname, router]);
 
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (
+                profileRef.current &&
+                !profileRef.current.contains(event.target as Node)
+            ) {
+                setDropdownOpen(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
     const isPublicRoute = pathname === "/admin";
+
+    const handleLogout = async () => {
+        try {
+            await Admin.logout();
+            helpers.removeUser();
+            window.location.reload();
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
+    };
 
     if (loading) {
         return (
@@ -44,18 +79,6 @@ export default function AdminLayout({ children }: PropsWithChildren) {
             </div>
         );
     }
-
-    if (!isPublicRoute && !user?.token) {
-        // Optionally, redirect to login or show nothing
-        return null;
-    }
-
-    const handleLogout = async () => {
-        await Admin.logout().then(() => {
-            Helper.removeUser();
-            window.location.reload();
-        });
-    };
 
     if (isPublicRoute) {
         return <>{children}</>;
@@ -74,7 +97,56 @@ export default function AdminLayout({ children }: PropsWithChildren) {
                     <button className='button' onClick={() => router.push("/")}>
                         Visit Website
                     </button>
-                    <button className='secondary-button'>Inflancer CRM</button>
+                    <button
+                        className='secondary-button'
+                        onClick={() => router.push(websiteData.inflancerCrm)}
+                    >
+                        Inflancer CRM
+                    </button>
+                    {/* Profile with dropdown */}
+                    <div className='relative' ref={profileRef}>
+                        <div
+                            className='flex items-center gap-2 cursor-pointer select-none'
+                            onClick={() => setDropdownOpen((open) => !open)}
+                        >
+                            <div className='w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-200'>
+                                <Image
+                                    src='/images/medicine.png'
+                                    alt='Admin'
+                                    width={48}
+                                    height={48}
+                                    className='object-cover w-full h-full'
+                                />
+                            </div>
+                            <span>{user?.name || "Admin Name"}</span>
+                            <svg
+                                className={`w-4 h-4 ml-1 transition-transform ${
+                                    dropdownOpen ? "rotate-180" : ""
+                                }`}
+                                fill='none'
+                                stroke='currentColor'
+                                viewBox='0 0 24 24'
+                                xmlns='http://www.w3.org/2000/svg'
+                            >
+                                <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                    d='M19 9l-7 7-7-7'
+                                />
+                            </svg>
+                        </div>
+                        {dropdownOpen && (
+                            <div className='absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50'>
+                                <button
+                                    className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                                    onClick={handleLogout}
+                                >
+                                    Logout
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </nav>
                 <div className='custom-container py-8'>{children}</div>
             </div>

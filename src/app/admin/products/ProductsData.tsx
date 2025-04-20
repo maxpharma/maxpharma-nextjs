@@ -6,6 +6,7 @@ import ConfirmationAlert from "@/components/ConfirmationAlert";
 import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -15,12 +16,12 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
     };
 
     const { items: ProductsData } = useSelector((state: any) => state.products);
-    const { data: categoriesData } = useSelector(
-        (state: any) => state.categories
+    const rawCategoriesData = useSelector(
+        (state: any) => state.categories?.data
     );
-
-    console.log("categoriesData", categoriesData);
-    console.log("ProductsData", ProductsData);
+    const categoriesData = Array.isArray(rawCategoriesData)
+        ? rawCategoriesData
+        : [];
 
     useEffect(() => {
         if (!ProductsData?.length) {
@@ -41,26 +42,29 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
             id: "specifications",
             header: "Specifications",
             accessor: "specifications",
-            minWidth: 200,
+            minWidth: 100,
         },
-        { id: "image", header: "Image", accessor: "image", minWidth: 100 },
+        { id: "image", header: "Image", accessor: "image", minWidth: 300 },
         { id: "action", header: "Action", accessor: "action", minWidth: 120 },
     ];
 
-    // Remove filtering, just use all ProductsData
-    // const filteredProducts = (ProductsData || []).filter((item: any) => {
-    //     let typeMatch = true;
-    //     let categoryMatch = true;
-    //     if (filterType && filterType !== "All Products") {
-    //         typeMatch = item.type === filterType;
-    //     }
-    //     if (filterCategory && filterCategory !== "All Products") {
-    //         categoryMatch = item.categoryName === filterCategory;
-    //     }
-    //     return typeMatch && categoryMatch;
-    // });
+    // Filtering by type and category
+    const filteredProducts = (ProductsData || []).filter((item: any) => {
+        let typeMatch = true;
+        let categoryMatch = true;
+        if (filterType && filterType !== "") {
+            typeMatch = item.type === filterType;
+        }
+        if (filterCategory && filterCategory !== "") {
+            categoryMatch =
+                item.categoryName === filterCategory ||
+                (item.categoryData &&
+                    item.categoryData.value === filterCategory);
+        }
+        return typeMatch && categoryMatch;
+    });
 
-    const rows = (ProductsData || []).map((item: any) => {
+    const rows = (filteredProducts || []).map((item: any) => {
         // Format specifications to show first two items
         const specs = item?.additionalInfo || {};
         const specEntries = Object.entries(specs);
@@ -70,7 +74,7 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
             name: item?.name,
             type: item?.type,
             category:
-                categoriesData?.find((cat: any) => cat.id === item.categoryId)
+                categoriesData.find((cat: any) => cat.id === item.categoryId)
                     ?.value || "-",
             specifications: (
                 <div className='space-y-1 text-sm'>
@@ -99,22 +103,29 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
             ),
 
             image: (
-                <div className='flex gap-1 flex-wrap'>
+                <div className='flex items-center gap-1'>
                     {item?.files && item?.files.length > 0
                         ? item.files
                               .slice(0, 5)
                               .map((file: string, idx: number) => (
-                                  <CustomImage
-                                      key={file + idx}
-                                      src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
-                                      alt={item?.name}
-                                      size='small'
-                                      orientation='landscape'
-                                      fit='cover'
-                                      className='w-24 h-16'
-                                  />
+                                  <div
+                                      key={idx}
+                                      className='relative w-8 h-8 rounded overflow-hidden border border-gray-200'
+                                  >
+                                      <Image
+                                          src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
+                                          alt={`img-${idx}`}
+                                          fill
+                                          className='object-cover'
+                                      />
+                                  </div>
                               ))
                         : null}
+                    {item?.files && item.files.length > 0 && (
+                        <span className='ml-2 text-xs text-gray-500'>
+                            ({item.files.length})
+                        </span>
+                    )}
                 </div>
             ),
             action: (
@@ -127,6 +138,7 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
                                 productOverview: item.description,
                                 type: item.type,
                                 categoryId: item.categoryId,
+                                categoryName: item.categoryData.value,
                                 images: item.files?.map((file: string) => ({
                                     base64: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`,
                                     extension: file.split(".").pop() || "",

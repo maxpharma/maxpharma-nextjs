@@ -2,7 +2,9 @@
 
 import Admin from "@/api/admin";
 import ActionButton from "@/components/ActionButton";
+import CustomImage from "@/components/CustomImage";
 import Input from "@/components/fields/Input";
+import websiteData from "@/features/data";
 import { Helper } from "@/utils";
 
 import { Form, Formik } from "formik";
@@ -46,20 +48,25 @@ const AdminLogin = () => {
     return (
         <>
             <div className=''>
-                <nav className='py-4  bg-white shadow-md '>
-                    <div className='custom-container flex justify-between items-center'>
-                        <div className='relative w-32 md:w-50 h-auto min-h-8 cursor-pointer'>
-                            <Image
-                                src='/images/logo.png'
-                                alt='logo'
-                                width={200}
-                                height={50}
-                                className='object-contain'
-                            />
-                        </div>
-                        <div>Visit Website</div>
-                    </div>
-                </nav>
+                <div className='w-full bg-white  flex items-center justify-between py-1 px-8 shadow-md'>
+                    <CustomImage src={websiteData.logo} className='h-16 w-48' />
+                    <nav className=' flex justify-end gap-4'>
+                        <button
+                            className='button'
+                            onClick={() => router.push("/")}
+                        >
+                            Visit Website
+                        </button>
+                        <button
+                            className='secondary-button'
+                            onClick={() =>
+                                router.push(websiteData.inflancerCrm)
+                            }
+                        >
+                            Inflancer CRM
+                        </button>
+                    </nav>
+                </div>
                 <div className='mx-auto p-12 rounded-2xl max-w-100 bg-white shadow-md mt-32 '>
                     <Formik
                         initialValues={initialValues}

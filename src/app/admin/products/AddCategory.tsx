@@ -56,8 +56,8 @@ const AddCategory = ({
         <>
             {isOpen && (
                 <Overlay isOpen={isOpen} onClose={onClose}>
-                    <div className='space-y-4'>
-                        <h1>Add Category</h1>
+                    <div className='space-y-4 min-w-[320px]'>
+                        <h2 className='text-lg font-semibold'>Add Category</h2>
                         <Formik
                             initialValues={initialValues}
                             onSubmit={submitHandler}
@@ -65,20 +65,13 @@ const AddCategory = ({
                             <Form>
                                 <Input
                                     name='category'
-                                    label='Add new Category'
-                                    placeholder='Category'
+                                    label='Category Name'
+                                    placeholder='Enter category name'
                                 />
-                                <div className='flex gap-4'>
+                                <div className='flex gap-3 mt-4 justify-end'>
                                     <Button variant='submit' loading={loading}>
-                                        Add Category
+                                        Add
                                     </Button>
-                                    <button
-                                        type='button'
-                                        onClick={onClose}
-                                        className='cancel-button'
-                                    >
-                                        Cancel
-                                    </button>
                                 </div>
                             </Form>
                         </Formik>

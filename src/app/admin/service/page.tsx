@@ -15,9 +15,12 @@ import Services from "@/api/services";
 import MyEditor from "@/components/fields/MyEditor";
 
 const ServicePage = () => {
-    const { data: serviceCategories } = useSelector(
-        (state: any) => state.serviceCategories || []
+    const { data: serviceCategoriesRaw } = useSelector(
+        (state: any) => state.serviceCategories || {}
     );
+    const serviceCategories = Array.isArray(serviceCategoriesRaw)
+        ? serviceCategoriesRaw
+        : [];
 
     const { items: servicesData } = useSelector(
         (state: any) => state.services || []
@@ -74,10 +77,10 @@ const ServicePage = () => {
     console.log("servicesData", servicesData);
 
     useEffect(() => {
-        if (!serviceCategories?.length) {
+        if (!serviceCategories.length) {
             fetchCategories();
         }
-    }, [serviceCategories?.length]);
+    }, [serviceCategories.length]);
 
     useEffect(() => {
         if (serviceCategories.length && !selectedCategory) {
@@ -126,7 +129,7 @@ const ServicePage = () => {
         <div className='space-y-6'>
             <h1>Add Services</h1>
 
-            <div className='flex justify-between items-center'>
+            <div className='flex justify-between '>
                 <div className='flex flex-wrap gap-2 items-center'>
                     {serviceCategories.map((category: any) => (
                         <button
@@ -142,15 +145,15 @@ const ServicePage = () => {
                         </button>
                     ))}
                 </div>
-                <div className='flex gap-2'>
+                <div className='flex gap-2 flex-1 h-fit'>
                     <button
-                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1 whitespace-nowrap'
                         onClick={() => setIsEditCategoriesOpen(true)}
                     >
                         Edit Categories
                     </button>
                     <button
-                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1'
+                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1 whitespace-nowrap'
                         onClick={() => setIsAddCategoryOpen(true)}
                     >
                         Add Category

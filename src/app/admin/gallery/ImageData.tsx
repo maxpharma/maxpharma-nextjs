@@ -1,40 +1,66 @@
-import Gallery from '@/api/gallery';
-import { deleteIcon, editIcon } from '@/assets/svg';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
-import DataTable from '@/components/DataTable';
-import SvgIcon from '@/components/SvgIcon';
-import { label } from 'framer-motion/client';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import Gallery from "@/api/gallery";
+import { deleteIcon, editIcon } from "@/assets/svg";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
+import DataTable from "@/components/DataTable";
+import SvgIcon from "@/components/SvgIcon";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Image from "next/image";
 
 const ImageData = ({ setUpdateIdData }: any) => {
     const fetchData = async () => {
-        await Gallery.getImage('gallery');
+        await Gallery.getImage("gallery");
     };
 
     const { items: galleryData } = useSelector((state: any) => state.gallery);
 
     useEffect(() => {
-        if (!galleryData?.length) {
+        // Only fetch once on mount
+        if (!galleryData || galleryData.length === 0) {
             fetchData();
         }
-    }, [galleryData?.length, galleryData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Remove galleryData from dependencies
+
+    console.log(galleryData, "galleryData");
 
     const columns = [
-        { id: 'title', header: 'Title', accessor: 'title', minWidth: 170 },
-        { id: 'image', header: 'Image', accessor: 'image', minWidth: 170 },
+        { id: "title", header: "Title", accessor: "title", minWidth: 170 },
+        { id: "images", header: "Images", accessor: "images", minWidth: 220 },
         {
-            id: 'action',
-            header: 'Action',
-            accessor: 'action',
-            minWidth: 170,
+            id: "action",
+            header: "Action",
+            accessor: "action",
+            minWidth: 120,
         },
     ];
 
     const rows = galleryData?.map((item: any) => {
+        const files = item?.files || [];
         return {
             title: item?.title,
-            image: item?.gallery?.length,
+            images: (
+                <div className='flex items-center gap-1'>
+                    {files.slice(0, 5).map((file: string, idx: number) => (
+                        <div
+                            key={idx}
+                            className='relative w-8 h-8 rounded overflow-hidden border border-gray-200'
+                        >
+                            <Image
+                                src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
+                                alt={`img-${idx}`}
+                                fill
+                                className='object-cover'
+                            />
+                        </div>
+                    ))}
+                    {files.length > 0 && (
+                        <span className='ml-2 text-xs text-gray-500'>
+                            ({files.length})
+                        </span>
+                    )}
+                </div>
+            ),
             action: (
                 <div className='flex items-center gap-2'>
                     <button
@@ -42,7 +68,13 @@ const ImageData = ({ setUpdateIdData }: any) => {
                             setUpdateIdData({
                                 id: item.id,
                                 title: item.title,
-                                gallery: item.gallery,
+                                gallery: files.map(
+                                    (file: string, idx: number) => ({
+                                        id: idx, // You may want to use a real id if available
+                                        galleryId: item.id,
+                                        file,
+                                    })
+                                ),
                             });
                         }}
                     >

@@ -1,7 +1,7 @@
 "use client";
 
 import { Field } from "formik";
-import React, { ChangeEvent, FC, useRef, useState } from "react";
+import React, { ChangeEvent, FC, useRef } from "react";
 import Image from "next/image";
 import ErrorMessage from "../ui/ErrorMessage";
 import SvgIcon from "../SvgIcon";
@@ -14,7 +14,7 @@ import CustomImage from "../CustomImage";
 // Note: You'll provide the SvgIcon component yourself
 
 interface UploadProps {
-    variant?: "dashed" | "drag" | "input" | "multiple" | "galleryCard";
+    variant?: "dashed" | "drag" | "input" | "galleryCard";
     name: string;
     placeholder?: string;
     onChange?: (value: any) => void;
@@ -49,102 +49,44 @@ const Upload: FC<UploadProps> = ({
     type = "image", // Default to image for backward compatibility
 }) => {
     const uploadInputRef = useRef<HTMLInputElement>(null);
-    const [previewImages, setPreviewImages] = useState<Array<any>>([]);
 
     const handleChange = (form: any, files?: FileList) => {
         if (!files || files.length === 0) return;
 
-        if (variant === "multiple") {
-            const newFiles: Array<any> = [];
-            const filesArray = Array.from(files);
+        // Only keep the single file logic
+        const file = files[0];
 
-            filesArray.forEach((file) => {
-                if (!file || !(file instanceof Blob)) {
-                    console.error("Invalid file object:", file);
-                    return; // Skip this file
-                }
-                const fileName = file.name;
-                const extension = fileName
-                    .substring(fileName.lastIndexOf(".") + 1)
-                    .toLowerCase();
+        if (!file || !(file instanceof Blob)) {
+            console.error("Invalid file object:", file);
+            return; // Skip processing
+        }
 
-                const reader = new FileReader();
-                reader.onload = (e: ProgressEvent<FileReader>) => {
-                    const base64String = e?.target?.result as string;
-                    const [info, base64] = base64String.split(",");
+        const fileName = file.name;
+        const extension = fileName
+            .substring(fileName.lastIndexOf(".") + 1)
+            .toLowerCase();
 
-                    const fileData = {
-                        base64: base64.replace(/\s+/g, ""),
-                        extension,
-                        info,
-                        fileName,
-                        type: file.type, // Store the file type
-                        size: file.size,
-                    };
+        const reader = new FileReader();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+            const base64String = e?.target?.result as string;
+            const [info, base64] = base64String.split(",");
 
-                    newFiles.push(fileData);
-
-                    if (newFiles.length === filesArray.length) {
-                        const updatedFiles = [
-                            ...(form.values[name] || []),
-                            ...newFiles,
-                        ];
-                        form.setFieldValue(name, updatedFiles);
-                        setPreviewImages(updatedFiles);
-
-                        if (onChange) {
-                            onChange(updatedFiles);
-                        }
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
-        } else {
-            const file = files[0];
-
-            if (!file || !(file instanceof Blob)) {
-                console.error("Invalid file object:", file);
-                return; // Skip processing
-            }
-
-            const fileName = file.name;
-            const extension = fileName
-                .substring(fileName.lastIndexOf(".") + 1)
-                .toLowerCase();
-
-            const reader = new FileReader();
-            reader.onload = (e: ProgressEvent<FileReader>) => {
-                const base64String = e?.target?.result as string;
-                const [info, base64] = base64String.split(",");
-
-                const fileData = {
-                    base64: base64.replace(/\s+/g, ""),
-                    extension,
-                    info,
-                    fileName,
-                    type: file.type, // Store the file type
-                    size: file.size, // Store the file size
-                };
-
-                form.setFieldValue(name, fileData);
-
-                if (onChange) {
-                    onChange(fileData);
-                }
+            const fileData = {
+                base64: base64.replace(/\s+/g, ""),
+                extension,
+                info,
+                fileName,
+                type: file.type, // Store the file type
+                size: file.size, // Store the file size
             };
-            reader.readAsDataURL(file);
-        }
-    };
 
-    const removeImage = (form: any, index: number) => {
-        const updatedFiles = [...form.values[name]];
-        updatedFiles.splice(index, 1);
-        form.setFieldValue(name, updatedFiles);
-        setPreviewImages(updatedFiles);
+            form.setFieldValue(name, fileData);
 
-        if (onChange) {
-            onChange(updatedFiles);
-        }
+            if (onChange) {
+                onChange(fileData);
+            }
+        };
+        reader.readAsDataURL(file);
     };
 
     // Function to determine file type (image or video)
@@ -232,13 +174,6 @@ const Upload: FC<UploadProps> = ({
                     event.target.value = "";
                 };
 
-                const fileValue = field?.value;
-                const isMultiple = variant === "multiple";
-                const existingFiles = isMultiple ? fileValue || [] : [];
-                const canAddMore = isMultiple
-                    ? existingFiles.length < maxFiles
-                    : true;
-
                 // Determine accept attribute value
                 let acceptAttr = acceptType;
                 if (!acceptFiles) {
@@ -274,7 +209,6 @@ const Upload: FC<UploadProps> = ({
                             ref={uploadInputRef}
                             onChange={handleFileChange}
                             className='hidden '
-                            multiple={isMultiple}
                             accept={acceptAttr}
                         />
 
@@ -288,22 +222,24 @@ const Upload: FC<UploadProps> = ({
                                 }`}
                                 style={{ height: `${size}px` }}
                             >
-                                {fileValue?.base64 ? (
-                                    isImageFile(fileValue.type || "") ? (
+                                {field?.value?.base64 ? (
+                                    isImageFile(field?.value?.type || "") ? (
                                         <div className='w-full h-full relative'>
                                             <Image
-                                                src={`${fileValue.info},${fileValue.base64}`}
+                                                src={`${field?.value?.info},${field?.value?.base64}`}
                                                 alt='Uploaded file'
                                                 layout='fill'
                                                 objectFit='contain'
                                             />
                                         </div>
-                                    ) : isVideoFile(fileValue.type || "") ? (
+                                    ) : isVideoFile(
+                                          field?.value?.type || ""
+                                      ) ? (
                                         <div className='w-full h-full relative'>
                                             <video
                                                 controls
                                                 className='w-full h-full object-contain'
-                                                src={`${fileValue.info},${fileValue.base64}`}
+                                                src={`${field?.value?.info},${field?.value?.base64}`}
                                             >
                                                 Your browser does not support
                                                 the video tag.
@@ -313,15 +249,15 @@ const Upload: FC<UploadProps> = ({
                                         <div className='flex flex-col items-center justify-center gap-2'>
                                             <div className='text-3xl'>
                                                 {getFileIcon(
-                                                    fileValue.extension
+                                                    field?.value?.extension
                                                 )}
                                             </div>
                                             <p className='text-sm text-gray-700'>
-                                                {fileValue.fileName}
+                                                {field?.value?.fileName}
                                             </p>
                                             <p className='text-xs text-gray-500'>
                                                 {formatFileSize(
-                                                    fileValue.size || 0
+                                                    field?.value?.size || 0
                                                 )}
                                             </p>
                                         </div>
@@ -357,11 +293,11 @@ const Upload: FC<UploadProps> = ({
                                         : "relative cursor-pointer" // Simplified for profile variant
                                 } ${className}`}
                             >
-                                {fileValue?.base64 ? (
-                                    isImageFile(fileValue.type || "") ? (
+                                {field?.value?.base64 ? (
+                                    isImageFile(field?.value?.type || "") ? (
                                         <div className='w-full h-full relative'>
                                             <Image
-                                                src={`${fileValue.info},${fileValue.base64}`}
+                                                src={`${field?.value?.info},${field?.value?.base64}`}
                                                 alt='Uploaded file'
                                                 layout='fill'
                                                 objectFit='cover'
@@ -372,12 +308,14 @@ const Upload: FC<UploadProps> = ({
                                                 }
                                             />
                                         </div>
-                                    ) : isVideoFile(fileValue.type || "") ? (
+                                    ) : isVideoFile(
+                                          field?.value?.type || ""
+                                      ) ? (
                                         <div className='w-full h-full relative'>
                                             <video
                                                 controls
                                                 className='w-full h-full object-contain'
-                                                src={`${fileValue.info},${fileValue.base64}`}
+                                                src={`${field?.value?.info},${field?.value?.base64}`}
                                             >
                                                 Your browser does not support
                                                 the video tag.
@@ -387,11 +325,11 @@ const Upload: FC<UploadProps> = ({
                                         <div className='flex flex-col items-center justify-center gap-2 p-4'>
                                             <div className='text-3xl'>
                                                 {getFileIcon(
-                                                    fileValue.extension
+                                                    field?.value?.extension
                                                 )}
                                             </div>
                                             <p className='text-sm text-gray-700'>
-                                                {fileValue.fileName}
+                                                {field?.value?.fileName}
                                             </p>
                                         </div>
                                     )
@@ -430,179 +368,6 @@ const Upload: FC<UploadProps> = ({
                             </div>
                         )}
 
-                        {variant === "multiple" && (
-                            <div className='w-full'>
-                                {/* Grid to display uploaded files */}
-                                <div className='grid grid-cols-6 gap-3 mb-3'>
-                                    {/* Show newly uploaded files or pre-existing files */}
-                                    {!value
-                                        ? existingFiles.map(
-                                              (file: any, index: number) => (
-                                                  <div
-                                                      key={`new-${index}`}
-                                                      className='relative  aspect-video border border-gray-200 rounded-md overflow-hidden'
-                                                  >
-                                                      {isImageFile(
-                                                          file.type || ""
-                                                      ) ? (
-                                                          <Image
-                                                              src={`${file.info},${file.base64}`}
-                                                              alt={`File ${
-                                                                  index + 1
-                                                              }`}
-                                                              layout='fill'
-                                                              objectFit='cover'
-                                                          />
-                                                      ) : isVideoFile(
-                                                            file.type || ""
-                                                        ) ? (
-                                                          <video
-                                                              controls
-                                                              className='w-full h-full object-contain'
-                                                              src={`${file.info},${file.base64}`}
-                                                          >
-                                                              Your browser does
-                                                              not support the
-                                                              video tag.
-                                                          </video>
-                                                      ) : (
-                                                          <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
-                                                              <div className='text-2xl mb-1'>
-                                                                  {getFileIcon(
-                                                                      file.extension
-                                                                  )}
-                                                              </div>
-                                                              <p className='text-xs text-gray-700 truncate w-full text-center'>
-                                                                  {
-                                                                      file.fileName
-                                                                  }
-                                                              </p>
-                                                              <p className='text-xs text-gray-500 mt-1'>
-                                                                  {formatFileSize(
-                                                                      file.size ||
-                                                                          0
-                                                                  )}
-                                                              </p>
-                                                          </div>
-                                                      )}
-                                                      <button
-                                                          type='button'
-                                                          className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
-                                                          onClick={(e) => {
-                                                              e.stopPropagation();
-                                                              removeImage(
-                                                                  form,
-                                                                  index
-                                                              );
-                                                          }}
-                                                      >
-                                                          ×
-                                                      </button>
-                                                  </div>
-                                              )
-                                          )
-                                        : Array.isArray(value) &&
-                                          value.map(
-                                              (file: any, index: number) => (
-                                                  <div
-                                                      key={`existing-${index}`}
-                                                      className='relative aspect-video border border-gray-200 rounded-md overflow-hidden'
-                                                  >
-                                                      {typeof file ===
-                                                      "string" ? (
-                                                          <Image
-                                                              src={file}
-                                                              alt={`File ${
-                                                                  index + 1
-                                                              }`}
-                                                              layout='fill'
-                                                              objectFit='cover'
-                                                          />
-                                                      ) : file.url ? (
-                                                          <Image
-                                                              src={file.url}
-                                                              alt={`File ${
-                                                                  index + 1
-                                                              }`}
-                                                              layout='fill'
-                                                              objectFit='cover'
-                                                          />
-                                                      ) : (
-                                                          <div className='w-full h-full flex flex-col items-center justify-center bg-gray-50 p-2'>
-                                                              <div className='text-2xl mb-1'>
-                                                                  📎
-                                                              </div>
-                                                              <p className='text-xs text-gray-700 truncate w-full text-center'>
-                                                                  {file.fileName ||
-                                                                      "Unknown file"}
-                                                              </p>
-                                                          </div>
-                                                      )}
-                                                      <button
-                                                          type='button'
-                                                          className='absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs'
-                                                          onClick={(e) => {
-                                                              e.stopPropagation();
-                                                              // Handle removing pre-existing files
-                                                              if (onChange) {
-                                                                  const newValue =
-                                                                      [
-                                                                          ...value,
-                                                                      ];
-                                                                  newValue.splice(
-                                                                      index,
-                                                                      1
-                                                                  );
-                                                                  onChange(
-                                                                      newValue
-                                                                  );
-                                                              }
-                                                          }}
-                                                      >
-                                                          ×
-                                                      </button>
-                                                  </div>
-                                              )
-                                          )}
-                                </div>
-
-                                {/* Upload button */}
-                                {canAddMore && (
-                                    <div
-                                        onClick={openFilePicker}
-                                        className={`w-full bg-white  flex items-center justify-center cursor-pointer overflow-hidden rounded-md border-2 border-dashed ${
-                                            hasError
-                                                ? "border-red-500"
-                                                : "border-gray-500"
-                                        }`}
-                                        style={{ height: `${size}px` }}
-                                    >
-                                        <div className='flex flex-col items-center gap-2'>
-                                            <p className='text-sm text-gray-400'>
-                                                {existingFiles.length > 0 ||
-                                                (Array.isArray(value) &&
-                                                    value.length > 0)
-                                                    ? `Add more ${
-                                                          acceptFiles
-                                                              ? "files"
-                                                              : "images"
-                                                      } (${
-                                                          existingFiles.length +
-                                                          (Array.isArray(value)
-                                                              ? value.length
-                                                              : 0)
-                                                      }/${maxFiles})`
-                                                    : placeholder ||
-                                                      (acceptFiles
-                                                          ? "Upload files"
-                                                          : "Upload images")}
-                                            </p>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
                         {variant === "drag" && (
                             <div
                                 className={`border-2 border-dashed w-full p-6 rounded-md ${
@@ -620,21 +385,21 @@ const Upload: FC<UploadProps> = ({
                                             acceptFiles ? "files" : "images"
                                         } here or click to upload`}
                                 </p>
-                                {fileValue?.base64 && (
+                                {field?.value?.base64 && (
                                     <div className='mt-4 w-full max-w-xs overflow-hidden'>
                                         <div className='bg-gray-100 p-2 rounded-md'>
                                             <div className='flex items-center gap-2'>
                                                 <span>
                                                     {getFileIcon(
-                                                        fileValue.extension
+                                                        field?.value?.extension
                                                     )}
                                                 </span>
                                                 <p className='text-xs text-gray-700 truncate'>
-                                                    {fileValue.fileName}
+                                                    {field?.value?.fileName}
                                                 </p>
                                                 <p className='text-xs text-gray-500 ml-auto'>
                                                     {formatFileSize(
-                                                        fileValue.size || 0
+                                                        field?.value?.size || 0
                                                     )}
                                                 </p>
                                             </div>

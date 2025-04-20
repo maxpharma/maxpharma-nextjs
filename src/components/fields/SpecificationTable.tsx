@@ -42,27 +42,31 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
             })
         );
 
-        // Only update if the keys/values have changed
-        const currentPairs = specPairs.filter(
-            (p) => p.key !== "" || p.value !== ""
-        );
-        const isSame =
-            pairs.length === currentPairs.length &&
-            pairs.every(
-                (p, i) =>
-                    p.key === currentPairs[i]?.key &&
-                    p.value === currentPairs[i]?.value
-            );
-
-        if (!isSame) {
-            // Ensure at least 2 rows
-            if (pairs.length === 0) {
-                pairs.push(
-                    { id: `spec-new-1`, key: "", value: "" },
-                    { id: `spec-new-2`, key: "", value: "" }
-                );
-            } else if (pairs.length === 1) {
-                pairs.push({ id: `spec-new-1`, key: "", value: "" });
+        // Always ensure at least 4 rows on mount or when value changes
+        if (pairs.length === 0 && specPairs.length === 0) {
+            // Initial mount: show 4 empty rows
+            setSpecPairs([
+                { id: `spec-new-0`, key: "", value: "" },
+                { id: `spec-new-1`, key: "", value: "" },
+                { id: `spec-new-2`, key: "", value: "" },
+                { id: `spec-new-3`, key: "", value: "" },
+            ]);
+        } else if (
+            pairs.length > 0 &&
+            (pairs.length !== specPairs.length ||
+                pairs.some(
+                    (p, i) =>
+                        p.key !== specPairs[i]?.key ||
+                        p.value !== specPairs[i]?.value
+                ))
+        ) {
+            // If value changed, sync pairs and pad to 4 if needed
+            while (pairs.length < 4) {
+                pairs.push({
+                    id: `spec-new-${Date.now()}-${pairs.length}`,
+                    key: "",
+                    value: "",
+                });
             }
             setSpecPairs(pairs);
         }
@@ -107,18 +111,18 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
     const handleRemove = (id: string) => {
         const updatedPairs = specPairs.filter((pair) => pair.id !== id);
 
-        // Ensure we always have at least 2 rows
-        if (updatedPairs.length === 1) {
-            updatedPairs.push({
-                id: `spec-new-${Date.now()}`,
-                key: "",
-                value: "",
-            });
-        } else if (updatedPairs.length === 0) {
-            updatedPairs.push(
-                { id: `spec-new-${Date.now()}`, key: "", value: "" },
-                { id: `spec-new-${Date.now() + 1}`, key: "", value: "" }
-            );
+        // Only pad to 4 if all rows are empty after remove
+        const hasNonEmpty = updatedPairs.some(
+            (pair) => pair.key.trim() !== "" || pair.value.trim() !== ""
+        );
+        if (!hasNonEmpty) {
+            while (updatedPairs.length < 4) {
+                updatedPairs.push({
+                    id: `spec-new-${Date.now()}-${updatedPairs.length}`,
+                    key: "",
+                    value: "",
+                });
+            }
         }
 
         setSpecPairs(updatedPairs);
@@ -129,7 +133,11 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
         // Always add a new row when button is clicked
         const newPairs = [
             ...specPairs,
-            { id: `spec-new-${Date.now()}`, key: "", value: "" },
+            {
+                id: `spec-new-${Date.now()}-${specPairs.length}`,
+                key: "",
+                value: "",
+            },
         ];
         setSpecPairs(newPairs);
         // No need to update Formik since empty rows don't affect the final value
@@ -143,7 +151,11 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
         if (allRowsFilled && specPairs.length > 0) {
             const newPairs = [
                 ...specPairs,
-                { id: `spec-new-${Date.now()}`, key: "", value: "" },
+                {
+                    id: `spec-new-${Date.now()}-${specPairs.length}`,
+                    key: "",
+                    value: "",
+                },
             ];
             setSpecPairs(newPairs);
         }
