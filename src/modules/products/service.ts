@@ -10,7 +10,7 @@ const model = Application
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
-    const data = await model.findAndCountAll(filter);
+    const data = await model.scope(["withCategory"]).findAndCountAll(filter);
     return {
       items: data.rows,
       page: params.page,

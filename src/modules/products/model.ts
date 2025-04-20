@@ -1,4 +1,5 @@
 import db from "../../config/db";
+import GeneralSetting from "../generalSettings/model";
 import { productAttributes } from "./attributes";
 const Product = db.define("products", productAttributes, {
   tableName: "products",
@@ -6,5 +7,22 @@ const Product = db.define("products", productAttributes, {
   createdAt: "createdAt",
   updatedAt: "updatedAt",
 });
+
+Product.belongsTo(GeneralSetting, {
+  foreignKey:"categoryId",
+  as:"categoryData"
+})
+
+Product.addScope("withCategory", () => {
+  const scope = {
+    model:GeneralSetting,
+    as:"categoryData",
+    where:{}
+  }
+
+  return {
+    include: [scope]
+  }
+})
 
 export default Product;
