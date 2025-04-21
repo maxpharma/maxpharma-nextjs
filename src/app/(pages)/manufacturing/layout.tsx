@@ -91,9 +91,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
             </div>
-            <div className='custom-container mt-4'>
-                <ServiceContents id={selectedCategoryId} />
-            </div>
+            <div className='custom-container mt-4'>{children}</div>
         </>
     );
 };
