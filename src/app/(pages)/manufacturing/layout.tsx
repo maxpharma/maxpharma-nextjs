@@ -1,10 +1,10 @@
 "use client";
 
 import GeneralSettings from "@/api/generalSettings";
+import ServiceContents from "@/features/ServiceContents";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import ServiceContents from "./[serviceId]/page";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
@@ -75,7 +75,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                                             router.push(item.path);
                                         }}
                                         className={`
-                  px-4 py-2 rounded-md text-sm font-medium transition duration-200
+                  px-4 py-2 rounded-md text-sm font-medium transition duration-200 cursor-pointer
                   ${
                       isActive
                           ? "bg-primary text-white"
