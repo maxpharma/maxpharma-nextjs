@@ -1,14 +1,14 @@
-import Team from '@/api/team';
-import { deleteIcon, editIcon } from '@/assets/svg';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
-import CustomImage from '@/components/CustomImage';
-import DataTable from '@/components/DataTable';
-import SvgIcon from '@/components/SvgIcon';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import Team from "@/api/team";
+import { deleteIcon, editIcon } from "@/assets/svg";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
+import CustomImage from "@/components/CustomImage";
+import DataTable from "@/components/DataTable";
+import SvgIcon from "@/components/SvgIcon";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const TeamData = ({ setUpdatedIdData }: any) => {
-    const [toggle, setToggle] = useState('directors');
+    const [toggle, setToggle] = useState("directors");
 
     const { items: originalDirectorsData = [] } = useSelector(
         (state: any) => state[toggle]
@@ -24,24 +24,22 @@ const TeamData = ({ setUpdatedIdData }: any) => {
         fetchTeamData(toggle);
     }, [toggle]);
 
-    console.log(`${toggle} data:: `, directorsData);
-
     const columns = [
         {
-            id: 'profile',
-            header: 'Profile',
-            accessor: 'profile',
+            id: "profile",
+            header: "Profile",
+            accessor: "profile",
             minWidth: 170,
         },
-        { id: 'name', header: 'Name', accessor: 'name', minWidth: 170 },
-        { id: 'role', header: 'Role', accessor: 'role', minWidth: 170 },
+        { id: "name", header: "Name", accessor: "name", minWidth: 170 },
+        { id: "role", header: "Role", accessor: "role", minWidth: 170 },
         {
-            id: 'companyName',
-            header: 'Company Name',
-            accessor: 'companyName',
+            id: "companyName",
+            header: "Company Name",
+            accessor: "companyName",
             minWidth: 170,
         },
-        { id: 'action', header: 'Action', accessor: 'action', minWidth: 170 },
+        { id: "action", header: "Action", accessor: "action", minWidth: 170 },
     ];
 
     const rows = directorsData?.map((item: any) => {
@@ -107,30 +105,30 @@ const TeamData = ({ setUpdatedIdData }: any) => {
                 <div className='flex gap-2 mb-4'>
                     <button
                         className={`${
-                            toggle === 'directors'
-                                ? 'active-button'
-                                : 'inactive-button'
+                            toggle === "directors"
+                                ? "active-button"
+                                : "inactive-button"
                         } `}
-                        onClick={() => setToggle('directors')}
+                        onClick={() => setToggle("directors")}
                     >
                         Board of Directors
                     </button>
                     <button
                         className={`${
-                            toggle === 'team'
-                                ? 'active-button'
-                                : 'inactive-button'
+                            toggle === "team"
+                                ? "active-button"
+                                : "inactive-button"
                         } `}
-                        onClick={() => setToggle('team')}
+                        onClick={() => setToggle("team")}
                     >
                         Management Team
                     </button>
                 </div>
                 <DataTable
                     title={
-                        toggle === 'directors'
-                            ? 'Board of Directors'
-                            : 'Management Team'
+                        toggle === "directors"
+                            ? "Board of Directors"
+                            : "Management Team"
                     }
                     columns={columns}
                     data={rows}

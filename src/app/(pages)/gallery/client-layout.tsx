@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import BannerNavigation from '@/components/BannerNavigation';
-import React, { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import BannerNavigation from "@/components/BannerNavigation";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface NavItem {
     name: string;
@@ -17,7 +17,7 @@ const ClientLayout = ({
     navItems: NavItem[];
 }) => {
     const pathname = usePathname();
-    const [title, setTitle] = useState('About');
+    const [title, setTitle] = useState("About");
 
     useEffect(() => {
         const check = navItems.find((item) => item.path === pathname);
@@ -25,11 +25,9 @@ const ClientLayout = ({
         if (check) {
             setTitle(check.name);
         } else {
-            setTitle('About');
+            setTitle("About");
         }
     }, [pathname, navItems]);
-
-    console.log('title:', title);
 
     return (
         <>

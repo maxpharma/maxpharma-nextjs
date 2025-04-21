@@ -14,6 +14,8 @@ const ProductFAQs: React.FC<ProductFAQsProps> = ({ type }) => {
     const [initialValues, setInitialValues] = useState({
         faqs: {},
     });
+    const [faqId, setFaqId] = useState<number | null>(null);
+    const [faqKey, setFaqKey] = useState<string | null>(null);
 
     const { data: productFAQs } = useSelector(
         (state: any) => state.productFAQs || []
@@ -34,24 +36,32 @@ const ProductFAQs: React.FC<ProductFAQsProps> = ({ type }) => {
             setInitialValues({
                 faqs: productFAQs[0]?.infos || {},
             });
+            setFaqId(productFAQs[0]?.id || null);
+            setFaqKey(productFAQs[0]?.key || null);
         }
     }, [productFAQs]);
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
         const payload = {
-            group: "productFAQs",
-            key: Date.now().toString(),
+            key: faqKey || Date.now().toString(),
             value: "product faqs",
-            title: "product faqs",
             infos: values.faqs,
         };
 
         try {
-            await GeneralSettings.create("productFAQs", payload);
+            if (faqId) {
+                await GeneralSettings.update("productFAQs", payload, faqId);
+            } else {
+                await GeneralSettings.create("productFAQs", {
+                    ...payload,
+                    group: "productFAQs",
+                    title: "product faqs",
+                });
+            }
             resetForm();
         } catch (error: any) {
-            console.error("Error adding Product FAQs:", error);
+            console.error("Error updating Product FAQs:", error);
         }
         setLoading(false);
     };
@@ -73,7 +83,7 @@ const ProductFAQs: React.FC<ProductFAQsProps> = ({ type }) => {
                         keyPlaceholder='Question'
                     />
                     <Button loading={loading} variant='submit'>
-                        Submit
+                        {faqId ? "Update FAQs" : "Add FAQs"}
                     </Button>
                 </Form>
             </Formik>

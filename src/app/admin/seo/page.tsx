@@ -6,7 +6,7 @@ import CustomToast from "@/components/CustomToast";
 import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
 import { Form, Formik, FormikProps } from "formik";
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 // Define the form values interface
@@ -34,8 +34,6 @@ const SeoForm = () => {
     const fetchData = async () => {
         await GeneralSettings.getByKey(selectedPage.state, selectedPage.state);
     };
-
-    console.log(storedData, "storedData");
 
     useEffect(() => {
         if (storedData) {

@@ -47,6 +47,11 @@ const initialState: any = {
         totalItems: 0,
         totalPages: 0,
     },
+    singleProduct: {
+        data: {},
+        loading: true,
+        loadingState: true,
+    },
     banners: {
         data: [],
         loading: true,

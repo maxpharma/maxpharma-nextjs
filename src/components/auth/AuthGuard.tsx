@@ -17,7 +17,6 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
         const storedUser = Helper.getUser();
         setUser(storedUser);
         setLoading(false);
-        console.log("AuthGuard", storedUser); // <-- log here
     }, []);
 
     if (loading) {

@@ -3,9 +3,9 @@ import { deleteIcon, editIcon } from "@/assets/svg";
 import ConfirmationAlert from "@/components/ConfirmationAlert";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const ImageData = ({ setUpdateIdData }: any) => {
     const fetchData = async () => {
@@ -21,8 +21,6 @@ const ImageData = ({ setUpdateIdData }: any) => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Remove galleryData from dependencies
-
-    console.log(galleryData, "galleryData");
 
     const columns = [
         { id: "title", header: "Title", accessor: "title", minWidth: 170 },

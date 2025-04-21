@@ -1,24 +1,17 @@
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import Gallery from "@/api/gallery";
-import { Form, Formik } from "formik";
-import Input from "@/components/fields/Input";
-import Upload from "@/components/fields/Upload";
-import ActionButton from "@/components/ActionButton";
 import Button from "@/components/Button";
+import Input from "@/components/fields/Input";
 import MultipleUpload from "@/components/fields/MultipleUpload";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 
 const ImageUpdateOverlay = ({ updateIdData, closeOverlay }: any) => {
     const [loading, setLoading] = useState(false);
-
-    console.log(updateIdData, "updateIdData");
 
     // Prepare initial files: convert gallery to array of string paths
     const initialFiles = Array.isArray(updateIdData.gallery)
         ? updateIdData.gallery.map((img: any) => img.file)
         : [];
-
-    console.log(initialFiles, "initialFiles");
 
     const [initialValues, setInitialValues] = useState({
         title: "",

@@ -45,6 +45,27 @@ const get = async () => {
     }
 };
 
+const getById = async (id: number) => {
+    try {
+        const config: ReturnType = {
+            url: `products/${id}`,
+            method: "get",
+            authorization: true,
+            config: {
+                showErr: true,
+                store: {
+                    action: "set",
+                    key: "singleProduct",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+};
+
 const update = async (id: number, data: any) => {
     try {
         const config: ReturnType = {
@@ -90,6 +111,6 @@ const deleteItem = async (id: number) => {
     }
 };
 
-const Products = { create, get, update, deleteItem };
+const Products = { create, get, update, deleteItem, getById };
 
 export default Products;

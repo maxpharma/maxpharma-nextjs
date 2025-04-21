@@ -1,7 +1,6 @@
 "use client";
 
 import Admin from "@/api/admin";
-import CustomImage from "@/components/CustomImage";
 import Sidebar from "@/components/Sidebar";
 import websiteData from "@/features/data";
 import helpers from "@/utils/helper";
@@ -27,7 +26,6 @@ export default function AdminLayout({
         const storedUser = helpers.getUser();
         setUser(storedUser);
         setLoading(false);
-        console.log("AdminLayout", storedUser);
     }, []);
 
     // Redirect logic

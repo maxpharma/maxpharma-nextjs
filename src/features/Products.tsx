@@ -1,11 +1,11 @@
 "use client";
 
+import ProductApi from "@/api/product";
 import Button from "@/components/Button";
 import CustomImage from "@/components/CustomImage";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-import ProductApi from "@/api/product";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Products = ({ limit = 10 }: { limit?: number }) => {
     const { items: productsData } = useSelector((state: any) => state.products);
@@ -20,16 +20,16 @@ const Products = ({ limit = 10 }: { limit?: number }) => {
         }
     }, [productsData?.length]);
 
-    console.log("productsData", productsData);
-
     return (
         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 '>
             {productsData.map((item: any) => (
                 <Items
                     key={item.id}
                     id={item.id}
+                    categoryName={item.categoryData.value}
                     name={item.name}
                     title={item.title}
+                    description={item.description}
                     type={item.type}
                     files={item.files}
                     additionalInfo={item.additionalInfo}
@@ -41,14 +41,17 @@ const Products = ({ limit = 10 }: { limit?: number }) => {
 
 export default Products;
 
-const Items = ({ name, title, type, files, additionalInfo, id }: any) => {
+const Items = ({
+    name,
+    title,
+    categoryName,
+    type,
+    files,
+    additionalInfo,
+    description,
+    id,
+}: any) => {
     const router = useRouter();
-
-    // Safely convert additionalInfo object to a string for rendering
-    const additionalInfoText =
-        additionalInfo && typeof additionalInfo === "object"
-            ? Object.values(additionalInfo).join(", ")
-            : additionalInfo ?? "";
 
     return (
         <div
@@ -64,12 +67,17 @@ const Items = ({ name, title, type, files, additionalInfo, id }: any) => {
                         variant='live'
                     />
                     <div className='absolute top-2 left-2 rounded-xl p-1 bg-[#FAFBEA]'>
-                        {name}
+                        {categoryName}
                     </div>
                 </div>
                 <div>
-                    <div className='text-lg'>{title}</div>
-                    <span className='text-sm'>{additionalInfoText}</span>
+                    <div className='text-lg'>{name}</div>
+                    <span className='text-sm'>
+                        {description.split(" ").length > 10
+                            ? description.split(" ").slice(0, 10).join(" ") +
+                              "..."
+                            : description}
+                    </span>
                 </div>
             </div>
             <Button className='absolute -bottom-6 right-4'>Send Inquiry</Button>

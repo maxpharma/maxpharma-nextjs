@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Form } from "formik";
-import Input from "@/components/fields/Input";
-import TextArea from "@/components/fields/TextArea";
+import GeneralSettings from "@/api/generalSettings";
 import Button from "@/components/Button";
 import SpecificationTable from "@/components/fields/SpecificationTable";
-import GeneralSettings from "@/api/generalSettings";
+import { Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface HomeFAQsProps {
@@ -16,8 +14,8 @@ const HomeFAQs: React.FC<HomeFAQsProps> = ({ type }) => {
     const [initialValues, setInitialValues] = useState({
         faqs: {},
     });
-
-    console.log(initialValues, "initialValues");
+    const [faqId, setFaqId] = useState<number | null>(null);
+    const [faqKey, setFaqKey] = useState<string | null>(null);
 
     const { data: homeFAQs } = useSelector(
         (state: any) => state.homeFAQs || []
@@ -33,31 +31,39 @@ const HomeFAQs: React.FC<HomeFAQsProps> = ({ type }) => {
         }
     }, [homeFAQs?.length]);
 
-    console.log(homeFAQs, "homeFAQs");
-
     useEffect(() => {
         if (homeFAQs?.length) {
             setInitialValues({
                 faqs: homeFAQs[0]?.infos || {},
             });
+            setFaqId(homeFAQs[0]?.id || null);
+            setFaqKey(homeFAQs[0]?.key || null);
         }
     }, [homeFAQs]);
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
         const payload = {
-            group: "homeFAQs",
-            key: Date.now().toString(),
+            key: faqKey || Date.now().toString(),
             value: "home faqs",
-            title: "home faqs",
             infos: values.faqs,
         };
 
         try {
-            await GeneralSettings.create("homeFAQs", payload);
+            if (faqId) {
+                // Update existing FAQ
+                await GeneralSettings.update("homeFAQs", payload, faqId);
+            } else {
+                // Create new FAQ
+                await GeneralSettings.create("homeFAQs", {
+                    ...payload,
+                    group: "homeFAQs",
+                    title: "home faqs",
+                });
+            }
             resetForm();
         } catch (error: any) {
-            console.error("Error adding Home FAQs:", error);
+            console.error("Error updating Home FAQs:", error);
         }
         setLoading(false);
     };
@@ -79,7 +85,7 @@ const HomeFAQs: React.FC<HomeFAQsProps> = ({ type }) => {
                         keyPlaceholder='Question'
                     />
                     <Button loading={loading} variant='submit'>
-                        Submit
+                        {faqId ? "Update FAQs" : "Add FAQs"}
                     </Button>
                 </Form>
             </Formik>

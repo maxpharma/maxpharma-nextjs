@@ -4,7 +4,7 @@ import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
 import TextArea from "@/components/fields/TextArea";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Vision = ({ type }: { type: string }) => {
@@ -22,8 +22,6 @@ const Vision = ({ type }: { type: string }) => {
             fetchData();
         }
     }, [ourVision?.length, type]);
-
-    console.log(ourVision, "ourVision");
 
     const [initialValues, setInitialValues] = useState({
         title: "",

@@ -1,14 +1,11 @@
 "use client";
 
 import Gallery from "@/api/gallery";
-import ActionButton from "@/components/ActionButton";
-import Input from "@/components/fields/Input";
-import Upload from "@/components/fields/Upload";
-import { Form, Formik, FormikHelpers } from "formik";
-import { useEffect, useState } from "react";
-import ImageData from "./ImageData";
 import Button from "@/components/Button";
+import Input from "@/components/fields/Input";
 import MultipleUpload from "@/components/fields/MultipleUpload";
+import { Form, Formik, FormikHelpers } from "formik";
+import { useState } from "react";
 
 interface FileData {
     extension: string;
@@ -31,8 +28,6 @@ const ImageSection = () => {
         title: "",
         files: [],
     });
-
-    console.log(initialValues, "initialValues");
 
     const submitHandler = async (
         values: ImageFormValues,

@@ -30,8 +30,6 @@ const NoticeLayout = ({ children }: { children: React.ReactNode }) => {
         }
     }, [pathname]);
 
-    console.log("title:", title);
-
     return (
         <>
             <div>

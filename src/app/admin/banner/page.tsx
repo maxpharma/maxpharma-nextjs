@@ -8,7 +8,6 @@ import Overlay from "@/components/Overlay";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import BannerData from "./BannerData";
-import { update } from "@/store/actions";
 
 interface BannerType {
     id: number;
@@ -20,7 +19,6 @@ interface BannerType {
 
 const Banner = () => {
     const [updateIdData, setUpdateIdData] = useState<BannerType | null>(null);
-    console.log("updateIdData", updateIdData);
     const [loading, setLoading] = useState(false);
     const [isBannerFormOpen, setIsBannerFormOpen] = useState(false);
 
@@ -111,7 +109,6 @@ const Banner = () => {
         const payload = { ...defaultSend, ...updatedFields };
 
         if (!Object.keys(updatedFields).length && updateIdData?.id) {
-            console.log("No changes made.");
             setLoading(false);
             return;
         }

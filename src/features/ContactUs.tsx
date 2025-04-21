@@ -156,7 +156,7 @@ const ContactUs = () => {
                     referrerPolicy='no-referrer-when-downgrade'
                 ></iframe>
             </div>
-            <Faqs />
+            <Faqs type='contactFAQs' />
         </div>
     );
 };

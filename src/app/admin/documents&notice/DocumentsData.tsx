@@ -1,12 +1,10 @@
-import Notice from "@/api/notice";
-import Documents from "@/api/notice";
+import { default as Documents, default as Notice } from "@/api/notice";
 import { deleteIcon, editIcon } from "@/assets/svg";
 import ConfirmationAlert from "@/components/ConfirmationAlert";
 import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
-import { title } from "process";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const DocumentsData = ({ setUpdateIdData }: any) => {
@@ -19,7 +17,6 @@ const DocumentsData = ({ setUpdateIdData }: any) => {
             fetchData();
         }
     }, [NoticeData?.length]);
-    console.log("NoticeData", NoticeData);
     const columns = [
         {
             id: "document",

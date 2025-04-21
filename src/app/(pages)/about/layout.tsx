@@ -1,9 +1,8 @@
 "use client";
 
 import BannerNavigation from "@/components/BannerNavigation";
-import React, { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import AdvertisementBanner from "@/features/AdvertisementBanner";
+import React, { useEffect, useState } from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
@@ -31,8 +30,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             setTitle("About");
         }
     }, [pathname]);
-
-    console.log("title:", title);
 
     return (
         <>

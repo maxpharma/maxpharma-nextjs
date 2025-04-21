@@ -1,11 +1,11 @@
-import React, { use, useEffect, useState } from "react";
-import { Formik, Form } from "formik";
-import Upload from "@/components/fields/Upload";
-import TextArea from "@/components/fields/TextArea";
+import ThemeApi from "@/api/theme";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
+import TextArea from "@/components/fields/TextArea";
+import Upload from "@/components/fields/Upload";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import ThemeApi from "@/api/theme";
 
 const Theme = () => {
     const [loading, setLoading] = useState(false);
@@ -31,8 +31,6 @@ const Theme = () => {
         primaryLightColor: "#FFFFFF",
         secondaryColor: "#FFFFFF",
     });
-
-    console.log(initialValues, "initialValues");
 
     useEffect(() => {
         if (themeSettings?.length) {

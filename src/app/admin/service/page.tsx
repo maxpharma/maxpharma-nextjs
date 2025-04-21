@@ -1,18 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Formik, Form, FieldArray } from "formik";
-import Input from "@/components/fields/Input";
-import TextArea from "@/components/fields/TextArea";
-import Upload from "@/components/fields/Upload";
-import Button from "@/components/Button";
-import Overlay from "@/components/Overlay";
-import { useSelector } from "react-redux";
 import GeneralSettings from "@/api/generalSettings";
-import { Trash2 } from "lucide-react";
-import AddServiceCategory from "./AddServiceCategory";
 import Services from "@/api/services";
+import Button from "@/components/Button";
+import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
+import Upload from "@/components/fields/Upload";
+import Overlay from "@/components/Overlay";
+import { FieldArray, Form, Formik } from "formik";
+import { Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import AddServiceCategory from "./AddServiceCategory";
 
 const ServicePage = () => {
     const { data: serviceCategoriesRaw } = useSelector(
@@ -62,10 +61,7 @@ const ServicePage = () => {
     };
 
     const fetchServicesData = async () => {
-        console.log(selectedCategory?.id, "selectedCategory");
-
-        const response = await Services.get(selectedCategory?.id);
-        console.log("response", response);
+        await Services.get(selectedCategory?.id);
     };
 
     useEffect(() => {
@@ -73,8 +69,6 @@ const ServicePage = () => {
             fetchServicesData();
         }
     }, [selectedCategory, selectedCategory?.id]);
-
-    console.log("servicesData", servicesData);
 
     useEffect(() => {
         if (!serviceCategories.length) {
@@ -129,22 +123,7 @@ const ServicePage = () => {
         <div className='space-y-6'>
             <h1>Add Services</h1>
 
-            <div className='flex justify-between '>
-                <div className='flex flex-wrap gap-2 items-center'>
-                    {serviceCategories.map((category: any) => (
-                        <button
-                            key={category.id}
-                            className={`px-4 py-2 rounded-md ${
-                                selectedCategory?.id === category.id
-                                    ? "active-button"
-                                    : "inactive-button"
-                            }`}
-                            onClick={() => handleCategoryClick(category)}
-                        >
-                            {category?.value}
-                        </button>
-                    ))}
-                </div>
+            <div className='space-y-4 mb-6'>
                 <div className='flex gap-2 flex-1 h-fit'>
                     <button
                         className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1 whitespace-nowrap'
@@ -159,6 +138,21 @@ const ServicePage = () => {
                         Add Category
                         <span className='ml-1 text-xl'>+</span>
                     </button>
+                </div>
+                <div className='flex flex-wrap gap-2 items-center'>
+                    {serviceCategories.map((category: any) => (
+                        <button
+                            key={category.id}
+                            className={`px-4 py-2 rounded-md ${
+                                selectedCategory?.id === category.id
+                                    ? "active-button"
+                                    : "inactive-button"
+                            }`}
+                            onClick={() => handleCategoryClick(category)}
+                        >
+                            {category?.value}
+                        </button>
+                    ))}
                 </div>
             </div>
 
@@ -253,7 +247,9 @@ const ServicePage = () => {
                     </div>
 
                     <div className='flex justify-end'>
-                        <Button variant='submit'>Save</Button>
+                        <Button variant='submit' loading={loading}>
+                            {servicesData?.length ? "Update" : "Add Service"}
+                        </Button>
                     </div>
                 </Form>
             </Formik>

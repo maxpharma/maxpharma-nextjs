@@ -1,17 +1,16 @@
+import Inquiry from "@/api/Inquiry";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import PhoneInput from "@/components/fields/Phone";
 import TextArea from "@/components/fields/TextArea";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
-import Inquiry from "@/api/Inquiry";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const SendInquiry = ({ onSuccess }: { onSuccess?: () => void }) => {
     const [loading, setLoading] = useState(false);
 
     const pathname = usePathname();
-    console.log(pathname);
 
     const productId = pathname.split("/").pop() || null;
 

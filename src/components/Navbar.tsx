@@ -1,23 +1,22 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
+import websiteData from "@/features/data";
+import SendInquiry from "@/features/SendInquiry";
 import {
-    Phone,
+    ChevronDown,
+    ChevronRight,
     Mail,
     MapPin,
     Menu,
+    Phone,
     X,
-    ChevronDown,
-    ChevronRight,
 } from "lucide-react";
-import { color } from "@/utils/theme";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import CustomImage from "./CustomImage";
-import websiteData from "@/features/data";
 import Overlay from "./Overlay";
-import SendInquiry from "@/features/SendInquiry";
 
 const Navbar = () => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
@@ -98,8 +97,6 @@ const Navbar = () => {
             }
         }
     };
-
-    console.log(isOverlayOpen);
 
     return (
         <>

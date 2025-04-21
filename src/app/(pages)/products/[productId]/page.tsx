@@ -1,19 +1,14 @@
 "use client";
 
-import Button from "@/components/Button";
-import CustomImage from "@/components/CustomImage";
-import Input from "@/components/fields/Input";
-import PhoneInput from "@/components/fields/Phone";
-import TextArea from "@/components/fields/TextArea";
+import ProductApi from "@/api/product";
 import Overlay from "@/components/Overlay";
+import ProductGallery from "@/components/ui/ProductGallery";
 import Categories from "@/features/Categories";
 import Faqs from "@/features/Faqs";
 import Products from "@/features/Products";
 import SendInquiry from "@/features/SendInquiry";
-import { Form, Formik } from "formik";
-import { sub } from "framer-motion/client";
 import { useParams } from "next/navigation";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { BsWhatsapp } from "react-icons/bs";
 import { useSelector } from "react-redux";
 
@@ -22,21 +17,20 @@ const ProductDetailPage = () => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
 
     // Get products from redux store
-    const { items: productsData } = useSelector((state: any) => state.products);
-
-    // Find the product matching the productId
-    const product = productsData.find(
-        (item: any) => String(item.id) === String(productId)
+    const { data: productData } = useSelector(
+        (state: any) => state.singleProduct
     );
 
-    // Prepare additionalInfo text
-    const additionalInfoText =
-        product?.additionalInfo && typeof product.additionalInfo === "object"
-            ? Object.values(product.additionalInfo).join(", ")
-            : product?.additionalInfo ?? "";
+    const fetchData = async () => {
+        await ProductApi.getById(Number(productId));
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [productId]);
 
     // If product not found, show a message
-    if (!product) {
+    if (!productData) {
         return <div className='py-10 text-center'>Product not found.</div>;
     }
 
@@ -46,37 +40,32 @@ const ProductDetailPage = () => {
                 <div className='flex flex-col lg:flex-row gap-8'>
                     <div className='w-full lg:w-1/2'>
                         <div className='flex flex-col sm:flex-row gap-2'>
-                            <div className='flex sm:flex-col order-2 sm:order-1 gap-4 overflow-x-auto sm:overflow-y-auto sm:h-100 '>
-                                {product.files?.map(
-                                    (file: string, idx: number) => (
-                                        <CustomImage
-                                            key={idx}
-                                            src={file}
-                                            className='w-22 h-22 sm:w-16  md:w-20  lg:w-24  flex-shrink-0 cursor-pointer border border-gray-200 rounded-sm hover:border-gray-400'
-                                            fit='cover'
-                                            variant='live'
-                                        />
-                                    )
-                                )}
-                            </div>
-                            <div className='order-1 sm:order-2 flex-grow'>
-                                <CustomImage
-                                    src={product.files?.[0]}
-                                    className='w-full h-64 sm:h-100   rounded-lg'
-                                    fit='cover'
-                                    variant='live'
+                            <div className='flex sm:flex-col order-2 sm:order-1 gap-4 overflow-x-auto sm:overflow-y-auto sm:h-100 '></div>
+                            {Array.isArray(productData?.files) &&
+                            productData.files.length > 0 ? (
+                                <ProductGallery
+                                    images={productData.files.map(
+                                        (image: any) => ({
+                                            src: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${image}`,
+                                            alt: image,
+                                        })
+                                    )}
                                 />
-                            </div>
+                            ) : (
+                                <div className='w-full h-64 flex items-center justify-center bg-gray-100 text-gray-400'>
+                                    No images available
+                                </div>
+                            )}
                         </div>
                     </div>
 
                     <div className='flex flex-col space-y-4 w-full lg:w-1/2'>
                         <span className='font-medium text-sm'>
-                            {product.type}
+                            {productData.type}
                         </span>
 
                         <div className='text-xl sm:text-2xl font-semibold'>
-                            {product.name}
+                            {productData.name}
                         </div>
 
                         <div className='spacey-y-1'>
@@ -86,9 +75,9 @@ const ProductDetailPage = () => {
                             <table className='w-full border-collapse'>
                                 <tbody>
                                     {/* Example: Render additionalInfo as key-value rows */}
-                                    {product.additionalInfo &&
+                                    {productData.additionalInfo &&
                                         Object.entries(
-                                            product.additionalInfo
+                                            productData.additionalInfo
                                         ).map(([key, value]: [string, any]) => (
                                             <tr
                                                 key={key}
@@ -134,7 +123,7 @@ const ProductDetailPage = () => {
                 </div>
                 <div className='space-y-2'>
                     <h1>Product Overview</h1>
-                    <p>{product.description}</p>
+                    <p>{productData.description}</p>
                 </div>
                 <section className='space-y-4'>
                     <h1>Our Products</h1>
@@ -142,7 +131,7 @@ const ProductDetailPage = () => {
                     <Products limit={4} />
                 </section>
                 <div className='mt-16'>
-                    <Faqs />
+                    <Faqs type='productFAQs' />
                 </div>
             </div>
             {isOverlayOpen && (

@@ -7,8 +7,6 @@ import React, { useEffect, useState } from "react";
 const ProductLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
-    console.log(pathname === "/products");
-
     const aboutNavItems = [
         { name: "Imported Products", path: "/products" },
 
@@ -30,7 +28,6 @@ const ProductLayout = ({ children }: { children: React.ReactNode }) => {
         }
     }, [pathname]);
 
-    console.log("title:", title);
     return (
         <div>
             <div>

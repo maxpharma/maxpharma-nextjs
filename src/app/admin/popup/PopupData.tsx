@@ -1,17 +1,17 @@
-import Popup from '@/api/popup';
-import { deleteIcon } from '@/assets/svg';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
-import CustomImage from '@/components/CustomImage';
-import DataTable from '@/components/DataTable';
-import SvgIcon from '@/components/SvgIcon';
-import Toggle from '@/components/ui/Toggle';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
+import Popup from "@/api/popup";
+import { deleteIcon } from "@/assets/svg";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
+import CustomImage from "@/components/CustomImage";
+import DataTable from "@/components/DataTable";
+import SvgIcon from "@/components/SvgIcon";
+import Toggle from "@/components/ui/Toggle";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const PopupData = () => {
     const fetchData = async () => {
-        await Popup.getData('popup');
+        await Popup.getData("popup");
     };
 
     const { items: popupData } = useSelector((state: any) => state.popup || []);
@@ -22,12 +22,10 @@ const PopupData = () => {
         }
     }, [popupData?.length]);
 
-    console.log('popupData', popupData);
-
     const columns = [
-        { id: 'image', header: 'Image', accessor: 'image', minWidth: 170 },
-        { id: 'status', header: 'Status', accessor: 'status', minWidth: 170 },
-        { id: 'action', header: 'Action', accessor: 'action', minWidth: 170 },
+        { id: "image", header: "Image", accessor: "image", minWidth: 170 },
+        { id: "status", header: "Status", accessor: "status", minWidth: 170 },
+        { id: "action", header: "Action", accessor: "action", minWidth: 170 },
     ];
 
     const handleToggleChange = async (newState: boolean, id: number) => {
@@ -38,16 +36,16 @@ const PopupData = () => {
                 );
 
                 if (otherActivePopup) {
-                    toast.error('Only one popup can be active at a time.');
+                    toast.error("Only one popup can be active at a time.");
 
                     return;
                 }
             }
 
-            await Popup.update('popup', { status: newState }, id);
+            await Popup.update("popup", { status: newState }, id);
             fetchData();
         } catch (error) {
-            console.error('Failed to update popup status:', error);
+            console.error("Failed to update popup status:", error);
         }
     };
 
@@ -94,7 +92,7 @@ const PopupData = () => {
 
     const handleDelete = async () => {
         if (itemToDelete !== null) {
-            await Popup.deleteItem('popup', itemToDelete);
+            await Popup.deleteItem("popup", itemToDelete);
             setShowConfirmation(false);
 
             fetchData();

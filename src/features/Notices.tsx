@@ -1,12 +1,11 @@
 "use client";
 
-import Button from "@/components/Button";
-import Upload from "@/components/fields/Upload";
-import Overlay from "@/components/Overlay";
-import React, { useEffect, useState } from "react";
-import ApplyNow from "./ApplyNow";
-import { useSelector } from "react-redux";
 import Notice from "@/api/notice";
+import Button from "@/components/Button";
+import Overlay from "@/components/Overlay";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import ApplyNow from "./ApplyNow";
 
 // Define types for our data
 
@@ -39,7 +38,6 @@ const Notices = ({
     const careerNoticeData = noticesData.filter(
         (item: any) => item?.documentType === "Career Notice"
     );
-    console.log("careerNoticeData", careerNoticeData);
 
     return (
         <div
@@ -64,7 +62,6 @@ export default Notices;
 const Items = ({ date, title, link, variant = "notice", id }: any) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [jobId, setJobId] = useState<number | null>(null);
-    console.log("jobId", jobId);
 
     return (
         <>

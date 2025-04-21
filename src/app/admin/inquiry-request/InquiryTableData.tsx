@@ -6,8 +6,6 @@ import ConfirmationAlert from "@/components/ConfirmationAlert";
 import DataTable from "@/components/DataTable";
 import Overlay from "@/components/Overlay";
 import SvgIcon from "@/components/SvgIcon";
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -37,8 +35,6 @@ const InquiryTableData = () => {
             console.error("Error fetching applies:", error);
         }
     };
-
-    console.log("appliesData", appliesData);
 
     useEffect(() => {
         if (!appliesData?.length) {

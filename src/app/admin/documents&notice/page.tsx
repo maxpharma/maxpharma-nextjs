@@ -4,12 +4,12 @@ import Documents from "@/api/notice";
 import ActionButton from "@/components/ActionButton";
 import Dropdown from "@/components/ui/Dropdown";
 
-import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
-import DocumentsData from "./DocumentsData";
-import Input from "@/components/fields/Input";
 import CustomDate from "@/components/fields/CustomDate";
+import Input from "@/components/fields/Input";
 import Upload from "@/components/fields/Upload";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import DocumentsData from "./DocumentsData";
 
 interface DocumentType {
     id: number;
@@ -22,7 +22,6 @@ interface DocumentType {
 const DocumentsPage = () => {
     const [updateIdData, setUpdateIdData] = useState<DocumentType | null>(null);
     const [dropdownValue, setDropdownValue] = useState("");
-    console.log(dropdownValue, "dropdownValue");
     const [loading, setLoading] = useState(false);
 
     const documentOptions = ["Important Notice", "Career Notice"];
@@ -73,8 +72,6 @@ const DocumentsPage = () => {
         updateIdData,
         updateIdData?.type,
     ]);
-
-    console.log(initialValues, "initialValues");
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);

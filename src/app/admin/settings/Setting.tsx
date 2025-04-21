@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { Formik, Form } from "formik";
-import Input from "@/components/fields/Input";
-import Button from "@/components/Button";
 import GeneralSettings from "@/api/generalSettings";
+import Button from "@/components/Button";
+import Input from "@/components/fields/Input";
+import { Form, Formik } from "formik";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const Setting = () => {
@@ -18,8 +18,6 @@ const Setting = () => {
             fetchData();
         }
     }, [settingsData?.length]);
-
-    console.log(settingsData, "settingsData");
 
     const [initialValues, setInitialValues] = useState({
         phoneNumber: "",

@@ -32,8 +32,6 @@ const DashboardPage = () => {
         }
     }, [dashboardData?.length]);
 
-    console.log("dashboardData", dashboardData);
-
     const dummyStats = [
         {
             title: "New Apply Requests",

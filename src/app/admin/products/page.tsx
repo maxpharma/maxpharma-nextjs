@@ -1,29 +1,26 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Overlay from "@/components/Overlay";
-import { Form, Formik } from "formik";
-import Input from "@/components/fields/Input";
-import Button from "@/components/Button";
-import TextArea from "@/components/fields/TextArea";
-import Upload from "@/components/fields/Upload";
-import SpecificationTable from "@/components/fields/SpecificationTable";
-import Products from "@/api/product";
-import ProductsData from "./ProductsData";
-import AddCategory from "./AddCategory";
-import { useSelector } from "react-redux";
 import GeneralSettings from "@/api/generalSettings";
-import { Trash2 } from "lucide-react";
-import Dropdown from "@/components/ui/Dropdown";
-import MyEditor from "@/components/fields/MyEditor";
+import Products from "@/api/product";
+import Button from "@/components/Button";
+import Input from "@/components/fields/Input";
 import MultipleUpload from "@/components/fields/MultipleUpload";
+import MyEditor from "@/components/fields/MyEditor";
+import SpecificationTable from "@/components/fields/SpecificationTable";
+import Overlay from "@/components/Overlay";
+import Dropdown from "@/components/ui/Dropdown";
+import { Form, Formik } from "formik";
+import { Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import AddCategory from "./AddCategory";
+import ProductsData from "./ProductsData";
 
 const ProductPage = () => {
     const [loading, setLoading] = useState(false);
     const [isCategoryOverlayOpen, setIsCategoryOverlayOpen] = useState(false);
     const [isProductFormOpen, setIsProductFormOpen] = useState(false);
     const [updateIdData, setUpdateIdData] = useState<any>(null);
-    console.log("updateIdData", updateIdData);
     const [isEditCategoriesOpen, setIsEditCategoriesOpen] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
 
@@ -60,8 +57,6 @@ const ProductPage = () => {
         type: "Imported Products",
         category: "", // <-- form's category value
     });
-
-    console.log(initialValues.images, "initialValues images");
 
     useEffect(() => {
         // Helper to normalize images to string paths
