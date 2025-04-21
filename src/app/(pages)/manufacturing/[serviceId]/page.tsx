@@ -6,7 +6,7 @@ import GalleryCard from "@/features/GalleryCard";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const ServiceContents = ({ id }: { id: number }) => {
+const ServiceContents = ({ id }: { id: any }) => {
     const { items: servicesData } = useSelector(
         (state: any) => state.services || []
     );

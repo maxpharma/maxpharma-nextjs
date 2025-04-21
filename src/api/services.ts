@@ -24,7 +24,7 @@ const create = async (data: any) => {
     }
 };
 
-const get = async (id?: number) => {
+const get = async (id?: any) => {
     try {
         const config: ReturnType = {
             url: `services?categoryId=${id}`,
