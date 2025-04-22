@@ -2,7 +2,6 @@
 
 import Documents from "@/api/notice";
 import ActionButton from "@/components/ActionButton";
-import Dropdown from "@/components/ui/Dropdown";
 
 import CustomDate from "@/components/fields/CustomDate";
 import Input from "@/components/fields/Input";
@@ -10,6 +9,7 @@ import Upload from "@/components/fields/Upload";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import DocumentsData from "./DocumentsData";
+import Dropdown from "@/components/fields/Dropdown";
 
 interface DocumentType {
     id: number;
@@ -21,17 +21,15 @@ interface DocumentType {
 
 const DocumentsPage = () => {
     const [updateIdData, setUpdateIdData] = useState<DocumentType | null>(null);
-    const [dropdownValue, setDropdownValue] = useState("");
     const [loading, setLoading] = useState(false);
 
     const documentOptions = ["Important Notice", "Career Notice"];
 
-    const handleDocumentTypeChange = (selectedOption: string) => {
-        setDropdownValue(selectedOption);
-    };
     const [initialValues, setInitialValues] = useState({
         title: "",
         type: "",
+
+        documentType: "",
         date: "",
         file: {
             base64: "",
@@ -47,24 +45,24 @@ const DocumentsPage = () => {
             setInitialValues({
                 title: updateIdData?.title,
                 type: updateIdData?.type,
+                documentType: updateIdData?.type,
                 date: updateIdData?.date,
                 file: {
                     base64: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${updateIdData?.file}`,
                     extension: updateIdData?.file.split(".").pop() || "",
                 },
             });
-            setDropdownValue(updateIdData?.type);
         } else {
             setInitialValues({
                 title: "",
                 type: "",
+                documentType: "",
                 date: "",
                 file: {
                     base64: "",
                     extension: "",
                 },
             });
-            setDropdownValue("");
         }
     }, [
         updateIdData?.id,
@@ -78,7 +76,7 @@ const DocumentsPage = () => {
 
         const payload = {
             title: values.title,
-            documentType: dropdownValue,
+            documentType: values.documentType,
             date: values.date,
             file: {
                 base64: values.file.base64,
@@ -117,13 +115,13 @@ const DocumentsPage = () => {
                                     label='Document Type'
                                     options={documentOptions}
                                     placeholder='Select Document Type'
-                                    className='w-1/2'
+                                    className='flex-1'
                                 />
                                 <Input
                                     name='title'
                                     label='Title'
                                     placeholder='Enter title'
-                                    className='w-1/2'
+                                    className='flex-1'
                                 />
                             </div>
                             <div className='flex gap-4'>
