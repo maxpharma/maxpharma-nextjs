@@ -29,8 +29,6 @@ const Banner: React.FC<BannerProps> = ({
         (state: any) => state.banners
     );
 
-    console.log("loading state", skeleton);
-
     useEffect(() => {
         if (!banners?.length) fetchBanner();
     }, [banners?.length]);

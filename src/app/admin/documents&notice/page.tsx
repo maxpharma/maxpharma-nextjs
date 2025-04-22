@@ -113,12 +113,11 @@ const DocumentsPage = () => {
                         <Form onSubmit={handleSubmit}>
                             <div className='flex gap-4'>
                                 <Dropdown
+                                    name='documentType'
                                     label='Document Type'
                                     options={documentOptions}
                                     placeholder='Select Document Type'
-                                    onChange={handleDocumentTypeChange}
                                     className='w-1/2'
-                                    value={dropdownValue}
                                 />
                                 <Input
                                     name='title'

@@ -1,28 +1,11 @@
-import { fetchByKey } from "@/utils/fetch";
-import { Metadata } from "next";
 import { ToastContainer } from "react-toastify";
 import ClientLayout from "./client-layout";
 import "./globals.css";
 import Providers from "./providers";
+import { getSeoMetadata } from "@/utils/seo";
 
-export async function generateMetadata(): Promise<Metadata> {
-    // const data: any = await fetchByKey("homeSeo");
-
-    // const parsedData = JSON.parse(data?.value || "{}");
-
-    return {
-        // title: {
-        //     default: parsedData?.title || "Max Pharma",
-        //     template: `%s - ${parsedData?.title}`,
-        // },
-        // description: parsedData?.description,
-        // keywords: parsedData?.keywords,
-        icons: {
-            icon: "/favicon.ico",
-            apple: "/favicon.ico",
-            shortcut: "/favicon.ico",
-        },
-    };
+export async function generateMetadata() {
+    return await getSeoMetadata("homeSeo");
 }
 
 export default function RootLayout({

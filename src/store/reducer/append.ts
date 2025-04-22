@@ -10,7 +10,6 @@ const append = ({
     draft: any;
 }) => {
     if (!!loadingState) {
-        // Handle shape with items array (pagination-type object)
         if (draft?.items) {
             if (Array.isArray(data?.items)) {
                 return {
@@ -35,11 +34,10 @@ const append = ({
             };
         }
     } else {
-        // Handle plain array-style append
         const safeOldData = Array.isArray(oldData) ? oldData : [];
         const safeNewData = Array.isArray(data) ? data : [data];
         return [...safeOldData, ...safeNewData];
     }
 };
 
-export default append
+export default append;

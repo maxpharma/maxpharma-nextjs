@@ -131,7 +131,7 @@ const ProductDetailPage = () => {
                     <Products limit={4} />
                 </section>
                 <div className='mt-16'>
-                    <Faqs type='productFAQs' />
+                    <Faqs type='Product' />
                 </div>
             </div>
             {isOverlayOpen && (

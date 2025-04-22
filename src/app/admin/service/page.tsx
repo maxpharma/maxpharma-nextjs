@@ -2,43 +2,88 @@
 
 import GeneralSettings from "@/api/generalSettings";
 import Services from "@/api/services";
-import Button from "@/components/Button";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import AddServiceCategory from "./AddServiceCategory";
+import { FieldArray, Form, Formik } from "formik";
 import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
 import Upload from "@/components/fields/Upload";
-import Overlay from "@/components/Overlay";
-import { FieldArray, Form, Formik } from "formik";
-import { Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import AddServiceCategory from "./AddServiceCategory";
+import Button from "@/components/Button";
+import { select } from "framer-motion/client";
 
 const ServicePage = () => {
-    const { data: serviceCategoriesRaw } = useSelector(
-        (state: any) => state.serviceCategories || {}
-    );
-    const serviceCategories = Array.isArray(serviceCategoriesRaw)
-        ? serviceCategoriesRaw
-        : [];
-
-    const { items: servicesData } = useSelector(
-        (state: any) => state.services || []
-    );
-
     const [loading, setLoading] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<any>(null);
+    const [selectedCategoryId, setSelectedCategoryId] = useState(1);
+
+    const { data: serviceCategories } = useSelector(
+        (state: any) => state.serviceCategories
+    );
+
+    const fetchServiceCategories = async () => {
+        await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
+    };
+
+    useEffect(() => {
+        if (!serviceCategories?.length) {
+            fetchServiceCategories();
+        }
+    }, [serviceCategories?.length]);
+
+    useEffect(() => {
+        if (serviceCategories?.length) {
+            setSelectedCategoryId(serviceCategories[0]?.id || 1);
+        }
+    }, [serviceCategories?.length, serviceCategories]);
+
+    const selectedCategoryData = Array.isArray(serviceCategories)
+        ? serviceCategories.find((item: any) => item.id === selectedCategoryId)
+        : null;
+
+    const [currentService, setCurrentService] = useState({
+        title: "",
+        description: "",
+        files: [],
+    });
+
     const [initialValues, setInitialValues] = useState({
         title: "",
         description: "",
         files: [],
     });
 
+    const fetchServiceDataById = async () => {
+        const response = await Services.getbyId(
+            selectedCategoryData?.infos?.serviceId
+        );
+        setCurrentService(response);
+    };
+
     useEffect(() => {
-        if (servicesData?.length) {
+        if (!currentService) {
+            fetchServiceDataById();
+        }
+    }, [currentService]);
+
+    useEffect(() => {
+        if (!!selectedCategoryData?.infos?.serviceId) {
+            console.log(
+                "Fetching service data for serviceId:",
+                selectedCategoryData.infos.serviceId
+            );
+            fetchServiceDataById();
+        }
+    }, [selectedCategoryData?.infos?.serviceId, selectedCategoryId]);
+
+    useEffect(() => {
+        if (!!selectedCategoryData?.infos?.serviceId) {
             setInitialValues({
-                title: servicesData[0]?.title || "",
-                description: servicesData[0]?.description || "",
-                files: servicesData[0]?.files || [],
+                title: currentService?.title || "",
+                description: currentService?.description || "",
+                files: currentService?.files || [],
             });
         } else {
             setInitialValues({
@@ -47,158 +92,78 @@ const ServicePage = () => {
                 files: [],
             });
         }
-    }, [servicesData, selectedCategory?.id]);
-
-    const [isEditCategoriesOpen, setIsEditCategoriesOpen] = useState(false);
-    const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
-    const [deleteLoading, setDeleteLoading] = useState<number | null>(null);
-
-    const fetchCategories = async () => {
-        await GeneralSettings.getByGroup(
-            "serviceCategories",
-            "serviceCategories"
-        );
-    };
-
-    const fetchServicesData = async () => {
-        await Services.get(selectedCategory?.id);
-    };
-
-    useEffect(() => {
-        if (selectedCategory?.id) {
-            fetchServicesData();
-        }
-    }, [selectedCategory, selectedCategory?.id]);
-
-    useEffect(() => {
-        if (!serviceCategories.length) {
-            fetchCategories();
-        }
-    }, [serviceCategories.length]);
-
-    useEffect(() => {
-        if (serviceCategories.length && !selectedCategory) {
-            setSelectedCategory(serviceCategories[0]);
-        }
-    }, [serviceCategories, selectedCategory]);
-
-    const handleCategoryClick = (category: any) => {
-        setSelectedCategory(category);
-    };
+    }, [currentService, selectedCategoryId]);
 
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
+
         const payload = {
-            title: values.title,
-            description: values.description,
+            categoryId: selectedCategoryId,
+            title: values.title || initialValues.title,
+            description: values.description || initialValues.description,
             files: values.files.map((file: any) => ({
                 extension: file?.extension,
                 base64: file?.base64,
-            })),
-            categoryId: selectedCategory?.id,
+            })) || [...initialValues.files],
         };
 
         try {
-            await Services.create(payload);
+            if (selectedCategoryData?.infos?.serviceId) {
+                await Services.update(
+                    payload,
+                    selectedCategoryData?.infos?.serviceId
+                );
+            } else {
+                const response = await Services.create(payload);
+                const serviceId = response?.id;
+                const categoryPayload = {
+                    group: "serviceCategories",
+                    key: Date.now().toString(),
+                    value: selectedCategoryData?.value,
+                    infos: {
+                        ...selectedCategoryData?.infos,
+                        serviceId: serviceId,
+                    },
+                };
+                await GeneralSettings.update(
+                    "serviceCategories",
+                    categoryPayload,
+                    selectedCategoryId
+                );
+            }
+
             resetForm();
         } catch (error) {
-            console.error("Error creating service:", error);
-        }
-        setLoading(false);
-    };
-
-    const handleDeleteCategory = async (id: number) => {
-        setDeleteLoading(id);
-        try {
-            await GeneralSettings.remove("serviceCategories", id);
-            await fetchCategories();
-        } catch (err) {
-            console.error("Error deleting category:", err);
+            console.error("Error adding service:", error);
         } finally {
-            setDeleteLoading(null);
+            setLoading(false);
         }
     };
 
     return (
-        <div className='space-y-6'>
-            <h1>Add Services</h1>
-
-            <div className='space-y-4 mb-6'>
-                <div className='flex gap-2 flex-1 h-fit'>
-                    <button
-                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1 whitespace-nowrap'
-                        onClick={() => setIsEditCategoriesOpen(true)}
-                    >
-                        Edit Categories
-                    </button>
-                    <button
-                        className='py-1 px-3 text-sm rounded-full border border-primary text-primary flex items-center gap-1 whitespace-nowrap'
-                        onClick={() => setIsAddCategoryOpen(true)}
-                    >
-                        Add Category
-                        <span className='ml-1 text-xl'>+</span>
-                    </button>
-                </div>
-                <div className='flex flex-wrap gap-2 items-center'>
-                    {serviceCategories.map((category: any) => (
-                        <button
-                            key={category.id}
-                            className={`px-4 py-2 rounded-md ${
-                                selectedCategory?.id === category.id
-                                    ? "active-button"
-                                    : "inactive-button"
-                            }`}
-                            onClick={() => handleCategoryClick(category)}
-                        >
-                            {category?.value}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Edit Categories Overlay */}
-            {isEditCategoriesOpen && (
-                <Overlay
-                    isOpen={isEditCategoriesOpen}
-                    onClose={() => setIsEditCategoriesOpen(false)}
-                >
-                    <div className='space-y-4 min-w-[300px]'>
-                        <h2 className='text-lg font-semibold mb-2'>
-                            Edit Service Categories
-                        </h2>
-                        <ul className='divide-y'>
-                            {(serviceCategories || []).map((cat: any) => (
-                                <li
-                                    key={cat.id}
-                                    className='flex items-center justify-between py-2'
-                                >
-                                    <span>{cat.value}</span>
-                                    <button
-                                        onClick={() =>
-                                            handleDeleteCategory(cat.id)
-                                        }
-                                        disabled={deleteLoading === cat.id}
-                                        className='text-red-500 hover:text-red-700'
-                                        title='Delete'
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
-                                </li>
-                            ))}
-                        </ul>
-                        <div className='flex justify-end'>
-                            <Button
-                                type='button'
-                                onClick={() => setIsEditCategoriesOpen(false)}
-                                variant='submit'
+        <div className='space-y-8'>
+            <AddServiceCategory />
+            <div>
+                {serviceCategories?.length > 0 && (
+                    <div className='flex gap-2 flex-1 h-fit'>
+                        {serviceCategories.map((category: any) => (
+                            <button
+                                key={category.id}
+                                className={`px-4 py-2 rounded-md ${
+                                    selectedCategoryId === category.id
+                                        ? "active-button"
+                                        : "inactive-button"
+                                }`}
+                                onClick={() =>
+                                    setSelectedCategoryId(category.id)
+                                }
                             >
-                                Close
-                            </Button>
-                        </div>
+                                {category?.value}
+                            </button>
+                        ))}
                     </div>
-                </Overlay>
-            )}
-
+                )}
+            </div>
             <Formik
                 initialValues={initialValues}
                 onSubmit={submitHandler}
@@ -208,7 +173,7 @@ const ServicePage = () => {
                     <Input
                         name='title'
                         placeholder='Title'
-                        label={selectedCategory?.value}
+                        label='Title'
                         type='text'
                     />
 
@@ -248,21 +213,13 @@ const ServicePage = () => {
 
                     <div className='flex justify-end'>
                         <Button variant='submit' loading={loading}>
-                            {servicesData?.length ? "Update" : "Add Service"}
+                            {selectedCategoryData?.infos?.serviceId
+                                ? "Update"
+                                : "Create"}
                         </Button>
                     </div>
                 </Form>
             </Formik>
-
-            {/* AddServiceCategory Overlay */}
-            <AddServiceCategory
-                isOpen={isAddCategoryOpen}
-                onClose={() => setIsAddCategoryOpen(false)}
-                onCategoryAdded={() => {
-                    setIsAddCategoryOpen(false);
-                    fetchCategories();
-                }}
-            />
         </div>
     );
 };

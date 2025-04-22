@@ -1,18 +1,36 @@
 import Inquiry from "@/api/Inquiry";
+import Products from "@/api/product";
 import Button from "@/components/Button";
+import Dropdown from "@/components/fields/Dropdown";
 import Input from "@/components/fields/Input";
 import PhoneInput from "@/components/fields/Phone";
 import TextArea from "@/components/fields/TextArea";
 import { Form, Formik } from "formik";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const SendInquiry = ({ onSuccess }: { onSuccess?: () => void }) => {
+interface SendInquiryProps {
+    varient?: "extra";
+    onSuccess?: () => void; // <-- Add this line
+}
+
+const SendInquiry = ({ varient, onSuccess }: SendInquiryProps) => {
     const [loading, setLoading] = useState(false);
 
     const pathname = usePathname();
 
     const productId = pathname.split("/").pop() || null;
+
+    const { items: ProductsData } = useSelector((state: any) => state.products);
+
+    const fetchData = async () => {
+        await Products.get();
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, [productId]);
 
     const initialValues = {
         name: "",
@@ -20,6 +38,7 @@ const SendInquiry = ({ onSuccess }: { onSuccess?: () => void }) => {
         email: "",
         location: "",
         message: "",
+        product: varient === "extra" ? "" : undefined,
     };
 
     const submitHandler = async (values: any, { resetForm }: any) => {
@@ -29,13 +48,18 @@ const SendInquiry = ({ onSuccess }: { onSuccess?: () => void }) => {
             phone: values?.phone,
             email: values?.email,
             location: values?.location,
-            productId: productId,
+            productId:
+                varient === "extra"
+                    ? ProductsData?.find(
+                          (item: any) => item.name === values?.product
+                      )?.id
+                    : productId,
             message: values?.message,
         };
         try {
             await Inquiry.create(payload);
             resetForm();
-            if (onSuccess) onSuccess();
+            if (onSuccess) onSuccess(); // <-- Call onSuccess after successful submit
         } catch (error) {
             console.error("Error submitting inquiry:", error);
         }
@@ -80,6 +104,17 @@ const SendInquiry = ({ onSuccess }: { onSuccess?: () => void }) => {
                             className='flex-1'
                         />
                     </div>
+                    {varient === "extra" && (
+                        <Dropdown
+                            name='product' // <-- Add this line
+                            options={ProductsData?.map(
+                                (item: any) => item.name
+                            )}
+                            label='Select Product'
+                            placeholder='Select Product'
+                            className='mb-4'
+                        />
+                    )}
                     <TextArea
                         name='message'
                         label='Message'

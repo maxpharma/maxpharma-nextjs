@@ -7,30 +7,34 @@ import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 interface FaqsProps {
-    type: "homeFAQs" | "contactFAQs" | "productFAQs";
+    type: "Home" | "Contact" | "Product";
 }
 
-const Faqs = ({ type = "homeFAQs" }: FaqsProps) => {
+const Faqs = ({ type = "Home" }: FaqsProps) => {
     const router = useRouter();
-    const data = [
-        {
-            question: "What is the return policy?",
-            answer: "You can return any item within 30 days of purchase for a full refund. You can return any item within 30 days of purchase for a full refund.",
-        },
-    ];
 
-    const { data: faqsData } = useSelector((state: any) => state[type]);
+    const { data: faqsData } = useSelector((state: any) => state.faqs);
 
-    const fetchData = async () => {
-        await GeneralSettings.getByGroup(type, type);
-    };
+    const faqsArray = Array.isArray(faqsData) ? faqsData : [];
+
+    const filteredData =
+        faqsArray.filter((item: any) => item?.value === type) || [];
+
+    const infos =
+        filteredData.length > 0
+            ? filteredData.reduce((acc: Record<string, string>, item: any) => {
+                  if (item?.infos?.question && item?.infos?.answer) {
+                      acc[item.infos.question] = item.infos.answer;
+                  }
+                  return acc;
+              }, {})
+            : {};
 
     useEffect(() => {
-        fetchData();
-    }, [router]);
-
-    // Extract infos object from faqsData
-    const infos = faqsData && faqsData.length > 0 ? faqsData[0].infos : {};
+        if (!faqsArray.length) {
+            GeneralSettings.getByGroup("faqs", "faqs");
+        }
+    }, [faqsArray.length, type]);
 
     return (
         <div className='space-y-2'>

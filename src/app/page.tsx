@@ -1,5 +1,6 @@
 "use client";
 
+import ScrollReveal from "@/components/animation/ScrollReveal";
 import Banner from "@/components/Banner";
 import Button from "@/components/Button";
 import CustomImage from "@/components/CustomImage";
@@ -24,53 +25,67 @@ const Page = () => {
             <div className='custom-container mt-4 flex flex-col gap-4 md:gap-16'>
                 <Banner />
 
-                <AboutUs />
-                <AdvertisementBanner />
+                <ScrollReveal>
+                    <AboutUs />
+                </ScrollReveal>
+                <ScrollReveal>
+                    <AdvertisementBanner />
+                </ScrollReveal>
 
-                <section className='space-y-4'>
-                    <h1>Our Products</h1>
-                    <Categories />
-                    <Products />
-                </section>
+                <ScrollReveal>
+                    <section className='space-y-4'>
+                        <h1>Our Products</h1>
+                        <Categories />
+                        <Products />
+                    </section>
+                </ScrollReveal>
 
-                <section className='space-y-4  mt-8'>
-                    <h1>Latest Notices</h1>
-                    <Notices limit={3} />
-                </section>
+                <ScrollReveal>
+                    <section className='space-y-4  mt-8'>
+                        <h1>Latest Notices</h1>
+                        <Notices limit={3} />
+                    </section>
+                </ScrollReveal>
 
-                <section className='bg-light-primary rounded-2xl px-4 py-8'>
-                    <div className='flex max-sm:flex-col items-center justify-between'>
-                        <div className='flex flex-col gap-4 md:gap-8  max-w-2xl'>
-                            <div className='text-lg md:text-2xl lg:text-4xl font-semibold'>
-                                Caring For Your Health, Every Step Of The Way
+                <ScrollReveal>
+                    <section className='bg-light-primary rounded-2xl px-4 py-8'>
+                        <div className='flex max-sm:flex-col items-center justify-between'>
+                            <div className='flex flex-col gap-4 md:gap-8  max-w-2xl'>
+                                <div className='text-lg md:text-2xl lg:text-4xl font-semibold'>
+                                    Caring For Your Health, Every Step Of The
+                                    Way
+                                </div>
+                                <p>
+                                    From trusted medications to expert
+                                    healthcare guidance—your wellness is our
+                                    priority. Got questions? We’re here to help!
+                                </p>
+                                <Button>Let&apos;s Talk</Button>
                             </div>
-                            <p>
-                                From trusted medications to expert healthcare
-                                guidance—your wellness is our priority. Got
-                                questions? We’re here to help!
-                            </p>
-                            <Button>Let&apos;s Talk</Button>
+                            <div className='ml-auto'>
+                                <CustomImage
+                                    src='/images/ad-banner.png'
+                                    className='w-48 h-48 md:w-64 md:h-64 '
+                                />
+                            </div>
                         </div>
-                        <div className='ml-auto'>
-                            <CustomImage
-                                src='/images/ad-banner.png'
-                                className='w-48 h-48 md:w-64 md:h-64 '
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section className='space-y-4'>
-                    <Faqs type='homeFAQs' />
-                </section>
-
-                <section>
-                    <BottomBanners />
-                </section>
-
-                <section>
-                    <ContactUs />
-                </section>
+                    </section>
+                </ScrollReveal>
+                <ScrollReveal>
+                    <section className='space-y-4'>
+                        <Faqs type='Home' />
+                    </section>
+                </ScrollReveal>
+                <ScrollReveal>
+                    <section>
+                        <BottomBanners />
+                    </section>
+                </ScrollReveal>
+                <ScrollReveal>
+                    <section>
+                        <ContactUs />
+                    </section>
+                </ScrollReveal>
             </div>
         </>
     );

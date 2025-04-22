@@ -2,19 +2,16 @@ import GeneralSettings from "@/api/generalSettings";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import Overlay from "@/components/Overlay";
+import Categories from "@/features/Categories";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
-const AddServiceCategory = ({
-    isOpen,
-    onClose,
-    onCategoryAdded,
-}: {
-    isOpen: boolean;
-    onClose: () => void;
-    onCategoryAdded: () => void;
-}) => {
+const AddServiceCategory = () => {
     const [loading, setLoading] = useState(false);
+    const [addCategoryOverlayOpen, setAddCategoryOverlayOpen] = useState(false);
+    const [deleteCategoryOverlayOpen, setDeleteCategoryOverlayOpen] =
+        useState(false);
     const initialValues = {
         category: "",
     };
@@ -24,14 +21,26 @@ const AddServiceCategory = ({
 
         const payload = {
             group: "serviceCategories",
-            key: values.category,
+            key: Date.now().toString(),
+
             value: values.category,
+            infos: {
+                state:
+                    values.category
+                        .split(" ")
+                        .map((word: string, idx: any) =>
+                            idx === 0
+                                ? word.charAt(0).toLowerCase() + word.slice(1)
+                                : word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join("") + "Seo",
+                seoUrl: values.category.replace(/\s+/g, "-").toLowerCase(),
+            },
         };
 
         try {
             await GeneralSettings.create("serviceCategories", payload);
             resetForm();
-            onCategoryAdded();
         } catch (error: any) {
             if (
                 error instanceof Error &&
@@ -40,7 +49,6 @@ const AddServiceCategory = ({
                 )
             ) {
                 resetForm();
-                onCategoryAdded();
             } else {
                 console.error("Error adding service category:", error);
             }
@@ -49,10 +57,57 @@ const AddServiceCategory = ({
         }
     };
 
+    // Service Categories
+
+    const { data: serviceCategories } = useSelector(
+        (state: any) => state.serviceCategories || []
+    );
+
+    const fetchCategories = async () => {
+        await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
+    };
+
+    useEffect(() => {
+        if (!serviceCategories?.length) {
+            fetchCategories();
+        }
+    }, [serviceCategories?.length]);
+
+    const handleDeleteCategory = async (categoryId: any) => {
+        setLoading(true);
+        try {
+            await GeneralSettings.remove("serviceCategories", categoryId);
+        } catch (error: any) {
+            console.error("Error deleting service category:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <>
-            {isOpen && (
-                <Overlay isOpen={isOpen} onClose={onClose}>
+        <div>
+            <div className='flex  gap-4'>
+                <button
+                    className='active-button'
+                    onClick={() => setDeleteCategoryOverlayOpen(true)}
+                >
+                    Edit Categories
+                </button>
+                <button
+                    className='active-button'
+                    onClick={() => setAddCategoryOverlayOpen(true)}
+                >
+                    + Add Categories
+                </button>
+            </div>
+            {addCategoryOverlayOpen && (
+                <Overlay
+                    isOpen={addCategoryOverlayOpen}
+                    onClose={() => setAddCategoryOverlayOpen(false)}
+                >
                     <div className='space-y-4'>
                         <h1>Add Service Category</h1>
                         <Formik
@@ -71,7 +126,6 @@ const AddServiceCategory = ({
                                     </Button>
                                     <button
                                         type='button'
-                                        onClick={onClose}
                                         className='cancel-button'
                                     >
                                         Cancel
@@ -82,7 +136,40 @@ const AddServiceCategory = ({
                     </div>
                 </Overlay>
             )}
-        </>
+            {deleteCategoryOverlayOpen && (
+                <Overlay
+                    isOpen={deleteCategoryOverlayOpen}
+                    onClose={() => setDeleteCategoryOverlayOpen(false)}
+                >
+                    <div className='space-y-4'>
+                        <h1>Edit Service Categories</h1>
+                        <div className='flex flex-col gap-2 max-h-64 overflow-y-auto'>
+                            {serviceCategories &&
+                            serviceCategories.length > 0 ? (
+                                serviceCategories.map((cat: any) => (
+                                    <div
+                                        key={cat.key}
+                                        className='flex items-center justify-between border-b py-2'
+                                    >
+                                        <span>{cat.value}</span>
+                                        <button
+                                            className='px-3 py-1 bg-red-400 text-white rounded cursor-pointer'
+                                            onClick={() =>
+                                                handleDeleteCategory(cat.id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                ))
+                            ) : (
+                                <div>No categories found.</div>
+                            )}
+                        </div>
+                    </div>
+                </Overlay>
+            )}
+        </div>
     );
 };
 

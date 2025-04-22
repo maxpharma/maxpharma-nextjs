@@ -9,17 +9,20 @@ import Popup from "@/api/popup";
 import CustomImage from "@/components/CustomImage";
 import Image from "next/image";
 import { color } from "@/utils/theme";
+import WebsiteData from "@/features/theme";
 
 interface ClientLayoutProps {
     children: React.ReactNode;
 }
 
 const ClientLayout = ({ children }: ClientLayoutProps) => {
+    const theme = WebsiteData();
+
     useEffect(() => {
         function loadTheme() {
             // Static theme colors for now
-            const primaryColor = "#7D8E23"; // Static primary color (hex)
-            const secondaryColor = "#FFF2FD"; // Static secondary color (hex)
+            const primaryColor = theme.primaryColor;
+            const secondaryColor = theme.secondaryColor;
 
             // Set CSS variables
             document.documentElement.style.setProperty(
@@ -33,7 +36,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         }
 
         loadTheme();
-    }, []);
+    }, [theme.primaryColor, theme.secondaryColor]);
 
     const fetchData = async () => {
         await Popup.getData("popup");

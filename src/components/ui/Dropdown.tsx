@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface SmoothDropdownProps {
     label: string;
@@ -13,10 +13,10 @@ interface SmoothDropdownProps {
 const Dropdown: React.FC<SmoothDropdownProps> = ({
     label,
     options,
-    placeholder = 'Select',
+    placeholder = "Select",
     onChange,
     value,
-    className = '',
+    className = "",
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -54,14 +54,14 @@ const Dropdown: React.FC<SmoothDropdownProps> = ({
                 >
                     <span
                         className={`text-gray-700 ${
-                            !selectedOption ? 'text-gray-500' : ''
+                            !selectedOption ? "text-gray-500" : ""
                         }`}
                     >
                         {selectedOption || placeholder}
                     </span>
                     <ChevronDown
                         className={`w-5 h-5 transition-transform duration-300 ${
-                            isOpen ? 'rotate-180' : ''
+                            isOpen ? "rotate-180" : ""
                         }`}
                     />
                 </button>
@@ -69,8 +69,8 @@ const Dropdown: React.FC<SmoothDropdownProps> = ({
                 <div
                     className={`absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg z-10 transition-all duration-300 ease-in-out overflow-hidden ${
                         isOpen
-                            ? 'max-h-96 opacity-100'
-                            : 'max-h-0 opacity-0 pointer-events-none'
+                            ? "max-h-96 opacity-100"
+                            : "max-h-0 opacity-0 pointer-events-none"
                     }`}
                 >
                     {options.map((option, index) => (

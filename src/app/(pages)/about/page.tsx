@@ -1,28 +1,9 @@
 import AboutUs from "@/features/AboutUs";
-import GalleryCard from "@/features/GalleryCard";
-import { fetchByKey } from "@/utils/fetch";
-import { Metadata } from "next";
-import Image from "next/image";
+import { getSeoMetadata } from "@/utils/seo";
 
-// export async function generateMetadata(): Promise<Metadata> {
-//     const data: any = await fetchByKey("overviewSeo");
-
-//     const parsedData = JSON.parse(data?.value || "{}");
-
-//     return {
-//         title: {
-//             default: parsedData?.title || "checks",
-//             template: "%s | Prabhu Steels",
-//         },
-//         description: parsedData?.description || "Default description",
-//         keywords: parsedData?.keywords || "Default keywords",
-//         icons: {
-//             icon: "/logo.ico",
-//             apple: "/logo.ico",
-//             shortcut: "/logo.ico",
-//         },
-//     };
-// }
+export async function generateMetadata() {
+    return await getSeoMetadata("overviewSeo");
+}
 
 const page = () => {
     return (

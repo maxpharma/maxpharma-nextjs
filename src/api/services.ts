@@ -24,7 +24,7 @@ const create = async (data: any) => {
     }
 };
 
-const get = async (id?: number) => {
+const get = async (id: number | null) => {
     try {
         const config: ReturnType = {
             url: `services?categoryId=${id}`,
@@ -45,6 +45,50 @@ const get = async (id?: number) => {
     }
 };
 
-const Services = { create, get };
+const update = async (data: any, id: number) => {
+    try {
+        const config: ReturnType = {
+            url: `services/${id}`,
+            method: "patch",
+            data,
+            authorization: true,
+            config: {
+                showErr: true,
+                successMsg: "Updated Successfully",
+                store: {
+                    action: "set",
+                    key: "services",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
+
+const getbyId = async (id: number | null) => {
+    try {
+        const config: ReturnType = {
+            url: `services/${id}`,
+            method: "get",
+            authorization: true,
+            config: {
+                showErr: true,
+                store: {
+                    action: "set",
+                    key: "currentService",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
+
+const Services = { create, get, update, getbyId };
 
 export default Services;

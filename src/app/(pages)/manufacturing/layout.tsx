@@ -1,7 +1,6 @@
 "use client";
 
 import GeneralSettings from "@/api/generalSettings";
-import ServiceContents from "@/features/ServiceContents";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";

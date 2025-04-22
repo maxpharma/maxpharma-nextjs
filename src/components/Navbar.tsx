@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import CustomImage from "./CustomImage";
 import Overlay from "./Overlay";
+import Settings from "@/features/settings";
 
 const Navbar = () => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
@@ -24,6 +25,8 @@ const Navbar = () => {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
+
+    const setting = Settings();
 
     // Close mobile menu when screen size increases to desktop
     useEffect(() => {
@@ -106,29 +109,45 @@ const Navbar = () => {
                         <div className='flex lg:w-1/2 items-center gap-2'>
                             <Phone size={16} />
                             <span>
-                                <span className='max-lg:hidden'>Call on:</span>
-                                {websiteData.phoneNumber}
+                                <span className='max-lg:hidden'>Call on: </span>
+                                <a href={`tel:${setting?.phoneNumber}`}>
+                                    {setting?.phoneNumber}
+                                </a>
+                                {setting?.phoneNumberII && (
+                                    <a
+                                        href={`tel:${setting?.phoneNumberII}`}
+                                        className='max-sm:hidden'
+                                    >
+                                        {" "}
+                                        | {setting?.phoneNumberII}
+                                    </a>
+                                )}
                             </span>
                         </div>
                         <div className='flex md:w-1/2 justify-between'>
-                            <div className='flex gap-1 items-center flex-nowrap max-md:hidden'>
-                                <Mail size={16} />
-                                <span>
-                                    <span className='max-lg:hidden'>
-                                        Mail us:
-                                    </span>{" "}
-                                    {websiteData.mail}
-                                </span>
-                            </div>
-                            <div className='flex gap-1 items-center flex-nowrap'>
-                                <MapPin size={16} />
-                                <span>
-                                    <span className='max-lg:hidden'>
-                                        Reach us:
-                                    </span>{" "}
-                                    {websiteData.location}
-                                </span>
-                            </div>
+                            {setting?.mail && (
+                                <div className='flex gap-1 items-center flex-nowrap max-md:hidden'>
+                                    <Mail size={16} />
+                                    <a href={`mailto:${setting?.mail}`}>
+                                        <span className='max-lg:hidden'>
+                                            Mail us:
+                                        </span>{" "}
+                                        {setting?.mail}
+                                    </a>
+                                </div>
+                            )}
+
+                            {setting?.location && (
+                                <div className='flex gap-1 items-center flex-nowrap'>
+                                    <MapPin size={16} />
+                                    <span>
+                                        <span className='max-lg:hidden'>
+                                            Reach us:
+                                        </span>{" "}
+                                        {setting?.location}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </header>
@@ -330,7 +349,10 @@ const Navbar = () => {
                     isOpen={isOverlayOpen}
                     onClose={() => setIsOverlayOpen(false)}
                 >
-                    <SendInquiry />
+                    <SendInquiry
+                        varient='extra'
+                        onSuccess={() => setIsOverlayOpen(false)} // <-- Add this line
+                    />
                 </Overlay>
             )}
         </>

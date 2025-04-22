@@ -27,23 +27,48 @@ const SeoForm = () => {
 
     const formikRef = useRef<FormikProps<FormValues>>(null);
 
-    const { data: storedData } = useSelector(
-        (state: any) => state[selectedPage.state]
+    const { data: serviceCategoriesRaw } = useSelector(
+        (state: any) => state.serviceCategories || {}
     );
 
-    const fetchData = async () => {
-        await GeneralSettings.getByKey(selectedPage.state, selectedPage.state);
+    const fetchServiceCategoriesData = async () => {
+        await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
     };
 
     useEffect(() => {
-        if (storedData) {
-            setInitialValues({
-                title: storedData?.infos?.title || "",
-                description: storedData?.infos?.description || "",
-                keywords: storedData?.infos?.keywords || "",
-            });
+        if (!serviceCategoriesRaw?.length) {
+            fetchServiceCategoriesData();
         }
-    }, [storedData]);
+    }, [serviceCategoriesRaw?.length]);
+
+    const { data: seoData } = useSelector((state: any) => state.seo);
+
+    const serviceCategories = serviceCategoriesRaw?.map((item: any) => ({
+        name: item?.value,
+        state: item?.infos?.state,
+    }));
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup("seo", "seo");
+    };
+
+    useEffect(() => {
+        if (seoData?.length) {
+            const currentSeoData = seoData.find(
+                (item: any) => item.key === selectedPage.state
+            );
+            if (currentSeoData) {
+                setInitialValues({
+                    title: currentSeoData?.infos?.title || "",
+                    description: currentSeoData?.infos?.description || "",
+                    keywords: currentSeoData?.infos?.keywords || "",
+                });
+            }
+        }
+    }, [seoData, selectedPage.state]);
 
     const [initialValues, setInitialValues] = useState<FormValues>({
         title: "",
@@ -58,8 +83,8 @@ const SeoForm = () => {
     const submitHandler = async (values: FormValues, { resetForm }: any) => {
         setLoading(true);
 
-        const isUpdate = !!storedData?.id;
-        const original = storedData || {};
+        const isUpdate = !!seoData?.id;
+        const original = seoData || {};
 
         const payload = {
             group: "seo",
@@ -101,12 +126,9 @@ const SeoForm = () => {
         { name: "Imported Products", state: "importedProductsSeo" },
         { name: "Manufactured Products", state: "manufacturedProductsSeo" },
         { name: "Notice", state: "noticeSeo" },
-        { name: "Production Department", state: "productionDepartmentSeo" },
-        { name: "Quality Assurance", state: "qualityAssuranceSeo" },
-        { name: "Quality Control", state: "qualityControlSeo" },
-        { name: "Store & Logistics", state: "storeAndLogisticsSeo" },
         { name: "Gallery", state: "gallerySeo" },
         { name: "Contact", state: "contactSeo" },
+        ...serviceCategories,
     ];
 
     return (
@@ -149,7 +171,7 @@ const SeoForm = () => {
                             placeholder='Keywords'
                         />
                         <ActionButton type='submit' loading={loading}>
-                            {storedData?.id ? "Update" : "Save"}
+                            {seoData?.id ? "Update" : "Save"}
                         </ActionButton>
                     </Form>
                 )}

@@ -1,12 +1,42 @@
 "use client";
 
+import GeneralSettings from "@/api/generalSettings";
 import Services from "@/api/services";
 import { bucketUrl } from "@/features/data";
 import GalleryCard from "@/features/GalleryCard";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const ServiceContents = ({ id }: { id: any }) => {
+const ServiceContents = ({ slug }: { slug: string }) => {
+    const { data: serviceCategories } = useSelector(
+        (state: any) => state.serviceCategories || []
+    );
+
+    const fetchData = async () => {
+        await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
+    };
+
+    useEffect(() => {
+        if (!serviceCategories?.length) {
+            fetchData();
+        }
+    }, [serviceCategories?.length]);
+
+    const id = serviceCategories?.find(
+        (item: any) =>
+            item.value ===
+            slug
+                .split("-")
+                .map(
+                    (word: string) =>
+                        word.charAt(0).toUpperCase() + word.slice(1)
+                )
+                .join(" ")
+    )?.id;
+
     const { items: servicesData } = useSelector(
         (state: any) => state.services || []
     );
