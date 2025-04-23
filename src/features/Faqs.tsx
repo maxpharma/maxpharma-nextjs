@@ -37,7 +37,7 @@ const Faqs = ({ type = "Home" }: FaqsProps) => {
     }, [faqsArray.length, type]);
 
     return (
-        <div className='space-y-2'>
+        <div className='space-y-2 mx-auto md:max-w-7/10'>
             <h1 className='text-center'>Have a Question?</h1>
             <p className='text-center'>
                 We’ve got answers to the most common queries to help you

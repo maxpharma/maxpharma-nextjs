@@ -1,6 +1,6 @@
 // app/not-found.tsx
-import CustomImage from '@/components/CustomImage';
-import Link from 'next/link';
+import CustomImage from "@/components/CustomImage";
+import Link from "next/link";
 
 export default function NotFound() {
     return (

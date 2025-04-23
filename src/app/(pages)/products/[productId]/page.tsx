@@ -36,7 +36,7 @@ const ProductDetailPage = () => {
 
     return (
         <>
-            <div className='py-6 space-y-8'>
+            <div className='py-6 space-y-8 mx-auto max-w-9/10'>
                 <div className='flex flex-col lg:flex-row gap-8'>
                     <div className='w-full lg:w-1/2'>
                         <div className='flex flex-col sm:flex-row gap-2'>

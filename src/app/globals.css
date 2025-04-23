@@ -6,6 +6,11 @@
     --color-secondary: #fff2fd;
 }
 
+body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 @font-face {
     font-family: "Sansation";
     src: url("/fonts/sansation/Sansation-Regular.ttf") format("truetype");
