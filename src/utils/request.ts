@@ -41,7 +41,7 @@ const request = async (configuration: any) => {
     const defaultHeader: any = {
         "Content-Type": "application/json",
         Accept: "application/json",
-        "Api-Key": process.env.API_KEY,
+        "Api-Key": process.env.NEXT_PUBLIC_API_KEY,
     };
 
     let adminPath = "";
@@ -53,7 +53,6 @@ const request = async (configuration: any) => {
         const user = helper.getUser();
         if (!user?.token) {
             toast.error("No token found");
-            throw new Error("No token found");
         }
         defaultHeader.Authorization = `Bearer ${user?.token}`;
     }
@@ -87,18 +86,30 @@ const request = async (configuration: any) => {
                 toast.error(message);
             }
 
-            if (err?.response?.status === 401 || message == "Unauthorized") {
+            if (
+                err?.response?.status === 401 ||
+                message === "Unauthorized" ||
+                message === "jwt expired"
+            ) {
                 if (
                     isBrowser &&
                     window.location.pathname.startsWith("/admin")
                 ) {
-                    window.location.href = "/admin";
+                    if (
+                        message === "jwt expired" ||
+                        message === "Unauthorized"
+                    ) {
+                        helper.removeUser();
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 700);
+                    }
                 }
             } else {
                 await loadingProcess(config, false);
             }
 
-            throw new Error(message); // ✅ throw the message string, not the whole error
+            throw new Error(message);
         });
 };
 

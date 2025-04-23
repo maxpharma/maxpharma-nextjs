@@ -138,11 +138,7 @@ const Overlay: React.FC<OverlayProps> = ({
             className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center `}
         >
             {/* Backdrop/Background overlay */}
-            <div
-                ref={backdropRef}
-                className='absolute inset-0 bg-black/50'
-                onClick={onClose}
-            />
+            <div ref={backdropRef} className='absolute inset-0 bg-black/50' />
 
             {/* Content container */}
             <div

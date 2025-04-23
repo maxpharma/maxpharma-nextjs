@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFormikContext, getIn } from "formik";
 import { Plus, X } from "lucide-react";
 
@@ -23,14 +23,22 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
 }) => {
     const { values, setFieldValue, touched, errors } = useFormikContext<any>();
     const [specPairs, setSpecPairs] = useState<SpecPair[]>([]);
+    const keyRefs = useRef<{ [id: string]: HTMLTextAreaElement | null }>({});
+    const valueRefs = useRef<{ [id: string]: HTMLTextAreaElement | null }>({});
+
+    // Track if we're currently typing to prevent focus loss
+    const isTyping = useRef(false);
 
     // Get field error and touched state
     const fieldError = getIn(errors, name);
     const fieldTouched = getIn(touched, name);
     const hasError = fieldTouched && fieldError;
 
-    // Initialize with data or empty rows
+    // Initialize with data or empty rows - only on mount or when formik value changes from outside
     useEffect(() => {
+        // Skip this effect if the user is currently typing
+        if (isTyping.current) return;
+
         const fieldValue = values[name] || {};
 
         // Convert fieldValue to SpecPair[]
@@ -73,18 +81,29 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [values[name]]); // Re-run when Formik field value changes
 
-    // Update the Formik field value
+    // Debounced update to Formik value
+    const debouncedUpdateRef = useRef<NodeJS.Timeout | null>(null);
     const updateFormikValue = (newPairs: SpecPair[]) => {
-        const newValue: Record<string, string> = {};
-        newPairs.forEach((pair) => {
-            if (pair.key && pair.key.trim() !== "") {
-                newValue[pair.key] = pair.value;
-            }
-        });
-        setFieldValue(name, newValue);
+        // Clear any pending debounce
+        if (debouncedUpdateRef.current) {
+            clearTimeout(debouncedUpdateRef.current);
+        }
+
+        // Set up a new debounced update
+        debouncedUpdateRef.current = setTimeout(() => {
+            const newValue: Record<string, string> = {};
+            newPairs.forEach((pair) => {
+                if (pair.key && pair.key.trim() !== "") {
+                    newValue[pair.key] = pair.value;
+                }
+            });
+            setFieldValue(name, newValue);
+            debouncedUpdateRef.current = null;
+        }, 300); // Delay Formik updates by 300ms
     };
 
     const handleKeyChange = (id: string, newKey: string) => {
+        isTyping.current = true;
         const updatedPairs = specPairs.map((pair) => {
             if (pair.id === id) {
                 return { ...pair, key: newKey };
@@ -94,9 +113,20 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
 
         setSpecPairs(updatedPairs);
         updateFormikValue(updatedPairs);
+
+        // Resize the textarea after state update
+        setTimeout(() => {
+            const ref = keyRefs.current[id];
+            if (ref) {
+                ref.style.height = "auto";
+                ref.style.height = ref.scrollHeight + "px";
+            }
+            isTyping.current = false;
+        }, 0);
     };
 
     const handleValueChange = (id: string, newValue: string) => {
+        isTyping.current = true;
         const updatedPairs = specPairs.map((pair) => {
             if (pair.id === id) {
                 return { ...pair, value: newValue };
@@ -106,6 +136,16 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
 
         setSpecPairs(updatedPairs);
         updateFormikValue(updatedPairs);
+
+        // Resize the textarea after state update
+        setTimeout(() => {
+            const ref = valueRefs.current[id];
+            if (ref) {
+                ref.style.height = "auto";
+                ref.style.height = ref.scrollHeight + "px";
+            }
+            isTyping.current = false;
+        }, 0);
     };
 
     const handleRemove = (id: string) => {
@@ -140,26 +180,28 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
             },
         ];
         setSpecPairs(newPairs);
-        // No need to update Formik since empty rows don't affect the final value
     };
 
-    // Check if we need to add an empty row at the end
+    // Check for empty rows less frequently - not on every render
     useEffect(() => {
-        // Check if every row has data and add a new empty row if needed
-        const allRowsFilled = specPairs.every((pair) => pair.key !== "");
+        // Skip during typing to prevent focus loss
+        if (isTyping.current) return;
 
-        if (allRowsFilled && specPairs.length > 0) {
-            const newPairs = [
+        const hasEmptyRow = specPairs.some(
+            (pair) => pair.key === "" && pair.value === ""
+        );
+
+        if (!hasEmptyRow && specPairs.length > 0) {
+            setSpecPairs([
                 ...specPairs,
                 {
                     id: `spec-new-${Date.now()}-${specPairs.length}`,
                     key: "",
                     value: "",
                 },
-            ];
-            setSpecPairs(newPairs);
+            ]);
         }
-    }, [specPairs]);
+    }, [specPairs.length]); // Only check when row count changes
 
     return (
         <div className='mb-4'>
@@ -186,7 +228,6 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
                         }`}
                     >
                         <div className='flex-1 flex items-center'>
-                            {/* Use textarea for key (question) with auto-resize */}
                             <textarea
                                 id={`key-${pair.id}`}
                                 className='w-full h-auto min-h-[32px] max-h-40 py-2 px-4 focus:outline-none resize-none'
@@ -194,47 +235,30 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
                                 value={pair.key}
                                 onChange={(e) => {
                                     handleKeyChange(pair.id, e.target.value);
-                                    e.target.style.height = "auto";
-                                    e.target.style.height =
-                                        e.target.scrollHeight + "px";
                                 }}
                                 rows={1}
                                 style={{ overflow: "hidden" }}
                                 ref={(el) => {
-                                    if (el) {
-                                        el.style.height = "auto";
-                                        el.style.height =
-                                            el.scrollHeight + "px";
-                                    }
+                                    keyRefs.current[pair.id] = el;
                                 }}
                             />
                         </div>
                         <div className='w-px bg-gray-200'></div>
                         <div className='flex-1 flex items-center'>
-                            {/* Use textarea for value (answer) with auto-resize */}
                             <textarea
-                                className={`w-full h-auto min-h-[40px] max-h-40 py-2 px-4 focus:outline-none resize-none ${
-                                    !pair.key
-                                        ? "bg-[#f9fbff] text-gray-400"
-                                        : ""
+                                className={`w-full h-auto min-h-[40px] max-h-40 py-2 px-4 focus:outline-none resize-none bg-white ${
+                                    !pair.key ? "text-gray-400" : ""
                                 }`}
                                 placeholder={valuePlaceholder}
                                 value={pair.value}
                                 onChange={(e) => {
                                     handleValueChange(pair.id, e.target.value);
-                                    e.target.style.height = "auto";
-                                    e.target.style.height =
-                                        e.target.scrollHeight + "px";
                                 }}
                                 disabled={!pair.key}
                                 rows={1}
                                 style={{ overflow: "hidden" }}
                                 ref={(el) => {
-                                    if (el) {
-                                        el.style.height = "auto";
-                                        el.style.height =
-                                            el.scrollHeight + "px";
-                                    }
+                                    valueRefs.current[pair.id] = el;
                                 }}
                             />
                         </div>

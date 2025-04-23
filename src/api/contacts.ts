@@ -1,19 +1,19 @@
-import request from '@/utils/request';
-import { ReturnType } from './types';
+import request from "@/utils/request";
+import { ReturnType } from "./types";
 
-const create = async (state: string, data: any) => {
+const create = async (data: any) => {
     try {
         const config: ReturnType = {
             url: `contacts`,
-            method: 'post',
+            method: "post",
             data,
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Created Successfully',
+                successMsg: "Created Successfully",
                 store: {
-                    action: 'prepend',
-                    key: state,
+                    action: "prepend",
+                    key: "contacts",
                 },
             },
         };
@@ -24,18 +24,18 @@ const create = async (state: string, data: any) => {
     }
 };
 
-const getAll = async (state: string) => {
+const getAll = async () => {
     try {
         const config: ReturnType = {
             url: `contacts`,
-            method: 'get',
+            method: "get",
             authorization: true,
             config: {
                 showErr: true,
 
                 store: {
-                    action: 'set',
-                    key: state,
+                    action: "set",
+                    key: "contacts",
                 },
             },
         };
@@ -46,19 +46,19 @@ const getAll = async (state: string) => {
     }
 };
 
-const deleteItem = async (state: string, id: number) => {
+const deleteItem = async (id: number) => {
     try {
         const config: ReturnType = {
             url: `contacts/${id}`,
-            method: 'delete',
+            method: "delete",
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: 'Deleted Successfully',
+                successMsg: "Deleted Successfully",
 
                 store: {
-                    action: 'remove',
-                    key: state,
+                    action: "remove",
+                    key: "contacts",
                 },
             },
         };

@@ -400,6 +400,7 @@ const ProductPage = () => {
                         value={filterType}
                         onChange={setFilterType}
                         placeholder='All Types'
+                        className='w-64'
                     />
                     <Dropdown
                         label='Filter by Category'
@@ -407,6 +408,7 @@ const ProductPage = () => {
                         value={filterCategory}
                         onChange={setFilterCategory}
                         placeholder='All Categories'
+                        className='w-64'
                     />
                 </div>
                 <ProductsData

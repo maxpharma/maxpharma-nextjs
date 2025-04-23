@@ -3,6 +3,7 @@
 import AboutUs from "@/api/aboutUs";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
+import MyEditor from "@/components/fields/MyEditor";
 import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
 import { FieldArray, Form, Formik } from "formik";
@@ -126,7 +127,7 @@ const Overview = ({ type }: { type: string }) => {
                         placeholder='Enter title here'
                         type='text'
                     />
-                    <TextArea
+                    <MyEditor
                         name='description'
                         label='Description'
                         placeholder='Enter description here'

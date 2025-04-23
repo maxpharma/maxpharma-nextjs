@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import Contact from '@/api/contacts';
-import DataTable from '@/components/DataTable';
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { deleteIcon } from '@/assets/svg';
-import SvgIcon from '@/components/SvgIcon';
-import ConfirmationAlert from '@/components/ConfirmationAlert';
+import Contact from "@/api/contacts";
+import DataTable from "@/components/DataTable";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { deleteIcon } from "@/assets/svg";
+import SvgIcon from "@/components/SvgIcon";
+import ConfirmationAlert from "@/components/ConfirmationAlert";
 
 interface ContactItem {
     id: string | number;
@@ -26,7 +26,7 @@ const ContactList = () => {
     );
 
     const fetchData = async () => {
-        await Contact.getAll('contacts');
+        await Contact.getAll();
     };
 
     useEffect(() => {
@@ -43,19 +43,19 @@ const ContactList = () => {
     };
 
     const columns = [
-        { id: 'name', header: 'Name', accessor: 'name', minWidth: 170 },
-        { id: 'phone', header: 'Phone', accessor: 'phone', minWidth: 170 },
-        { id: 'email', header: 'Email', accessor: 'email', minWidth: 170 },
+        { id: "name", header: "Name", accessor: "name", minWidth: 170 },
+        { id: "phone", header: "Phone", accessor: "phone", minWidth: 170 },
+        { id: "email", header: "Email", accessor: "email", minWidth: 170 },
         {
-            id: 'subject',
-            header: 'Subject',
-            accessor: 'subject',
+            id: "subject",
+            header: "Subject",
+            accessor: "subject",
             minWidth: 170,
         },
         {
-            id: 'action',
-            header: 'Actions',
-            accessor: 'action',
+            id: "action",
+            header: "Actions",
+            accessor: "action",
             minWidth: 100,
         },
     ];
@@ -85,7 +85,7 @@ const ContactList = () => {
         }) || [];
 
     const formatDate = (dateString?: string) => {
-        if (!dateString) return 'N/A';
+        if (!dateString) return "N/A";
         return new Date(dateString).toLocaleString();
     };
 
@@ -99,7 +99,7 @@ const ContactList = () => {
 
     const handleDelete = async () => {
         if (itemToDelete !== null) {
-            await Contact.deleteItem('contacts', itemToDelete);
+            await Contact.deleteItem(itemToDelete);
             setShowConfirmation(false);
             // Optionally refresh the data
             fetchData();

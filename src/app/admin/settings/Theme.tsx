@@ -27,9 +27,9 @@ const Theme = () => {
         headerLogo: "",
         footerLogo: "",
         footerText: "",
-        primaryColor: "#FFFFFF",
-        primaryLightColor: "#FFFFFF",
-        secondaryColor: "#FFFFFF",
+        primaryColor: "",
+        primaryLightColor: "",
+        secondaryColor: "",
     });
 
     useEffect(() => {
@@ -38,10 +38,9 @@ const Theme = () => {
                 headerLogo: themeSettings[0]?.header || "",
                 footerLogo: themeSettings[0]?.footer || "",
                 footerText: themeSettings[0]?.footerText || "",
-                primaryColor: themeSettings[0]?.primaryColor || "#FFFFFF",
-                primaryLightColor:
-                    themeSettings[0]?.primaryLightColor || "#FFFFFF",
-                secondaryColor: themeSettings[0]?.secondaryColor || "#FFFFFF",
+                primaryColor: themeSettings[0]?.primaryColor,
+                primaryLightColor: themeSettings[0]?.primaryLightColor,
+                secondaryColor: themeSettings[0]?.secondaryColor,
             });
         }
     }, [themeSettings]);

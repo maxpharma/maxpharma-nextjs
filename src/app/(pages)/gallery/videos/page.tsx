@@ -1,16 +1,14 @@
-'use client';
+"use client";
 
-import GeneralSettings from '@/api/generalSettings';
-import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import GeneralSettings from "@/api/generalSettings";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const VideoPage = () => {
-    const { data: videos } = useSelector(
-        (state: any) => state.videos || { data: [] }
-    );
+    const { data: videos } = useSelector((state: any) => state.videos);
 
     const fetchData = async () => {
-        await GeneralSettings.getByGroup('videos', 'video', '');
+        await GeneralSettings.getByGroup("videos", "videos", "");
     };
 
     useEffect(() => {
@@ -18,6 +16,8 @@ const VideoPage = () => {
             fetchData();
         }
     }, [videos?.length]);
+
+    console.log("videos", videos);
 
     // Function to extract video ID from YouTube URL
     const getYoutubeVideoId = (url: any) => {
@@ -49,7 +49,7 @@ const VideoPage = () => {
                 <div className='w-24 h-1 bg-primary mx-auto'></div>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6'>
+            <div className='grid grid-cols-1 md:grid-cols-2  gap-6'>
                 {validVideos.map((video: any) => {
                     const videoId = getYoutubeVideoId(video.value);
                     if (!videoId) return null;

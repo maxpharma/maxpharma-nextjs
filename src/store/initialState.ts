@@ -171,72 +171,7 @@ const initialState: any = {
         totalItems: 0,
         totalPages: 0,
     },
-    // SEO states matching the `pages` array
-    // homeSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // overviewSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // messageFromChairmanSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // organizationHistorySeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // importedProductsSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // manufacturedProductsSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // noticeSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // productionDepartmentSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // qualityAssuranceSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // qualityControlSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // storeAndLogisticsSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // gallerySeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
-    // contactSeo: {
-    //     data: {},
-    //     loading: true,
-    //     loadingState: true,
-    // },
+
     seo: {
         data: [],
         loading: true,

@@ -2,11 +2,13 @@
 
 import Admin from "@/api/admin";
 import Sidebar from "@/components/Sidebar";
-import websiteData from "@/features/data";
+import websiteData, { bucketUrl } from "@/features/data";
 import helpers from "@/utils/helper";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown } from "lucide-react";
+import SvgIcon from "@/components/SvgIcon";
 
 export default function AdminLayout({
     children,
@@ -91,23 +93,31 @@ export default function AdminLayout({
                     !isPublicRoute ? "flex-1 overflow-auto" : "w-full"
                 } `}
             >
-                <nav className='py-4 px-8 shadow-md bg-white flex justify-end gap-4'>
-                    <button className='button' onClick={() => router.push("/")}>
-                        Visit Website
-                    </button>
-                    <button
-                        className='secondary-button'
-                        onClick={() => router.push(websiteData.inflancerCrm)}
+                <nav className='py-2 px-8 shadow-md bg-white flex items-center justify-end gap-4'>
+                    <a
+                        className='button h-fit'
+                        href={bucketUrl}
+                        target='_blank'
+                        rel='noopener noreferrer'
                     >
-                        Inflancer CRM
-                    </button>
+                        Visit Website
+                    </a>
+                    <a
+                        className='secondary-button h-fit'
+                        href={websiteData.inflancerCrm}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                    >
+                        Visit Website
+                    </a>
+
                     {/* Profile with dropdown */}
                     <div className='relative' ref={profileRef}>
                         <div
                             className='flex items-center gap-2 cursor-pointer select-none'
                             onClick={() => setDropdownOpen((open) => !open)}
                         >
-                            <div className='w-12 h-12 rounded-full overflow-hidden flex items-center justify-center bg-gray-200'>
+                            <div className='w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-gray-200'>
                                 <Image
                                     src='/images/medicine.png'
                                     alt='Admin'
@@ -117,33 +127,29 @@ export default function AdminLayout({
                                 />
                             </div>
                             <span>{user?.name || "Admin Name"}</span>
-                            <svg
-                                className={`w-4 h-4 ml-1 transition-transform ${
+                            <ChevronDown
+                                className={`w-4 h-4 ml-1 transition-transform duration-300 ${
                                     dropdownOpen ? "rotate-180" : ""
                                 }`}
-                                fill='none'
-                                stroke='currentColor'
-                                viewBox='0 0 24 24'
-                                xmlns='http://www.w3.org/2000/svg'
-                            >
-                                <path
-                                    strokeLinecap='round'
-                                    strokeLinejoin='round'
-                                    strokeWidth={2}
-                                    d='M19 9l-7 7-7-7'
-                                />
-                            </svg>
+                            />
                         </div>
-                        {dropdownOpen && (
-                            <div className='absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50'>
-                                <button
-                                    className='block w-full text-left px-4 py-2 hover:bg-gray-100'
-                                    onClick={handleLogout}
-                                >
-                                    Logout
-                                </button>
-                            </div>
-                        )}
+                        <div
+                            className={`absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50 transition-all duration-200 ease-out
+                                ${
+                                    dropdownOpen
+                                        ? "opacity-100 translate-y-0 pointer-events-auto border-primary"
+                                        : "opacity-0 -translate-y-2 pointer-events-none border-transparent"
+                                }
+                            `}
+                            style={{ willChange: "opacity, transform" }}
+                        >
+                            <button
+                                className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </nav>
                 <div className='custom-container py-8'>{children}</div>

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import Gallery from '@/api/gallery';
-import { useSelector } from 'react-redux';
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import Gallery from "@/api/gallery";
+import { useSelector } from "react-redux";
 
 type GalleryImage = {
     id: number;
@@ -12,12 +12,13 @@ type GalleryImage = {
     file: string;
 };
 
+// Simplified types
 type GalleryItem = {
     id: number;
     title: string;
     createdAt: string;
     updatedAt: string;
-    gallery: GalleryImage[];
+    files: string[]; // files is an array of strings (file paths)
 };
 
 type LightboxImage = {
@@ -40,7 +41,7 @@ const PhotoGallery: React.FC = () => {
     const { items: galleryData } = useSelector((state: any) => state.gallery);
 
     const fetchData = async () => {
-        await Gallery.getImage('gallery');
+        await Gallery.getImage("gallery");
     };
 
     useEffect(() => {
@@ -49,13 +50,14 @@ const PhotoGallery: React.FC = () => {
         }
     }, [galleryData]);
 
+    console.log(galleryData, "galleryData");
+
     // Transform gallery image data to the format needed for the lightbox
-    const getGalleryImagesForLightbox = (
-        galleryItem: GalleryItem
-    ): LightboxImage[] => {
-        return galleryItem.gallery.map((img) => ({
-            src: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${img.file}`,
-            alt: `${galleryItem.title} - Image`,
+    // Use 'any' for galleryItem if you want to avoid strict typing
+    const getGalleryImagesForLightbox = (galleryItem: any): LightboxImage[] => {
+        return (galleryItem.files || []).map((file: string, idx: number) => ({
+            src: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`,
+            alt: `${galleryItem.title} - Image ${idx + 1}`,
             galleryId: galleryItem.id,
         }));
     };
@@ -73,7 +75,7 @@ const PhotoGallery: React.FC = () => {
         setCurrentGalleryImages(getGalleryImagesForLightbox(galleryItem));
         setLightboxOpen(true);
         // Prevent scrolling when lightbox is open
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = "hidden";
     };
 
     const closeLightbox = (): void => {
@@ -81,11 +83,11 @@ const PhotoGallery: React.FC = () => {
         setSelectedImage(null);
         setCurrentGalleryImages([]);
         // Restore scrolling
-        document.body.style.overflow = 'auto';
+        document.body.style.overflow = "auto";
     };
 
     // Handle navigating through images in the lightbox
-    const navigate = (direction: 'prev' | 'next'): void => {
+    const navigate = (direction: "prev" | "next"): void => {
         if (!selectedImage || currentGalleryImages.length === 0) return;
 
         const currentIndex = currentGalleryImages.findIndex(
@@ -93,7 +95,7 @@ const PhotoGallery: React.FC = () => {
         );
         let newIndex: number;
 
-        if (direction === 'next') {
+        if (direction === "next") {
             newIndex = (currentIndex + 1) % currentGalleryImages.length;
         } else {
             newIndex =
@@ -109,13 +111,13 @@ const PhotoGallery: React.FC = () => {
         if (!lightboxOpen) return;
 
         switch (e.key) {
-            case 'ArrowLeft':
-                navigate('prev');
+            case "ArrowLeft":
+                navigate("prev");
                 break;
-            case 'ArrowRight':
-                navigate('next');
+            case "ArrowRight":
+                navigate("next");
                 break;
-            case 'Escape':
+            case "Escape":
                 closeLightbox();
                 break;
             default:
@@ -140,9 +142,9 @@ const PhotoGallery: React.FC = () => {
         const isRightSwipe = distance < -50;
 
         if (isLeftSwipe) {
-            navigate('next');
+            navigate("next");
         } else if (isRightSwipe) {
-            navigate('prev');
+            navigate("prev");
         }
 
         // Reset values
@@ -153,10 +155,10 @@ const PhotoGallery: React.FC = () => {
     // Format date for display
     const formatDate = (dateString: string): string => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
+        return date.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
         });
     };
 
@@ -178,23 +180,22 @@ const PhotoGallery: React.FC = () => {
 
                         {/* Gallery Grid for each category */}
                         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8'>
-                            {galleryItem.gallery.map((image, index) => {
-                                const imageUrl = getImageUrl(image.file);
-                                const lightboxImage: LightboxImage = {
-                                    src: imageUrl,
-                                    alt: `${galleryItem.title} - Image ${
-                                        index + 1
-                                    }`,
-                                    galleryId: galleryItem.id,
-                                };
+                            {galleryItem.files.map((file, index) => {
+                                const imageUrl = getImageUrl(file);
 
                                 return (
                                     <div
-                                        key={image.id}
+                                        key={file}
                                         className='cursor-pointer overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300'
                                         onClick={() =>
                                             openLightbox(
-                                                lightboxImage,
+                                                {
+                                                    src: imageUrl,
+                                                    alt: `${
+                                                        galleryItem.title
+                                                    } - Image ${index + 1}`,
+                                                    galleryId: galleryItem.id,
+                                                },
                                                 galleryItem
                                             )
                                         }
@@ -258,7 +259,7 @@ const PhotoGallery: React.FC = () => {
                         {/* Navigation buttons */}
                         <div className='absolute left-1 sm:left-4 md:left-8 z-10'>
                             <button
-                                onClick={() => navigate('prev')}
+                                onClick={() => navigate("prev")}
                                 className='bg-black bg-opacity-50 text-white hover:text-gray-300 focus:outline-none p-2 rounded-full cursor-pointer'
                                 aria-label='Previous image'
                             >
@@ -268,7 +269,7 @@ const PhotoGallery: React.FC = () => {
 
                         <div className='absolute right-1 sm:right-4 md:right-8 z-10'>
                             <button
-                                onClick={() => navigate('next')}
+                                onClick={() => navigate("next")}
                                 className='bg-black bg-opacity-50 text-white hover:text-gray-300 focus:outline-none p-2 rounded-full cursor-pointer'
                                 aria-label='Next image'
                             >
@@ -280,7 +281,7 @@ const PhotoGallery: React.FC = () => {
                         <div className='absolute bottom-4 text-white text-sm bg-black bg-opacity-50 px-2 py-1 rounded'>
                             {currentGalleryImages.findIndex(
                                 (photo) => photo.src === selectedImage.src
-                            ) + 1}{' '}
+                            ) + 1}{" "}
                             / {currentGalleryImages.length}
                         </div>
                     </div>

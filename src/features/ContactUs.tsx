@@ -13,9 +13,41 @@ import PhoneInput from "@/components/fields/Phone";
 import TextArea from "@/components/fields/TextArea";
 import websiteData from "./data";
 import Faqs from "./Faqs";
+import { usePathname } from "next/navigation";
+import Contact from "@/api/contacts";
+import Button from "@/components/Button";
 
 const ContactUs = () => {
-    const [loading, setLoading] = useState(false);
+    const pathname = usePathname();
+    const [loading, setloading] = useState(false);
+
+    const initialValues = {
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
+    };
+
+    const submitHandler = async (values: any, { resetForm }: any) => {
+        setloading(true);
+        const payload = {
+            name: values.name,
+            email: values.email,
+            phone: values.phone,
+            subject: values.subject,
+            message: values.message,
+        };
+
+        try {
+            await Contact.create(payload);
+            resetForm();
+        } catch (error) {
+            console.error("Error submitting form:", error);
+        }
+        setloading(false);
+    };
+
     return (
         <div className='space-y-8'>
             <div className='flex gap-2 mt-8 md:20 max-md:flex-col-reverse'>
@@ -92,7 +124,10 @@ const ContactUs = () => {
                 </div>
                 <div className='bg-light-primary px-2 py-4 md:px-4 md:py-8 bg-light-blue space-y-4 rounded-r-xl flex-1'>
                     <h1>Leave Your Message</h1>
-                    <Formik initialValues={{}} onSubmit={() => {}}>
+                    <Formik
+                        initialValues={initialValues}
+                        onSubmit={submitHandler}
+                    >
                         {({ handleChange, handleSubmit }) => (
                             <Form onSubmit={handleSubmit}>
                                 <div className='flex max-md:flex-col md:gap-4'>
@@ -137,9 +172,9 @@ const ContactUs = () => {
                                     placeholder='Message'
                                     onChange={handleChange}
                                 />
-                                <ActionButton type='submit' loading={loading}>
+                                <Button variant='submit' loading={loading}>
                                     Send Message
-                                </ActionButton>
+                                </Button>
                             </Form>
                         )}
                     </Formik>
@@ -156,7 +191,7 @@ const ContactUs = () => {
                     referrerPolicy='no-referrer-when-downgrade'
                 ></iframe>
             </div>
-            <Faqs type='Contact' />
+            {pathname.split("/").pop() === "contact" && <Faqs type='Contact' />}
         </div>
     );
 };

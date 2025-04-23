@@ -19,9 +19,9 @@ const WebsiteData = () => {
         headerLogo: themes[0]?.header || "",
         footerLogo: themes[0]?.footer || "",
         footerText: themes[0]?.footerText || "",
-        primaryColor: themes[0]?.primaryColor || "#FFFFFF",
-        primaryLightColor: themes[0]?.primaryLightColor || "#FFFFFF",
-        secondaryColor: themes[0]?.secondaryColor || "#FFFFFF",
+        primaryColor: themes[0]?.primaryColor,
+        primaryLightColor: themes[0]?.primaryLightColor || "#fafbea",
+        secondaryColor: themes[0]?.secondaryColor,
     };
 };
 

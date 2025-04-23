@@ -3,7 +3,7 @@
 :root {
     --color-primary: #7d8e23; /* Default fallback color */
     --color-light-primary: #fafbea; /* Default fallback color */
-    --color-secondary: #ea580c;
+    --color-secondary: #fff2fd;
 }
 
 @font-face {

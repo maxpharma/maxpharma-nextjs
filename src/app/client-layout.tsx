@@ -22,6 +22,8 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         function loadTheme() {
             // Static theme colors for now
             const primaryColor = theme.primaryColor;
+            const lightPrimaryColor = theme.primaryLightColor;
+
             const secondaryColor = theme.secondaryColor;
 
             // Set CSS variables
@@ -32,6 +34,10 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
             document.documentElement.style.setProperty(
                 "--color-secondary",
                 secondaryColor
+            );
+            document.documentElement.style.setProperty(
+                "--color-light-primary",
+                lightPrimaryColor
             );
         }
 
