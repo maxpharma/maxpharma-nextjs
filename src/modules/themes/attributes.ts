@@ -12,7 +12,7 @@ const themeAttributes = {
     type: DataTypes.STRING,
   },
   footerText: {
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT('long'),
   },
   primaryColor: {
     type: DataTypes.STRING,
