@@ -1,40 +1,97 @@
 "use client";
 
-import ProductApi from "@/api/product";
-import Button from "@/components/Button";
-import CustomImage from "@/components/CustomImage";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import GeneralSettings from "@/api/generalSettings";
+import ProductsApi from "@/api/product";
+import CustomImage from "@/components/CustomImage";
+import Button from "@/components/Button";
+import { useRouter } from "next/navigation";
 
-const Products = ({ limit = 10 }: { limit?: number }) => {
-    const { items: productsData } = useSelector((state: any) => state.products);
+const Products: React.FC = () => {
+    const [activeCategory, setActiveCategory] =
+        useState<string>("All Products");
+    const { data: categoriesRaw } = useSelector(
+        (state: any) => state.categories
+    );
 
-    const fetchData = async () => {
-        await ProductApi.get();
+    // Fetch categories if not loaded
+    useEffect(() => {
+        if (!categoriesRaw?.length) {
+            GeneralSettings.getByGroup("categories", "categories");
+        }
+    }, [categoriesRaw?.length]);
+
+    // Prepare categories list
+    const categories = [
+        "All Products",
+        ...(categoriesRaw?.map((c: any) => c.value) || []),
+    ];
+
+    const activeCategoryId = categoriesRaw.find(
+        (category: any) => activeCategory === category.value
+    )?.id;
+
+    const [products, setProducts] = useState<any[]>([]);
+    const fetchProducts = async () => {
+        if (activeCategory === "All Products") {
+            const response = await ProductsApi.get();
+
+            setProducts(response.items);
+        } else {
+            const response = await ProductsApi.get(activeCategoryId);
+            setProducts(response.items); // Update to setProducts(response.items) for consistency
+        }
     };
 
     useEffect(() => {
-        if (!productsData.length) {
-            fetchData();
-        }
-    }, [productsData?.length]);
+        fetchProducts();
+    }, [products?.length, activeCategoryId]);
 
     return (
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12 '>
-            {productsData.map((item: any) => (
-                <Items
-                    key={item.id}
-                    id={item.id}
-                    categoryName={item.categoryData.value}
-                    name={item.name}
-                    title={item.title}
-                    description={item.description}
-                    type={item.type}
-                    files={item.files}
-                    additionalInfo={item.additionalInfo}
-                />
-            ))}
+        <div>
+            {/* Categories */}
+            <div className='flex overflow-x-auto gap-2 py-2 no-scrollbar'>
+                {categories.map((category: string) => (
+                    <button
+                        key={category}
+                        className={`
+                            whitespace-nowrap px-4 py-2 rounded-lg border text-sm font-medium 
+                            transition-colors duration-200 focus:outline-none cursor-pointer
+                            ${
+                                activeCategory === category
+                                    ? "bg-light-primary text-primary border-primary"
+                                    : "border-slate-200"
+                            }
+                        `}
+                        onClick={() => setActiveCategory(category)}
+                    >
+                        {category}
+                    </button>
+                ))}
+            </div>
+            {/* Products List */}
+            <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                {products?.length === 0 && (
+                    <div className='col-span-full text-center text-gray-500'>
+                        No products found.
+                    </div>
+                )}
+
+                {products.map((item: any) => (
+                    <Items
+                        key={item.id}
+                        id={item.id}
+                        categoryName={item.categoryData.value}
+                        name={item.name}
+                        title={item.title}
+                        description={item.description}
+                        type={item.type}
+                        files={item.files}
+                        additionalInfo={item.additionalInfo}
+                    />
+                ))}
+            </div>
         </div>
     );
 };

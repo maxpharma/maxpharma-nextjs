@@ -17,8 +17,6 @@ const VideoPage = () => {
         }
     }, [videos?.length]);
 
-    console.log("videos", videos);
-
     // Function to extract video ID from YouTube URL
     const getYoutubeVideoId = (url: any) => {
         if (!url) return null;

@@ -13,8 +13,6 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
     const seoKey = data?.find((item: any) => service === item?.infos?.seoUrl);
 
-    console.log("seoKey for the general settings", seoKey);
-
     return await getSeoMetadata(seoKey?.infos?.state);
 }
 

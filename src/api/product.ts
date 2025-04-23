@@ -24,10 +24,12 @@ const create = async (data: any) => {
     }
 };
 
-const get = async () => {
+const get = async (categoryId?: number) => {
     try {
         const config: ReturnType = {
-            url: `products`,
+            url: `${
+                categoryId ? `products?categoryId=${categoryId}` : "products"
+            }`,
             method: "get",
             authorization: true,
             config: {

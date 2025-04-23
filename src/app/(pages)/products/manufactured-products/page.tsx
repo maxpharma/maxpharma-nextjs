@@ -7,7 +7,6 @@ const page = () => {
         <div>
             <section className='space-y-4'>
                 <h1>Our Products</h1>
-                <Categories />
                 <Products />
             </section>
         </div>

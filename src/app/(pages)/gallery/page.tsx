@@ -50,8 +50,6 @@ const PhotoGallery: React.FC = () => {
         }
     }, [galleryData]);
 
-    console.log(galleryData, "galleryData");
-
     // Transform gallery image data to the format needed for the lightbox
     // Use 'any' for galleryItem if you want to avoid strict typing
     const getGalleryImagesForLightbox = (galleryItem: any): LightboxImage[] => {

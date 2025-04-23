@@ -197,7 +197,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                                 key={index}
                                 className={`relative flex-shrink-0 cursor-pointer w-16 h-16 border-2 ${
                                     currentImageIndex === index
-                                        ? "border-gray-500"
+                                        ? "border-gray-500 rounded-sm"
                                         : "border-transparent"
                                 }`}
                                 onMouseEnter={() => handleThumbnailHover(index)}
@@ -207,7 +207,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                                     src={image.src}
                                     alt={`Thumbnail ${index + 1}`}
                                     fill
-                                    className='object-cover'
+                                    className='object-cover rounded-xs'
                                 />
                             </div>
                         ))}
@@ -247,7 +247,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                             src={images[currentImageIndex].src}
                             alt={images[currentImageIndex].alt}
                             fill
-                            className='object-contain'
+                            className='object-contain rounded-xl'
                             priority
                         />
                     </div>
