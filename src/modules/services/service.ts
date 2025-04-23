@@ -63,7 +63,7 @@ const update = async (input: any, id: number) => {
       id:id
     });
     if(Constant.imageValidationExtensions.includes(input?.files?.extension)){
-      await uploadMultipleImage(input?.files, 'services', data?.files)
+      input.files = await uploadMultipleImage(input?.files, 'services', data?.files)
     }
     await data.update(input);
     return data;
