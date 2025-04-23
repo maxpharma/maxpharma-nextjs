@@ -4,10 +4,14 @@ import GeneralSettings from "@/api/generalSettings";
 import Services from "@/api/services";
 import { bucketUrl } from "@/features/data";
 import GalleryCard from "@/features/GalleryCard";
+import { usePathname } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
-const ServiceContents = ({ slug }: { slug: string }) => {
+const ServiceContents = () => {
+    const pathname = usePathname();
+    const service = pathname.split("/").pop() || "";
+
     const { data: serviceCategories } = useSelector(
         (state: any) => state.serviceCategories || []
     );
@@ -28,7 +32,7 @@ const ServiceContents = ({ slug }: { slug: string }) => {
     const id = serviceCategories?.find(
         (item: any) =>
             item.value ===
-            slug
+            service
                 .split("-")
                 .map(
                     (word: string) =>
