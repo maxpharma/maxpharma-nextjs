@@ -6,7 +6,6 @@ const uploadMultipleImage = async(items:any[],dynamicPath:string, oldImages?:any
       items?.map(async(value:any, index:number) => {
         if(!!value?.base64){
             if(!!oldImages){
-              console.log('inside old images ')
               await removeFile({filePath: oldImages[index]})
             }
             const finalImage = await uploadImage({
@@ -14,7 +13,6 @@ const uploadMultipleImage = async(items:any[],dynamicPath:string, oldImages?:any
               fileName:`${Date.now()}-${index}-${dynamicPath}.${value?.extension}`,
               base64: value?.base64
             })
-            console.log(finalImage,'final image')
             return finalImage
         } else {
           return value
