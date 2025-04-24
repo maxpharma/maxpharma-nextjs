@@ -49,6 +49,30 @@ const Overview = ({ type }: { type: string }) => {
         const isUpdate = aboutUsData?.length > 0 && aboutUsData[0]?.id;
         const original = aboutUsData?.[0] || {};
 
+        // Always construct files array with both images (updated or previous)
+        const filesToSend = [0, 1].map((index) => {
+            const newFile = values.files[index];
+            const oldFile = initialValues.files[index]; // always a string (path) or undefined
+
+            // If newFile has base64, use it (new upload)
+            if (newFile?.base64) {
+                return {
+                    extension: newFile.extension,
+                    base64: newFile.base64,
+                };
+            }
+            // Otherwise, use the old file path string (if exists)
+            if (typeof oldFile === "string") {
+                return oldFile;
+            }
+            return null;
+        });
+
+        // Check if any file has changed (newFile has base64)
+        const filesChanged = [0, 1].some(
+            (index) => values.files[index]?.base64
+        );
+
         const defaultSend = {
             title: values.title,
             type: "Overview",
@@ -56,38 +80,18 @@ const Overview = ({ type }: { type: string }) => {
         };
 
         const getUpdatedFields = () => {
-            if (!isUpdate) {
-                return {
-                    description: values.description,
-                    files: values.files.map((file: any) => ({
-                        extension: file?.extension,
-                        base64: file?.base64,
-                    })),
-                };
-            }
             const changed: any = {};
+            if (!isUpdate) {
+                changed.description = values.description;
+                changed.files = filesToSend;
+                changed.title = values.title;
+                return changed;
+            }
             if (values.title !== original.title) changed.title = values.title;
             if (values.description !== original.description)
                 changed.description = values.description;
-            // Compare files array shallowly
-            if (
-                JSON.stringify(
-                    values.files.map((f: any) => ({
-                        extension: f?.extension,
-                        base64: f?.base64,
-                    }))
-                ) !==
-                JSON.stringify(
-                    (original.files || []).map((f: any) => ({
-                        extension: f?.extension,
-                        base64: f?.base64,
-                    }))
-                )
-            ) {
-                changed.files = values.files.map((file: any) => ({
-                    extension: file?.extension,
-                    base64: file?.base64,
-                }));
+            if (filesChanged) {
+                changed.files = filesToSend;
             }
             return changed;
         };

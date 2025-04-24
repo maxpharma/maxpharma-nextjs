@@ -242,7 +242,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                     onMouseEnter={() => setIsHovering(true)}
                     onMouseLeave={() => setIsHovering(false)}
                 >
-                    <div className='relative mx-auto h-100 md:h-120 aspect-square'>
+                    <div className='relative mx-auto h-100 md:h-120 max-sm:max-w-100 md:aspect-square'>
                         <Image
                             src={images[currentImageIndex].src}
                             alt={images[currentImageIndex].alt}
