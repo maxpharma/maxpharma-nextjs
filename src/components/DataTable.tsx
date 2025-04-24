@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface Column<T> {
     id?: string;
@@ -10,7 +10,7 @@ interface Column<T> {
 }
 
 interface Action<T> {
-    label: string ;
+    label: string;
     buttonStyle?: string;
     onClick: (row: T) => void;
 }
@@ -22,6 +22,7 @@ interface DataTableProps<T> {
     actions?: Action<T>[];
     emptyMessage?: string;
     onRowClick?: (row: T) => void;
+    className?: string;
 }
 
 function DataTable<T extends { id: string | number }>({
@@ -29,19 +30,22 @@ function DataTable<T extends { id: string | number }>({
     columns,
     data,
     actions = [],
-    emptyMessage = 'No data available',
+    emptyMessage = "No data available",
     onRowClick,
+    className = "",
 }: DataTableProps<T>) {
     const renderCell = (row: T, column: Column<T>) => {
         const accessor = column.accessor;
-        if (typeof accessor === 'function') {
+        if (typeof accessor === "function") {
             return accessor(row);
         }
         return <>{row[accessor as keyof T]}</>;
     };
 
     return (
-        <div className='bg-white rounded-lg shadow-sm overflow-hidden'>
+        <div
+            className={`bg-white rounded-lg shadow-sm overflow-hidden ${className}`}
+        >
             <div className='px-4 py-3 border-b border-gray-200'>
                 <h3 className='text-lg font-medium text-gray-800'>{title}</h3>
             </div>
@@ -53,7 +57,7 @@ function DataTable<T extends { id: string | number }>({
                                 <th
                                     key={i}
                                     className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                                        column.className || ''
+                                        column.className || ""
                                     }`}
                                     style={{
                                         minWidth: column.minWidth
@@ -84,15 +88,15 @@ function DataTable<T extends { id: string | number }>({
                                     }
                                     className={
                                         onRowClick
-                                            ? 'cursor-pointer hover:bg-gray-50'
-                                            : ''
+                                            ? "cursor-pointer hover:bg-gray-50"
+                                            : ""
                                     }
                                 >
                                     {columns.map((column, colIndex) => (
                                         <td
                                             key={colIndex}
                                             className={`px-6 py-4 text-sm text-gray-500 ${
-                                                column.className || ''
+                                                column.className || ""
                                             }`}
                                             style={{
                                                 minWidth: column.minWidth
@@ -101,8 +105,8 @@ function DataTable<T extends { id: string | number }>({
                                                 maxWidth: column.maxWidth
                                                     ? `${column.maxWidth}px`
                                                     : undefined,
-                                                wordBreak: 'break-word',
-                                                whiteSpace: 'normal',
+                                                wordBreak: "break-word",
+                                                whiteSpace: "normal",
                                             }}
                                         >
                                             {renderCell(row, column)}
@@ -123,7 +127,7 @@ function DataTable<T extends { id: string | number }>({
                                                             }}
                                                             className={
                                                                 action.buttonStyle ||
-                                                                'px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600'
+                                                                "px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
                                                             }
                                                         >
                                                             {action.label}

@@ -1,6 +1,9 @@
 "use client";
 
+import Applies from "@/api/applies";
+import Contact from "@/api/contacts";
 import Dashboard from "@/api/dashboard";
+import Inquiry from "@/api/Inquiry";
 import {
     documentsIcon,
     galleryIcon,
@@ -26,11 +29,162 @@ const DashboardPage = () => {
         (state: any) => state.dashboard
     );
 
+    // Get data from redux (as in respective pages)
+    const appliesData = useSelector((state: any) => state.applies?.items || []);
+    const inquiriesData = useSelector(
+        (state: any) => state.inquiries?.items || []
+    );
+
+    const fetchApplications = async () => {
+        try {
+            await Applies.get();
+        } catch (error) {
+            console.error("Error fetching applies:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!appliesData?.length) {
+            fetchApplications();
+        }
+    }, [appliesData?.length]);
+
+    const fetchProductData = async () => {
+        await Inquiry.get();
+    };
+
+    useEffect(() => {
+        if (!inquiriesData?.length) {
+            fetchProductData();
+        }
+    }, [inquiriesData?.length]);
+
+    const contactsData = useSelector(
+        (state: any) => state.contacts?.items || []
+    );
+
+    const fetchContactData = async () => {
+        await Contact.getAll();
+    };
+
+    useEffect(() => {
+        if (!contactsData?.length) {
+            fetchContactData();
+        }
+    }, [contactsData?.length]);
+
+    const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL || "";
+
     useEffect(() => {
         if (!dashboardData?.length) {
             fetchData();
         }
     }, [dashboardData?.length]);
+
+    // Compose left table: Career Apply + Product Inquiry (latest first)
+    const careerApplyRows = Array.isArray(appliesData)
+        ? [...appliesData]
+              .reverse()
+              .slice(0, 5)
+              .map((item: any) => ({
+                  id:
+                      item?.id ??
+                      `${item?.name ?? "career"}-${
+                          item?.phone ?? Math.random()
+                      }`,
+                  type: "Career Apply",
+                  name: item?.name,
+                  phone: item?.phone,
+
+                  action: (
+                      <button
+                          onClick={() => router.push("/admin/inquiry-request")}
+                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                      >
+                          View
+                      </button>
+                  ),
+              }))
+        : [];
+
+    const productInquiryRows = Array.isArray(inquiriesData)
+        ? [...inquiriesData]
+              .reverse()
+              .slice(0, 5)
+              .map((item: any) => ({
+                  id:
+                      item?.id ??
+                      `${item?.name ?? "inquiry"}-${
+                          item?.phone ?? Math.random()
+                      }`,
+                  type: "Product Inquiry",
+                  name: item?.name,
+                  phone: item?.phone,
+
+                  action: (
+                      <button
+                          onClick={() => router.push("/admin/inquiry-request")}
+                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                      >
+                          View
+                      </button>
+                  ),
+              }))
+        : [];
+
+    const leftTableRows = [...careerApplyRows, ...productInquiryRows].slice(
+        0,
+        8
+    );
+
+    const leftTableColumns = [
+        { id: "type", header: "Type", accessor: "type", minWidth: 80 },
+        { id: "name", header: "Name", accessor: "name", minWidth: 80 },
+        {
+            id: "phone",
+            header: "Phone Number",
+            accessor: "phone",
+            minWidth: 80,
+        },
+
+        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
+    ];
+
+    const contactRows = Array.isArray(contactsData)
+        ? [...contactsData]
+              .reverse()
+              .slice(0, 8)
+              .map((item: any) => ({
+                  id:
+                      item?.id ??
+                      `${item?.email ?? "contact"}-${
+                          item?.phone ?? Math.random()
+                      }`,
+                  name: item?.name,
+                  phone: item?.phone,
+                  email: item?.email,
+                  action: (
+                      <button
+                          onClick={() => router.push("/admin/contact-list")}
+                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                      >
+                          View
+                      </button>
+                  ),
+              }))
+        : [];
+
+    const contactColumns = [
+        { id: "name", header: "Name", accessor: "name", minWidth: 80 },
+        {
+            id: "phone",
+            header: "Phone Number",
+            accessor: "phone",
+            minWidth: 80,
+        },
+        { id: "email", header: "Email", accessor: "email", minWidth: 120 },
+        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
+    ];
 
     const dummyStats = [
         {
@@ -91,99 +245,23 @@ const DashboardPage = () => {
         },
     ];
 
-    const applyColumns = [
-        {
-            id: "name",
-            header: "Name",
-            accessor: "name",
-            minWidth: 80,
-        },
-        {
-            id: "phone",
-            header: "Phone Number",
-            accessor: "phone",
-            minWidth: 80,
-        },
-        { id: "file", header: "File", accessor: "file", minWidth: 80 },
-        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
-    ];
-
-    const applyRows = dashboardData?.applyData?.items?.map((item: any) => {
-        return {
-            name: item?.name,
-            phone: item?.phone,
-            file: (
-                <a
-                    href={`/${item?.file}`}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    className='text-white bg-blue-400 rounded-lg p-1'
-                >
-                    Download
-                </a>
-            ),
-            action: (
-                <button
-                    onClick={() => {
-                        router.push("/admin/apply-list");
-                    }}
-                    className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
-                >
-                    View
-                </button>
-            ),
-        };
-    });
-
-    const inquiryColumns = [
-        {
-            id: "name",
-            header: "Name",
-            accessor: "name",
-            minWidth: 80,
-        },
-        {
-            id: "phone",
-            header: "Phone Number",
-            accessor: "phone",
-            minWidth: 80,
-        },
-        { id: "action", header: "Action", accessor: "action", minWidth: 80 },
-    ];
-
-    const inquiryRows = dashboardData?.inquiryData?.items?.map((item: any) => {
-        return {
-            name: item?.name,
-            phone: item?.phone,
-            action: (
-                <button
-                    onClick={() => {
-                        router.push("/admin/contact-list");
-                    }}
-                    className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
-                >
-                    View
-                </button>
-            ),
-        };
-    });
-
     return (
         <div className='p-6'>
             <StatsGrid stats={dummyStats} />
 
-            <div className='mt-8 flex max-lg:flex-col gap-2 justify-between'>
+            <div className='mt-8 flex max-lg:flex-col gap-8 justify-between'>
                 <DataTable
-                    title='Recent Apply Requests'
-                    columns={applyColumns}
-                    data={applyRows}
-                    emptyMessage='No apply requests found'
+                    title='Career Apply & Product Inquiry'
+                    columns={leftTableColumns}
+                    data={leftTableRows}
+                    emptyMessage='No apply or product inquiry requests found'
+                    className='flex-1'
                 />
                 <DataTable
-                    title='New Inquiry'
-                    columns={inquiryColumns}
-                    data={inquiryRows}
-                    emptyMessage='No inquiry requests found'
+                    title='Contact Inquiries'
+                    columns={contactColumns}
+                    data={contactRows}
+                    emptyMessage='No contact inquiries found'
                 />
             </div>
         </div>

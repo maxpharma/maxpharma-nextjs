@@ -4,6 +4,7 @@ import ConfirmationAlert from "@/components/ConfirmationAlert";
 import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
+import { bucketUrl } from "@/features/data";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -38,11 +39,17 @@ const BannerData = ({ setUpdateIdData, openForm }: any) => {
               title: banner.title,
               link: banner.value,
               banner: (
-                  <CustomImage
-                      src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${banner?.file}`}
-                      size='small'
-                      orientation='landscape'
-                  />
+                  <a
+                      href={`${bucketUrl}/${banner?.file}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                  >
+                      <CustomImage
+                          src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${banner?.file}`}
+                          size='small'
+                          orientation='landscape'
+                      />
+                  </a>
               ),
               actions: (
                   <div className='flex items-center'>

@@ -34,6 +34,8 @@ const ProductDetailPage = () => {
         return <div className='py-10 text-center'>Product not found.</div>;
     }
 
+    console.log("Product Data:", productData?.description);
+
     return (
         <>
             <div className='py-6 space-y-16 mx-auto max-w-9/10'>
@@ -123,7 +125,11 @@ const ProductDetailPage = () => {
                 </div>
                 <div className='space-y-2'>
                     <h1>Product Overview</h1>
-                    <p>{productData.description}</p>
+                    <div
+                        dangerouslySetInnerHTML={{
+                            __html: productData.description || "",
+                        }}
+                    />
                 </div>
                 <section className='space-y-4'>
                     <h1>Our Products</h1>

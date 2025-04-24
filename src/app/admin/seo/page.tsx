@@ -5,6 +5,7 @@ import ActionButton from "@/components/ActionButton";
 import CustomToast from "@/components/CustomToast";
 import Input from "@/components/fields/Input";
 import TextArea from "@/components/fields/TextArea";
+import { current } from "@reduxjs/toolkit";
 import { Form, Formik, FormikProps } from "formik";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
@@ -54,6 +55,11 @@ const SeoForm = () => {
     const fetchData = async () => {
         await GeneralSettings.getByGroup("seo", "seo");
     };
+    const [initialValues, setInitialValues] = useState<FormValues>({
+        title: "",
+        description: "",
+        keywords: "",
+    });
 
     useEffect(() => {
         if (seoData?.length) {
@@ -66,15 +72,15 @@ const SeoForm = () => {
                     description: currentSeoData?.infos?.description || "",
                     keywords: currentSeoData?.infos?.keywords || "",
                 });
+            } else {
+                setInitialValues({
+                    title: "",
+                    description: "",
+                    keywords: "",
+                });
             }
         }
     }, [seoData, selectedPage.state]);
-
-    const [initialValues, setInitialValues] = useState<FormValues>({
-        title: "",
-        description: "",
-        keywords: "",
-    });
 
     useEffect(() => {
         fetchData();
@@ -83,8 +89,9 @@ const SeoForm = () => {
     const submitHandler = async (values: FormValues, { resetForm }: any) => {
         setLoading(true);
 
-        const isUpdate = !!seoData?.id;
-        const original = seoData || {};
+        const isUpdate = seoData.find(
+            (item: any) => item.key === selectedPage.state
+        );
 
         const payload = {
             group: "seo",
@@ -101,7 +108,7 @@ const SeoForm = () => {
                 await GeneralSettings.update(
                     selectedPage.state,
                     payload,
-                    original.id
+                    isUpdate?.id
                 );
             } else {
                 await GeneralSettings.create(selectedPage.state, payload);
@@ -171,7 +178,11 @@ const SeoForm = () => {
                             placeholder='Keywords'
                         />
                         <ActionButton type='submit' loading={loading}>
-                            {seoData?.id ? "Update" : "Save"}
+                            {seoData.find(
+                                (item: any) => item.key === selectedPage.state
+                            )?.id
+                                ? "Update"
+                                : "Save"}
                         </ActionButton>
                     </Form>
                 )}

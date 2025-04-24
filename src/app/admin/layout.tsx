@@ -7,7 +7,7 @@ import helpers from "@/utils/helper";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogOutIcon } from "lucide-react";
 import SvgIcon from "@/components/SvgIcon";
 
 export default function AdminLayout({
@@ -108,7 +108,7 @@ export default function AdminLayout({
                         target='_blank'
                         rel='noopener noreferrer'
                     >
-                        Visit Website
+                        Inflancer CRM
                     </a>
 
                     {/* Profile with dropdown */}
@@ -144,9 +144,13 @@ export default function AdminLayout({
                             style={{ willChange: "opacity, transform" }}
                         >
                             <button
-                                className='block w-full text-left px-4 py-2 hover:bg-gray-100'
+                                className='flex gap-2 items-center w-full text-left px-4 py-2 hover:bg-gray-100'
                                 onClick={handleLogout}
                             >
+                                <LogOutIcon
+                                    size={16}
+                                    className='text-red-400'
+                                />
                                 Logout
                             </button>
                         </div>

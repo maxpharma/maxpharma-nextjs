@@ -47,7 +47,7 @@ body {
     }
 
     h2 {
-        @apply text-base lg:text-lg font-semibold text-secondary;
+        @apply text-base lg:text-lg font-semibold text-black;
     }
 
     h3 {
@@ -60,6 +60,14 @@ body {
 
     p {
         @apply text-base text-justify text-black;
+    }
+
+    ul {
+        @apply list-disc pl-5 text-base text-justify text-black;
+    }
+
+    li {
+        @apply text-base text-justify text-black marker:text-black;
     }
 }
 

@@ -10,7 +10,11 @@ const FaqsTable = ({
     type: string;
     onEdit: (item: any) => void;
 }) => {
-    const { data: faqsData } = useSelector((state: any) => state.faqs);
+    const { data: faqsDataRaw } = useSelector((state: any) => state.faqs);
+
+    const faqsData = Array.isArray(faqsDataRaw)
+        ? [...faqsDataRaw].reverse()
+        : [];
 
     // Edit state
     const [editId, setEditId] = useState<number | null>(null);

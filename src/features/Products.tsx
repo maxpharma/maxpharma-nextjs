@@ -129,12 +129,20 @@ const Items = ({
                 </div>
                 <div>
                     <div className='text-lg'>{name}</div>
-                    <span className='text-sm'>
-                        {description.split(" ").length > 10
-                            ? description.split(" ").slice(0, 10).join(" ") +
-                              "..."
-                            : description}
-                    </span>
+                    <span
+                        className='text-sm'
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                typeof description === "string"
+                                    ? description.split(" ").length > 10
+                                        ? description
+                                              .split(" ")
+                                              .slice(0, 10)
+                                              .join(" ") + "..."
+                                        : description
+                                    : "",
+                        }}
+                    />
                 </div>
             </div>
             <Button className='absolute -bottom-6 right-4'>Send Inquiry</Button>

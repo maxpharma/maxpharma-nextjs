@@ -15,7 +15,7 @@ const Faqs = ({ type = "Home" }: FaqsProps) => {
 
     const { data: faqsData } = useSelector((state: any) => state.faqs);
 
-    const faqsArray = Array.isArray(faqsData) ? faqsData : [];
+    const faqsArray = Array.isArray(faqsData) ? [...faqsData].reverse() : [];
 
     const filteredData =
         faqsArray.filter((item: any) => item?.value === type) || [];
