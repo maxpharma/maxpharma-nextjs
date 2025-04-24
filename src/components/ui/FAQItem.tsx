@@ -18,9 +18,7 @@ const FAQItem = ({ question, answer, defaultOpen = false }: FAQItemProps) => {
                 className='flex justify-between items-center cursor-pointer select-none'
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <h3 className='text-lg font-medium text-gray-900'>
-                    {question}
-                </h3>
+                <h3 className=' font-medium text-gray-900'>{question}</h3>
                 <div className='transition-transform duration-300 ease-in-out'>
                     {isOpen ? (
                         <Minus className='text-gray-600 hover:text-gray-900' />

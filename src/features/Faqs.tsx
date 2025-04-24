@@ -37,12 +37,14 @@ const Faqs = ({ type = "Home" }: FaqsProps) => {
     }, [faqsArray.length, type]);
 
     return (
-        <div className='space-y-2 mx-auto md:max-w-7/10'>
-            <h1 className='text-center'>Have a Question?</h1>
-            <p className='text-center'>
-                We’ve got answers to the most common queries to help you
-                out—quick, clear, and hassle-free.
-            </p>
+        <div className='space-y-6 mx-auto md:max-w-7/10'>
+            <div>
+                <h1 className='text-center'>Have a Question?</h1>
+                <p className='text-center'>
+                    We’ve got answers to the most common queries to help you
+                    out—quick, clear, and hassle-free.
+                </p>
+            </div>
 
             <div className='w-full'>
                 {infos && Object.keys(infos).length > 0 ? (

@@ -2,11 +2,13 @@
 
 import ProductApi from "@/api/product";
 import Overlay from "@/components/Overlay";
+import FixedInBottom from "@/components/ui/FixedInBottom";
 import ProductGallery from "@/components/ui/ProductGallery";
 import Categories from "@/features/Categories";
 import Faqs from "@/features/Faqs";
 import Products from "@/features/Products";
 import SendInquiry from "@/features/SendInquiry";
+import Settings from "@/features/settings";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { BsWhatsapp } from "react-icons/bs";
@@ -15,6 +17,7 @@ import { useSelector } from "react-redux";
 const ProductDetailPage = () => {
     const { productId } = useParams();
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
+    const settings = Settings();
 
     // Get products from redux store
     const { data: productData } = useSelector(
@@ -70,6 +73,10 @@ const ProductDetailPage = () => {
                             {productData.name}
                         </div>
 
+                        <div className='text-lg sm:text-xl'>
+                            {productData?.categoryData?.value}
+                        </div>
+
                         <div className='spacey-y-1'>
                             <div className='text-lg font-medium'>
                                 Specifications
@@ -98,29 +105,39 @@ const ProductDetailPage = () => {
                         </div>
 
                         <div className='max-sm:hidden flex gap-4 pt-4'>
-                            <button className='secondary-button w-full flex items-center justify-center gap-2 py-2.5'>
-                                <BsWhatsapp className='text-lg' />
-                                <span>Whatsapp</span>
-                            </button>
+                            <a
+                                href={`tel:${settings?.whatsAppNumber}`}
+                                className='flex items-center gap-2 flex-1 w-full'
+                            >
+                                <button className='secondary-button w-full flex items-center justify-center gap-2 py-2.5'>
+                                    <BsWhatsapp className='text-lg' />
+                                    <span>Whatsapp</span>
+                                </button>
+                            </a>
                             <button
-                                className='button w-full py-2.5'
+                                className='button  py-2.5 flex-1'
                                 onClick={() => setIsOverlayOpen(true)}
                             >
                                 Send Inquiry
                             </button>
                         </div>
-                        <div className='max-sm:fixed sm:hidden bottom-0 bg-white z-10 w-full border-t border-slate-300 flex gap-4 pr-6 py-2'>
-                            <button className='secondary-button w-full flex items-center justify-center gap-2 py-2.5'>
-                                <BsWhatsapp className='text-lg' />
-                                <span>Whatsapp</span>
-                            </button>
+                        <FixedInBottom className='sm:hidden flex gap-4 bg-white p-2 border-t border-gray-200'>
+                            <a
+                                href={`tel:${settings?.whatsAppNumber}`}
+                                className='flex items-center gap-2 flex-1 w-full'
+                            >
+                                <button className='secondary-button w-full flex items-center justify-center gap-2 py-2.5'>
+                                    <BsWhatsapp className='text-lg' />
+                                    <span>Whatsapp</span>
+                                </button>
+                            </a>
                             <button
-                                className='button w-full py-2.5'
+                                className='button  py-2.5 flex-1'
                                 onClick={() => setIsOverlayOpen(true)}
                             >
                                 Send Inquiry
                             </button>
-                        </div>
+                        </FixedInBottom>
                     </div>
                 </div>
                 <div className='space-y-2'>

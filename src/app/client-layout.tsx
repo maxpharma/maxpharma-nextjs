@@ -88,7 +88,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
 
             <main>{children}</main>
 
-            {!isAdminRoute && <Footer />}
+            {!isAdminRoute && !pathname.startsWith("/products/") && <Footer />}
         </>
     );
 };

@@ -1,7 +1,8 @@
-import websiteData from "@/features/data";
+"use client";
+
 import Settings from "@/features/settings";
 import WebsiteData from "@/features/theme";
-import { Clock, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
