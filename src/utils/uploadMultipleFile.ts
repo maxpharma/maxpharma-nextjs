@@ -5,7 +5,7 @@ const uploadMultipleImage = async(items:any[],dynamicPath:string, oldImages?:any
     const data = await Promise.all(
       items?.map(async(value:any, index:number) => {
         if(!!value?.base64){
-            if(!!oldImages){
+            if(!!oldImages?.length && oldImages[index]){
               await removeFile({filePath: oldImages[index]})
             }
             const finalImage = await uploadImage({
