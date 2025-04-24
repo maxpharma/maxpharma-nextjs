@@ -71,7 +71,7 @@ const Products: React.FC = () => {
                 ))}
             </div>
             {/* Products List */}
-            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
                 {products?.length === 0 && (
                     <div className='col-span-full text-center text-gray-500'>
                         No products found.
