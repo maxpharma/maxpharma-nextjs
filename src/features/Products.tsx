@@ -71,7 +71,7 @@ const Products: React.FC = () => {
                 ))}
             </div>
             {/* Products List */}
-            <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                 {products?.length === 0 && (
                     <div className='col-span-full text-center text-gray-500'>
                         No products found.
@@ -112,23 +112,23 @@ const Items = ({
 
     return (
         <div
-            className='relative flex flex-col gap-4 border border-slate-300 rounded-xl w-full sm:max-w-sm cursor-pointer '
+            className='relative flex flex-col gap-4 border border-slate-300 rounded-xl w-full h-full cursor-pointer'
             onClick={() => router.push(`/products/${id}`)}
         >
-            <div className='px-4 pt-4 pb-8 w-full space-y-4 '>
-                <div className='relative'>
+            <div className='px-4 pt-4 pb-8 w-full h-full space-y-4'>
+                <div className='relative w-full'>
                     <CustomImage
                         src={files[0]}
                         fit='cover'
-                        className='w-full h-40'
+                        className='w-full h-40 object-cover'
                         variant='live'
                     />
                     <div className='absolute top-2 left-2 rounded-xl p-1 bg-[#FAFBEA]'>
                         {categoryName}
                     </div>
                 </div>
-                <div>
-                    <div className='text-lg'>{name}</div>
+                <div className='w-full'>
+                    <div className='text-lg font-normal'>{name}</div>
                     <span
                         className='text-sm'
                         dangerouslySetInnerHTML={{

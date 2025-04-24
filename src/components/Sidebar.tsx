@@ -71,14 +71,14 @@ const Sidebar: React.FC = () => {
 
             {/* Menu Items */}
             <div className='flex-grow overflow-y-auto scrollbar-hide'>
-                <ul className='space-y-1'>
+                <div className='space-y-1'>
                     {menuItems.map((item) => {
                         const isItemActive = item.children
                             ? isChildActive(item.children)
                             : isActive(item.path);
 
                         return (
-                            <li key={item.id}>
+                            <div key={item.id}>
                                 {item.children ? (
                                     <div>
                                         <button
@@ -132,10 +132,10 @@ const Sidebar: React.FC = () => {
 
                                         {expandedItem === item.id &&
                                             !isCollapsed && (
-                                                <ul className='pl-14 py-1 bg-gray-50'>
+                                                <div className='pl-14 py-1 bg-gray-50'>
                                                     {item.children.map(
                                                         (child) => (
-                                                            <li key={child.id}>
+                                                            <div key={child.id}>
                                                                 <Link
                                                                     href={
                                                                         child.path
@@ -152,10 +152,10 @@ const Sidebar: React.FC = () => {
                                                                         child.title
                                                                     }
                                                                 </Link>
-                                                            </li>
+                                                            </div>
                                                         )
                                                     )}
-                                                </ul>
+                                                </div>
                                             )}
                                     </div>
                                 ) : (
@@ -189,10 +189,10 @@ const Sidebar: React.FC = () => {
                                         )}
                                     </Link>
                                 )}
-                            </li>
+                            </div>
                         );
                     })}
-                </ul>
+                </div>
             </div>
         </div>
     );

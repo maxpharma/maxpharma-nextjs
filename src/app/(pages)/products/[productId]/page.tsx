@@ -38,7 +38,7 @@ const ProductDetailPage = () => {
 
     return (
         <>
-            <div className='py-6 space-y-16 mx-auto max-w-9/10'>
+            <div className='py-6 space-y-16 mx-auto lg:max-w-9/10'>
                 <div className='flex flex-col lg:flex-row gap-8 '>
                     <div className='w-full lg:w-1/2'>
                         <div className='flex flex-col sm:flex-row gap-2'>
@@ -61,7 +61,7 @@ const ProductDetailPage = () => {
                         </div>
                     </div>
 
-                    <div className='flex flex-col space-y-4 w-full lg:w-1/2'>
+                    <div className='flex flex-col space-y-4 w-full '>
                         <span className='font-medium text-sm'>
                             {productData.type}
                         </span>

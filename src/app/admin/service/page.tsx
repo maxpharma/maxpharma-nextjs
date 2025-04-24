@@ -2,15 +2,14 @@
 
 import GeneralSettings from "@/api/generalSettings";
 import Services from "@/api/services";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import AddServiceCategory from "./AddServiceCategory";
-import { FieldArray, Form, Formik } from "formik";
+import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
 import Upload from "@/components/fields/Upload";
-import Button from "@/components/Button";
-import { select } from "framer-motion/client";
+import { FieldArray, Form, Formik } from "formik";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import AddServiceCategory from "./AddServiceCategory";
 
 const ServicePage = () => {
     const [loading, setLoading] = useState(false);
@@ -97,15 +96,40 @@ const ServicePage = () => {
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
 
-        const payload = {
+        // Always construct files array with both images (updated or previous)
+        const filesToSend = [0, 1].map((index) => {
+            const newFile = values.files[index];
+            const oldFile = initialValues.files[index]; // always a string (path) or undefined
+
+            // If newFile has base64, use it (new upload)
+            if (newFile?.base64) {
+                return {
+                    extension: newFile.extension,
+                    base64: newFile.base64,
+                };
+            }
+            // Otherwise, use the old file path string (if exists)
+            if (typeof oldFile === "string") {
+                return oldFile;
+            }
+            return null;
+        });
+
+        // Check if any file has changed (newFile has base64)
+        const filesChanged = [0, 1].some(
+            (index) => values.files[index]?.base64
+        );
+
+        const payload: any = {
             categoryId: selectedCategoryId,
             title: values.title || initialValues.title,
             description: values.description || initialValues.description,
-            files: values.files.map((file: any) => ({
-                extension: file?.extension,
-                base64: file?.base64,
-            })) || [...initialValues.files],
         };
+
+        // Only include files if at least one has changed, else keep as is
+        if (filesChanged) {
+            payload.files = filesToSend;
+        }
 
         try {
             if (selectedCategoryData?.infos?.serviceId) {
@@ -113,8 +137,12 @@ const ServicePage = () => {
                     payload,
                     selectedCategoryData?.infos?.serviceId
                 );
+                fetchServiceDataById();
             } else {
-                const response = await Services.create(payload);
+                const response = await Services.create({
+                    ...payload,
+                    files: filesToSend,
+                });
                 const serviceId = response?.id;
                 const categoryPayload = {
                     group: "serviceCategories",
@@ -125,6 +153,7 @@ const ServicePage = () => {
                         serviceId: serviceId,
                     },
                 };
+                fetchServiceDataById();
                 await GeneralSettings.update(
                     "serviceCategories",
                     categoryPayload,

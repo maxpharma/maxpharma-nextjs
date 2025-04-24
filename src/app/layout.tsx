@@ -16,7 +16,7 @@ export default function RootLayout({
     return (
         <html lang='en'>
             <body className='font-sansation overflow-x-hidden bg-white'>
-                <ToastContainer position='top-right' />
+                <ToastContainer position='bottom-right' />
                 <Providers>
                     <ClientLayout>{children}</ClientLayout>
                 </Providers>

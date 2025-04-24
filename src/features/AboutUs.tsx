@@ -26,7 +26,7 @@ const AboutUs = () => {
             <div className='flex flex-col lg:flex-row gap-4 lg:gap-12 lg:items-center'>
                 <div className='space-y-2 md:space-y-6 lg:w-6/10'>
                     <h1>{aboutUsData[0]?.title}</h1>
-                    <div
+                    <p
                         dangerouslySetInnerHTML={{
                             __html: aboutUsData[0]?.description || "",
                         }}

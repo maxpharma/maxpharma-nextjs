@@ -16,10 +16,17 @@ import Faqs from "./Faqs";
 import { usePathname } from "next/navigation";
 import Contact from "@/api/contacts";
 import Button from "@/components/Button";
+import SuccessModal from "@/components/ui/SuccessModal";
 
 const ContactUs = () => {
     const pathname = usePathname();
     const [loading, setloading] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    if (showSuccessModal === true) {
+        setTimeout(() => {
+            setShowSuccessModal(false);
+        }, 10000);
+    }
 
     const initialValues = {
         name: "",
@@ -42,6 +49,7 @@ const ContactUs = () => {
         try {
             await Contact.create(payload);
             resetForm();
+            setShowSuccessModal(true);
         } catch (error) {
             console.error("Error submitting form:", error);
         }
@@ -50,6 +58,13 @@ const ContactUs = () => {
 
     return (
         <div className='space-y-8'>
+            {showSuccessModal && (
+                <SuccessModal
+                    message="Your message has been sent successfully! We'll get back to you soon."
+                    autoDisappear={true}
+                    autoDisappearTime={2000}
+                />
+            )}
             <div className='flex gap-2 mt-8 md:20 max-md:flex-col-reverse'>
                 <div className='bg-secondary rounded-l-xl max-w-100'>
                     <div className='px-4 py-8 flex flex-col gap-4'>

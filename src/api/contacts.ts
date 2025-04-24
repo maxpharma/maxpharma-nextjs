@@ -10,7 +10,6 @@ const create = async (data: any) => {
             authorization: true,
             config: {
                 showErr: true,
-                successMsg: "Created Successfully",
                 store: {
                     action: "prepend",
                     key: "contacts",
