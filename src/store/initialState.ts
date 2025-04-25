@@ -95,6 +95,13 @@ const initialState: any = {
         loading: true,
         loadingState: true,
     },
+    applies: {
+        items: [],
+        loading: true,
+        loadingState: true,
+        totalItems: 0,
+        totalPages: 0,
+    },
     applications: {
         items: [],
         loading: true,

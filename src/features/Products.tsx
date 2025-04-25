@@ -99,7 +99,7 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
             {/* Products List */}
             {!loading &&
                 (variant === "scroll" ? (
-                    <div className='mt-4 flex overflow-x-auto gap-4 pb-8 hide-scrollbar'>
+                    <div className='mt-4 flex overflow-x-auto gap-4 pb-8 scrollbar-hide'>
                         {products?.length === 0 && (
                             <div className='flex-shrink-0 text-center text-gray-500 w-full'>
                                 No products found.

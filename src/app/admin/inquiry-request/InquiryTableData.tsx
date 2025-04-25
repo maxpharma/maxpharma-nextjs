@@ -26,7 +26,12 @@ const InquiryTableData = () => {
     const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL || "";
 
     // Use applies selector
-    const appliesData = useSelector((state: any) => state.applies?.items || []);
+
+    const { items: appliesDataRaw } = useSelector(
+        (state: any) => state.applies
+    );
+
+    const appliesData = [...appliesDataRaw].reverse();
 
     const fetchApplications = async () => {
         try {

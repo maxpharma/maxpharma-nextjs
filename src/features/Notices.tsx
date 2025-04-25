@@ -6,6 +6,7 @@ import Overlay from "@/components/Overlay";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ApplyNow from "./ApplyNow";
+import { bucketUrl } from "./data";
 
 // Define types for our data
 
@@ -39,6 +40,8 @@ const Notices = ({
         (item: any) => item?.documentType === "Career Notice"
     );
 
+    console.log("noticesData", noticesData);
+
     return (
         <div
             className={`${
@@ -64,7 +67,7 @@ const Notices = ({
 
 export default Notices;
 
-const Items = ({ date, title, link, variant = "notice", id }: any) => {
+const Items = ({ date, title, file, variant = "notice", id }: any) => {
     const [isOverlayOpen, setIsOverlayOpen] = useState(false);
     const [jobId, setJobId] = useState<number | null>(null);
 
@@ -76,10 +79,15 @@ const Items = ({ date, title, link, variant = "notice", id }: any) => {
                         <div>{title}</div>
                         <div className='text-primary text-xs'>{date}</div>
                     </div>
-
-                    <Button className='absolute -bottom-6 right-4'>
-                        Learn More
-                    </Button>
+                    <a
+                        href={`${bucketUrl}/${file}`}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                    >
+                        <Button className='absolute -bottom-6 right-4'>
+                            Learn More
+                        </Button>
+                    </a>
                 </div>
             ) : variant === "job" ? (
                 <div className='relative shadow-md rounded-lg p-2'>
@@ -91,9 +99,15 @@ const Items = ({ date, title, link, variant = "notice", id }: any) => {
 
                         <div className='flex flex-col gap-2'>
                             <div className='flex gap-4 justify-center'>
-                                <button className='secondary-button'>
-                                    View Job
-                                </button>
+                                <a
+                                    href={`${bucketUrl}/${file}`}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                >
+                                    <button className='secondary-button'>
+                                        View Job
+                                    </button>
+                                </a>
                                 <button
                                     className='button'
                                     onClick={() => {

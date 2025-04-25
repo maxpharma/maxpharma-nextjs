@@ -57,6 +57,8 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         }
     }, [popupData?.length]);
 
+    console.log("popupData", popupData);
+
     const activePopup = popupData.find((item: any) => item.status === true);
     const pathname = usePathname();
     const isAdminRoute = pathname?.startsWith("/admin");
@@ -85,6 +87,20 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     return (
         <>
             {!isAdminRoute && <Navbar />}
+
+            {pathname === "/" && activePopup?.image && showPopup && (
+                <div className='fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50'>
+                    <div ref={popupRef} className='relative'>
+                        <Image
+                            src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${activePopup.image}`}
+                            alt='Popup'
+                            width={500}
+                            height={500}
+                            className='max-w-full max-h-full'
+                        />
+                    </div>
+                </div>
+            )}
 
             <main>{children}</main>
 

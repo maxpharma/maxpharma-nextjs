@@ -11,7 +11,7 @@ const page = () => {
     return (
         <ScrollReveal>
             <div>
-                <Notices limit={9} variant='job' />
+                <Notices limit={9} variant='notice' />
             </div>
         </ScrollReveal>
     );

@@ -9,7 +9,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const ProductInquiryTableData = () => {
-    const { items: data } = useSelector((state: any) => state.inquiries);
+    const { items: dataRaw } = useSelector((state: any) => state.inquiries);
+    const data = [...dataRaw].reverse();
     const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL || "";
 
     const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);

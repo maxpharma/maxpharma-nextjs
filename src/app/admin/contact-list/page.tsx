@@ -20,10 +20,14 @@ interface ContactItem {
 }
 
 const ContactList = () => {
-    const { items: contactData } = useSelector((state: any) => state.contacts);
+    const { items: contactDataRaw } = useSelector(
+        (state: any) => state.contacts
+    );
     const [selectedContact, setSelectedContact] = useState<ContactItem | null>(
         null
     );
+
+    const contactData = [...contactDataRaw.reverse()];
 
     const fetchData = async () => {
         await Contact.getAll();
