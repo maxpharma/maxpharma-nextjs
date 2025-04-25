@@ -6,7 +6,6 @@ const page = () => {
     return (
         <div>
             <section className='space-y-4'>
-                <h1>Our Products</h1>
                 <Products />
             </section>
         </div>
