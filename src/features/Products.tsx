@@ -8,9 +8,17 @@ import CustomImage from "@/components/CustomImage";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
 
-const Products: React.FC = () => {
+// Add variant prop with default value "list"
+interface ProductsProps {
+    variant?: "scroll" | "list";
+}
+
+const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
     const [activeCategory, setActiveCategory] =
         useState<string>("All Products");
+    const [products, setProducts] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const { data: categoriesRaw } = useSelector(
         (state: any) => state.categories
     );
@@ -32,24 +40,34 @@ const Products: React.FC = () => {
         (category: any) => activeCategory === category.value
     )?.id;
 
-    const [products, setProducts] = useState<any[]>([]);
     const fetchProducts = async () => {
-        if (activeCategory === "All Products") {
-            const response = await ProductsApi.get();
+        setLoading(true);
+        try {
+            let response;
 
-            setProducts(response.items);
-        } else {
-            const response = await ProductsApi.get(activeCategoryId);
-            setProducts(response.items); // Update to setProducts(response.items) for consistency
+            if (activeCategory === "All Products") {
+                response = await ProductsApi.get();
+            } else {
+                response = await ProductsApi.get(activeCategoryId);
+            }
+
+            setProducts(response.items || []);
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            setProducts([]);
+        } finally {
+            setLoading(false);
         }
     };
 
+    // Fetch products when category changes
     useEffect(() => {
         fetchProducts();
-    }, [products?.length, activeCategoryId]);
+    }, [activeCategory, activeCategoryId]);
 
     return (
-        <div>
+        <div className='space-y-4'>
+            <h1>Our Products</h1>
             {/* Categories */}
             <div className='flex overflow-x-auto gap-2 py-2 no-scrollbar'>
                 {categories.map((category: string) => (
@@ -70,28 +88,62 @@ const Products: React.FC = () => {
                     </button>
                 ))}
             </div>
-            {/* Products List */}
-            <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
-                {products?.length === 0 && (
-                    <div className='col-span-full text-center text-gray-500'>
-                        No products found.
-                    </div>
-                )}
 
-                {products.map((item: any) => (
-                    <Items
-                        key={item.id}
-                        id={item.id}
-                        categoryName={item.categoryData.value}
-                        name={item.name}
-                        title={item.title}
-                        description={item.description}
-                        type={item.type}
-                        files={item.files}
-                        additionalInfo={item.additionalInfo}
-                    />
+            {/* Loading state */}
+            {loading && (
+                <div className='text-center py-8'>
+                    <div className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent'></div>
+                </div>
+            )}
+
+            {/* Products List */}
+            {!loading &&
+                (variant === "scroll" ? (
+                    <div className='mt-4 flex overflow-x-auto gap-4 pb-8 hide-scrollbar'>
+                        {products?.length === 0 && (
+                            <div className='flex-shrink-0 text-center text-gray-500 w-full'>
+                                No products found.
+                            </div>
+                        )}
+                        {products.map((item: any) => (
+                            <div className='flex-shrink-0 w-112' key={item.id}>
+                                <Items
+                                    id={item.id}
+                                    categoryName={
+                                        item.categoryData?.value || ""
+                                    }
+                                    name={item.name}
+                                    title={item.title}
+                                    description={item.description}
+                                    type={item.type}
+                                    files={item.files || []}
+                                    additionalInfo={item.additionalInfo}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
+                        {products?.length === 0 && (
+                            <div className='col-span-full text-center text-gray-500'>
+                                No products found.
+                            </div>
+                        )}
+                        {products.map((item: any) => (
+                            <Items
+                                key={item.id}
+                                id={item.id}
+                                categoryName={item.categoryData?.value || ""}
+                                name={item.name}
+                                title={item.title}
+                                description={item.description}
+                                type={item.type}
+                                files={item.files || []}
+                                additionalInfo={item.additionalInfo}
+                            />
+                        ))}
+                    </div>
                 ))}
-            </div>
         </div>
     );
 };
@@ -103,7 +155,7 @@ const Items = ({
     title,
     categoryName,
     type,
-    files,
+    files = [],
     additionalInfo,
     description,
     id,
@@ -115,17 +167,19 @@ const Items = ({
             className='relative flex flex-col gap-4 border border-slate-300 rounded-xl w-full h-full cursor-pointer'
             onClick={() => router.push(`/products/${id}`)}
         >
-            <div className='px-4 pt-4 pb-8 w-full h-full space-y-4'>
+            <div className='px-4 py-4  w-full h-full space-y-4'>
                 <div className='relative w-full'>
                     <CustomImage
                         src={files[0]}
                         fit='cover'
-                        className='w-full h-40 object-cover'
+                        className='w-full h-80 object-contain'
                         variant='live'
                     />
-                    <div className='absolute top-2 left-2 rounded-xl p-1 bg-[#FAFBEA]'>
-                        {categoryName}
-                    </div>
+                    {categoryName && (
+                        <div className='absolute top-2 left-2 rounded-xl p-1 bg-[#FAFBEA]'>
+                            {categoryName}
+                        </div>
+                    )}
                 </div>
                 <div className='w-full'>
                     <div className='text-lg font-normal'>{name}</div>

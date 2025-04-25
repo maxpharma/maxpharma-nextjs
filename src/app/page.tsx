@@ -23,7 +23,9 @@ const Page = () => {
     return (
         <>
             <div className='custom-container mt-4 flex flex-col gap-4 md:gap-16'>
-                <Banner />
+                <ScrollReveal>
+                    <Banner />
+                </ScrollReveal>
 
                 <ScrollReveal>
                     <AboutUs />
@@ -34,14 +36,12 @@ const Page = () => {
 
                 <ScrollReveal>
                     <section className='space-y-4'>
-                        <h1>Our Products</h1>
-                        <Products />
+                        <Products variant='scroll' />
                     </section>
                 </ScrollReveal>
 
                 <ScrollReveal>
                     <section className='space-y-4  mt-8'>
-                        <h1>Latest Notices</h1>
                         <Notices limit={3} />
                     </section>
                 </ScrollReveal>

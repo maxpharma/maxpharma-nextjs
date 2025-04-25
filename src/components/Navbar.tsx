@@ -345,13 +345,10 @@ const Navbar = () => {
                 </div>
             </div>
             {isOverlayOpen && (
-                <Overlay
-                    isOpen={isOverlayOpen}
-                    onClose={() => setIsOverlayOpen(false)}
-                >
+                <Overlay isOpen={isOverlayOpen} onClose={() => false}>
                     <SendInquiry
                         varient='extra'
-                        onSuccess={() => setIsOverlayOpen(false)} // <-- Add this line
+                        setIsOverlayOpen={setIsOverlayOpen}
                     />
                 </Overlay>
             )}

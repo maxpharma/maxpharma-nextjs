@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-    --color-primary: #7d8e23; /* Default fallback color */
-    --color-light-primary: #fafbea; /* Default fallback color */
+    --color-primary: #7d8e23;
+    --color-light-primary: #fafbea;
     --color-secondary: #fff2fd;
 }
 

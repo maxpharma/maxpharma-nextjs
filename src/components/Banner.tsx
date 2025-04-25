@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Button from "./Button";
+import { bucketUrl } from "@/features/data";
 
 interface BannerProps {
     autoSlide?: boolean;
@@ -17,8 +18,6 @@ const Banner: React.FC<BannerProps> = ({
     autoSlide = true,
     autoSlideInterval = 5000,
 }) => {
-    const currentBanner = true;
-
     const fetchBanner = async () => {
         await GeneralSettings.getByGroup("banners", "banner")
             .then(() => {})
@@ -132,7 +131,7 @@ const Banner: React.FC<BannerProps> = ({
                                 className='absolute inset-0'
                             >
                                 <Image
-                                    src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${bannerImages[currentIndex]}`}
+                                    src={`${bucketUrl}/${bannerImages[currentIndex]}`}
                                     alt={`Banner image ${currentIndex + 1}`}
                                     fill
                                     className='object-cover rounded-xl'

@@ -47,6 +47,11 @@ const Notices = ({
                     : "max-w-4xl mx-auto flex flex-col gap-8"
             }`}
         >
+            {noticesData.length > 0 && (
+                <h1 className='text-2xl font-semibold'>
+                    {variant === "notice" ? "Notices" : "Career Notices"}
+                </h1>
+            )}
             {(variant === "notice"
                 ? importantNoticeData.slice(0, limit)
                 : careerNoticeData.slice(0, limit)

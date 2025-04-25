@@ -247,7 +247,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                             src={images[currentImageIndex].src}
                             alt={images[currentImageIndex].alt}
                             fill
-                            className='object-contain rounded-xl'
+                            className='object-cover rounded-xl'
                             priority
                         />
                     </div>

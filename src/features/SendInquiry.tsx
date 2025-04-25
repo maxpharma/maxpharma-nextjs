@@ -1,3 +1,5 @@
+"use client";
+
 import Inquiry from "@/api/Inquiry";
 import Products from "@/api/product";
 import Button from "@/components/Button";
@@ -13,22 +15,26 @@ import { useSelector } from "react-redux";
 
 interface SendInquiryProps {
     varient?: "extra";
-    onSuccess?: () => void; // <-- Add this line
+    setIsOverlayOpen?: any;
 }
 
-const SendInquiry = ({ varient, onSuccess }: SendInquiryProps) => {
+const SendInquiry = ({ varient, setIsOverlayOpen }: SendInquiryProps) => {
     const [loading, setLoading] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    // Fix: Only set timeout when modal is shown
+    console.log("showSuccessModal", showSuccessModal);
+
     useEffect(() => {
         if (showSuccessModal) {
             const timer = setTimeout(() => {
                 setShowSuccessModal(false);
-            }, 2000); // match autoDisappearTime
+                if (showSuccessModal === true) {
+                    setIsOverlayOpen(false);
+                }
+            }, 2000);
             return () => clearTimeout(timer);
         }
-    }, [showSuccessModal]);
+    }, [showSuccessModal, setIsOverlayOpen]);
 
     const pathname = usePathname();
 
@@ -70,9 +76,8 @@ const SendInquiry = ({ varient, onSuccess }: SendInquiryProps) => {
         };
         try {
             await Inquiry.create(payload);
-            resetForm();
-            if (onSuccess) onSuccess();
             setShowSuccessModal(true);
+            console.log("hcek");
         } catch (error) {
             console.error("Error submitting inquiry:", error);
         }

@@ -2,6 +2,7 @@ import { getSeoMetadata } from "@/utils/seo";
 import ServiceContents from "./ServiceContent";
 import GeneralSettings from "@/api/generalSettings";
 import { Metadata } from "next";
+import ScrollReveal from "@/components/animation/ScrollReveal";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
     const { service } = params;
@@ -17,5 +18,9 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 export default async function Page() {
-    return <ServiceContents />;
+    return (
+        <ScrollReveal>
+            <ServiceContents />
+        </ScrollReveal>
+    );
 }

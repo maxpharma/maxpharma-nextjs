@@ -19,7 +19,7 @@ const WebsiteData = () => {
         headerLogo: themes[0]?.header || "",
         footerLogo: themes[0]?.footer || "",
         footerText: themes[0]?.footerText || "",
-        primaryColor: themes[0]?.primaryColor,
+        primaryColor: themes[0]?.primaryColor || "#7d8e23",
         primaryLightColor: themes[0]?.primaryLightColor || "#fafbea",
         secondaryColor: themes[0]?.secondaryColor,
     };
