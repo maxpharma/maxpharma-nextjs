@@ -124,7 +124,7 @@ const DashboardPage = () => {
                   action: (
                       <button
                           onClick={() => router.push("/admin/inquiry-request")}
-                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1 whitespace-nowrap'
                       >
                           View
                       </button>
@@ -166,7 +166,7 @@ const DashboardPage = () => {
                   action: (
                       <button
                           onClick={() => router.push("/admin/contact-list")}
-                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1'
+                          className='text-green-800 bg-white border border-green-800 rounded-md px-4 py-1 whitespace-nowrap'
                       >
                           View
                       </button>
@@ -255,13 +255,14 @@ const DashboardPage = () => {
                     columns={leftTableColumns}
                     data={leftTableRows}
                     emptyMessage='No apply or product inquiry requests found'
-                    className='flex-1'
+                    className='flex-1 min-w-130'
                 />
                 <DataTable
                     title='Contact Inquiries'
                     columns={contactColumns}
                     data={contactRows}
                     emptyMessage='No contact inquiries found'
+                    className='flex-1 min-w-130'
                 />
             </div>
         </div>

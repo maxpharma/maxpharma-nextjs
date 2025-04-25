@@ -1,5 +1,6 @@
 "use client";
 
+import ScrollReveal from "@/components/animation/ScrollReveal";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
@@ -335,12 +336,14 @@ const OrganizationChartPage: React.FC = () => {
     };
 
     return (
-        <div className='container mx-auto px-4 py-8'>
-            <h1 className='text-2xl font-bold text-center mb-8'>
-                Organization Chart
-            </h1>
-            <OrgChart data={orgData} />
-        </div>
+        <ScrollReveal>
+            <div className='container mx-auto px-4 py-8'>
+                <h1 className='text-2xl font-bold text-center mb-8'>
+                    Organization Chart
+                </h1>
+                <OrgChart data={orgData} />
+            </div>
+        </ScrollReveal>
     );
 };
 

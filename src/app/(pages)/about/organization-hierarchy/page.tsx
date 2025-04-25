@@ -7,11 +7,7 @@ export async function generateMetadata() {
 }
 
 const OrganizationHistoryPage = () => {
-    return (
-        <ScrollReveal>
-            <OrganizationChartPage />
-        </ScrollReveal>
-    );
+    return <OrganizationChartPage />;
 };
 
 export default OrganizationHistoryPage;
