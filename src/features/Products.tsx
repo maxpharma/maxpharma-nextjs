@@ -167,7 +167,7 @@ const Items = ({
             className='relative flex flex-col gap-4 border border-slate-300 rounded-xl w-full h-full cursor-pointer'
             onClick={() => router.push(`/products/${id}`)}
         >
-            <div className='px-4 py-4  w-full h-full space-y-4'>
+            <div className='px-4 pt-4 py-6  w-full h-full space-y-4'>
                 <div className='relative w-full'>
                     <CustomImage
                         src={files[0]}

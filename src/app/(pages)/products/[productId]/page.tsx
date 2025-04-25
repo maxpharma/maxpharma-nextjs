@@ -41,7 +41,7 @@ const ProductDetailPage = () => {
     return (
         <>
             <ScrollReveal>
-                <div className='py-6 space-y-16 mx-auto lg:max-w-9/10'>
+                <div className='py-2 md:py-4 space-y-16 mx-auto lg:max-w-9/10'>
                     <div className='flex flex-col lg:flex-row gap-8 '>
                         <div className='w-full lg:w-1/2'>
                             <div className='flex flex-col sm:flex-row gap-2'>
