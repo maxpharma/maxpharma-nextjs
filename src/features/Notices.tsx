@@ -77,7 +77,9 @@ const Items = ({ date, title, file, variant = "notice", id }: any) => {
                 <div className='relative border border-slate-200 rounded-xl'>
                     <div className='px-4 pt-4 pb-6 flex justify-between'>
                         <div>{title}</div>
-                        <div className='text-primary text-xs'>{date}</div>
+                        <div className='text-primary text-xs'>
+                            {date.split("T")[0]}
+                        </div>
                     </div>
                     <a
                         href={`${bucketUrl}/${file}`}
@@ -94,7 +96,9 @@ const Items = ({ date, title, file, variant = "notice", id }: any) => {
                     <div className='p-4 flex justify-between'>
                         <div className='flex-1'>
                             <div>{title}</div>
-                            <div className='text-primary text-xs'>{date}</div>
+                            <div className='text-primary text-xs'>
+                                {date.split("T")[0]}
+                            </div>
                         </div>
 
                         <div className='flex flex-col gap-2'>

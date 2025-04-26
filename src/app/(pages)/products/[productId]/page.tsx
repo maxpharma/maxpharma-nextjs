@@ -154,7 +154,7 @@ const ProductDetailPage = () => {
                         />
                     </div>
                     <section className='space-y-4'>
-                        <Products />
+                        <Products variant='scroll' />
                     </section>
                     <div className='mt-24'>
                         <Faqs type='Product' />
