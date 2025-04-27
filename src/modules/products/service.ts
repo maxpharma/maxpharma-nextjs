@@ -6,7 +6,7 @@ import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
 import uploadMultipleImage from "../../utils/uploadMultipleFile";
-const model = Application
+const model = Application;
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
@@ -25,12 +25,12 @@ const list = async (params: any) => {
 
 const create = async (input: any) => {
   try {
-    const { error } = await createValidationSchema.validateAsync(input)
+    const { error } = await createValidationSchema.validateAsync(input);
     if (!!error) {
       throw new Error(error.details[0].message);
     }
     if (!!input?.files) {
-      input.files = await uploadMultipleImage(input?.files, 'products')
+      input.files = await uploadMultipleImage(input?.files, "products");
     }
     const data = await model.create(input);
     return data;
@@ -56,22 +56,20 @@ const find = async (id: any) => {
 
 const update = async (input: any, id: number) => {
   try {
-    const { error } = await createValidationSchema.validateAsync(input)
+    const { error } = await createValidationSchema.validateAsync(input);
     if (!!error) {
       throw new Error(error.details[0].message);
     }
     const data: any = await find(id);
     if (!!input?.files) {
-      input.files = await uploadMultipleImage(input?.files, 'products', data?.files)
+      input.files = await uploadMultipleImage(
+        input?.files,
+        "products",
+        data?.files
+      );
     }
-    const final = {
-      ...input,
-      additionalInfo: {
-       ...data.additionalInfo,
-       ...input.additionalInfo,
-      },
-    }
-    await data.update(final);
+
+    await data.update(input);
     return data;
   } catch (err: any) {
     throw new Error(err);
@@ -92,7 +90,7 @@ const remove = async (id: number) => {
 };
 const count = async () => {
   try {
-    const data: any = await model.count()
+    const data: any = await model.count();
     return data;
   } catch (err: any) {
     throw new Error(err);
@@ -104,5 +102,5 @@ export default {
   find,
   update,
   remove,
-  count
+  count,
 };
