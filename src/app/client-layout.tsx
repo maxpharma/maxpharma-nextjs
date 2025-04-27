@@ -57,8 +57,6 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     }
   }, [popupData?.length]);
 
-  console.log("popupData", popupData);
-
   const activePopup = popupData.find((item: any) => item.status === true);
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");

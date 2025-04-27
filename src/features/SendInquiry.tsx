@@ -14,147 +14,140 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 interface SendInquiryProps {
-    varient?: "extra";
-    setIsOverlayOpen?: any;
+  varient?: "extra";
+  setIsOverlayOpen?: any;
 }
 
 const SendInquiry = ({ varient, setIsOverlayOpen }: SendInquiryProps) => {
-    const [loading, setLoading] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-    console.log("showSuccessModal", showSuccessModal);
-
-    useEffect(() => {
-        if (showSuccessModal) {
-            const timer = setTimeout(() => {
-                setShowSuccessModal(false);
-                if (showSuccessModal === true) {
-                    setIsOverlayOpen(false);
-                }
-            }, 2000);
-            return () => clearTimeout(timer);
+  useEffect(() => {
+    if (showSuccessModal) {
+      const timer = setTimeout(() => {
+        setShowSuccessModal(false);
+        if (showSuccessModal === true) {
+          setIsOverlayOpen(false);
         }
-    }, [showSuccessModal, setIsOverlayOpen]);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessModal, setIsOverlayOpen]);
 
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-    const productId = pathname.split("/").pop() || null;
+  const productId = pathname.split("/").pop() || null;
 
-    const { items: ProductsData } = useSelector((state: any) => state.products);
+  const { items: ProductsData } = useSelector((state: any) => state.products);
 
-    const fetchData = async () => {
-        await Products.get();
+  const fetchData = async () => {
+    await Products.get();
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [productId]);
+
+  const initialValues = {
+    name: "",
+    phone: "",
+    email: "",
+    location: "",
+    message: "",
+    product: varient === "extra" ? "" : undefined,
+  };
+
+  const submitHandler = async (values: any, { resetForm }: any) => {
+    setLoading(true);
+    const payload = {
+      name: values?.name,
+      phone: values?.phone,
+      email: values?.email,
+      location: values?.location,
+      productId:
+        varient === "extra"
+          ? ProductsData?.find((item: any) => item.name === values?.product)?.id
+          : productId,
+      message: values?.message,
     };
+    try {
+      await Inquiry.create(payload);
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Error submitting inquiry:", error);
+    }
+    setLoading(false);
+  };
 
-    useEffect(() => {
-        fetchData();
-    }, [productId]);
-
-    const initialValues = {
-        name: "",
-        phone: "",
-        email: "",
-        location: "",
-        message: "",
-        product: varient === "extra" ? "" : undefined,
-    };
-
-    const submitHandler = async (values: any, { resetForm }: any) => {
-        setLoading(true);
-        const payload = {
-            name: values?.name,
-            phone: values?.phone,
-            email: values?.email,
-            location: values?.location,
-            productId:
-                varient === "extra"
-                    ? ProductsData?.find(
-                          (item: any) => item.name === values?.product
-                      )?.id
-                    : productId,
-            message: values?.message,
-        };
-        try {
-            await Inquiry.create(payload);
-            setShowSuccessModal(true);
-            console.log("hcek");
-        } catch (error) {
-            console.error("Error submitting inquiry:", error);
-        }
-        setLoading(false);
-    };
-
-    return (
-        <>
-            {showSuccessModal && (
-                <SuccessModal
-                    message="Your inquiry has been sent successfully! We'll get back to you soon."
-                    autoDisappear={true}
-                    autoDisappearTime={2000}
-                />
-            )}
-            <div className='space-y-4 '>
-                <h1>Interested in Our Products</h1>
-                <Formik initialValues={initialValues} onSubmit={submitHandler}>
-                    <Form>
-                        <div className='flex gap-4 flex-col sm:flex-row'>
-                            <Input
-                                name='name'
-                                label='Name'
-                                placeholder='Enter your name'
-                                required
-                                className='flex-1'
-                            />
-                            <PhoneInput
-                                name='phone'
-                                label='Contact Number'
-                                placeholder='Phone Number'
-                                required
-                                className='flex-1'
-                            />
-                        </div>
-                        <div className='flex gap-4 flex-col sm:flex-row'>
-                            <Input
-                                name='email'
-                                label='Email'
-                                placeholder='Enter your email'
-                                type='email'
-                                required
-                                className='flex-1'
-                            />
-                            <Input
-                                name='location'
-                                label='Location'
-                                placeholder='Enter your Location'
-                                required
-                                className='flex-1'
-                            />
-                        </div>
-                        {varient === "extra" && (
-                            <Dropdown
-                                name='product' // <-- Add this line
-                                options={ProductsData?.map(
-                                    (item: any) => item.name
-                                )}
-                                label='Select Product'
-                                placeholder='Select Product'
-                                className='mb-4'
-                            />
-                        )}
-                        <TextArea
-                            name='message'
-                            label='Message'
-                            placeholder='Enter your message'
-                            required
-                        />
-                        <Button loading={loading} variant='submit'>
-                            Send Message
-                        </Button>
-                    </Form>
-                </Formik>
+  return (
+    <>
+      {showSuccessModal && (
+        <SuccessModal
+          message="Your inquiry has been sent successfully! We'll get back to you soon."
+          autoDisappear={true}
+          autoDisappearTime={2000}
+        />
+      )}
+      <div className="space-y-4 ">
+        <h1>Interested in Our Products</h1>
+        <Formik initialValues={initialValues} onSubmit={submitHandler}>
+          <Form>
+            <div className="flex gap-4 flex-col sm:flex-row">
+              <Input
+                name="name"
+                label="Name"
+                placeholder="Enter your name"
+                required
+                className="flex-1"
+              />
+              <PhoneInput
+                name="phone"
+                label="Contact Number"
+                placeholder="Phone Number"
+                required
+                className="flex-1"
+              />
             </div>
-        </>
-    );
+            <div className="flex gap-4 flex-col sm:flex-row">
+              <Input
+                name="email"
+                label="Email"
+                placeholder="Enter your email"
+                type="email"
+                required
+                className="flex-1"
+              />
+              <Input
+                name="location"
+                label="Location"
+                placeholder="Enter your Location"
+                required
+                className="flex-1"
+              />
+            </div>
+            {varient === "extra" && (
+              <Dropdown
+                name="product" // <-- Add this line
+                options={ProductsData?.map((item: any) => item.name)}
+                label="Select Product"
+                placeholder="Select Product"
+                className="mb-4"
+              />
+            )}
+            <TextArea
+              name="message"
+              label="Message"
+              placeholder="Enter your message"
+              required
+            />
+            <Button loading={loading} variant="submit">
+              Send Message
+            </Button>
+          </Form>
+        </Formik>
+      </div>
+    </>
+  );
 };
 
 export default SendInquiry;
