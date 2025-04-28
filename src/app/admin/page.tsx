@@ -36,7 +36,9 @@ const AdminLogin = () => {
 
       Helper.saveUser(res);
       if (res?.token) {
-        router.push("/admin/dashboard");
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 600);
       }
     } catch (err) {
       console.error("Login Error:", err);
