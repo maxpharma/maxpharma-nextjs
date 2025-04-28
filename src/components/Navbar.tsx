@@ -345,7 +345,10 @@ const Navbar = () => {
                 </div>
             </div>
             {isOverlayOpen && (
-                <Overlay isOpen={isOverlayOpen} onClose={() => false}>
+                <Overlay
+                    isOpen={isOverlayOpen}
+                    onClose={() => setIsOverlayOpen(false)}
+                >
                     <SendInquiry
                         varient='extra'
                         setIsOverlayOpen={setIsOverlayOpen}
