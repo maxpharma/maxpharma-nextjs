@@ -4,6 +4,8 @@ import { Metadata } from "next";
 export const getSeoMetadata = async (key: string): Promise<Metadata> => {
     const data = await GeneralSettings.getByKey("seo", key);
 
+    console.log(data, "SEO DATA");
+
     return {
         title: data?.infos?.title || "Max Pharma",
         description: data?.infos?.description,

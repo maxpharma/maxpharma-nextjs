@@ -4,7 +4,6 @@ import ProductApi from "@/api/product";
 import Overlay from "@/components/Overlay";
 import FixedInBottom from "@/components/ui/FixedInBottom";
 import ProductGallery from "@/components/ui/ProductGallery";
-import Categories from "@/features/Categories";
 import Faqs from "@/features/Faqs";
 import Products from "@/features/Products";
 import SendInquiry from "@/features/SendInquiry";

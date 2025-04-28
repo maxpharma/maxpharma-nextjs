@@ -12,9 +12,13 @@ import EmptyState from "@/components/EmptyState";
 // Add variant prop with default value "list"
 interface ProductsProps {
     variant?: "scroll" | "list";
+    type?: "Imported Products" | "Manufactured Products";
 }
 
-const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
+const Products: React.FC<ProductsProps> = ({
+    variant = "list",
+    type = "Imported Products",
+}) => {
     const [activeCategory, setActiveCategory] =
         useState<string>("All Products");
     const [products, setProducts] = useState<any[]>([]);
@@ -24,27 +28,22 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
         (state: any) => state.categories
     );
 
-    // Fetch categories if not loaded
     useEffect(() => {
         if (!categoriesRaw?.length) {
             GeneralSettings.getByGroup("categories", "categories");
         }
     }, [categoriesRaw?.length]);
 
-    // Prepare categories list
     const categories = [
         "All Products",
         ...(categoriesRaw?.map((c: any) => c.value) || []),
     ];
 
-    // Get the active category ID
     const activeCategoryId = categoriesRaw?.find?.(
         (category: any) => activeCategory === category.value
     )?.id;
 
-    // Fetch products whenever activeCategory or activeCategoryId changes
     useEffect(() => {
-        // Only fetch if we have categories
         if (categoriesRaw?.length || activeCategory === "All Products") {
             const fetchProducts = async () => {
                 setLoading(true);
@@ -70,7 +69,6 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
         }
     }, [activeCategory, activeCategoryId, categoriesRaw?.length]);
 
-    // Show EmptyState if no categories
     if (!categoriesRaw?.length) {
         return (
             <EmptyState
@@ -79,6 +77,8 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
             />
         );
     }
+
+    const filteredProducts = products.filter((item: any) => item.type === type);
 
     return (
         <div className='space-y-4'>
@@ -115,11 +115,12 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
             {!loading &&
                 (variant === "scroll" ? (
                     <div className='mt-4 flex overflow-x-auto gap-4 pb-8 scrollbar-hide'>
-                        {products?.length === 0 && (
-                            <div className='flex-shrink-0 w-full'>
+                        {products.filter((item: any) => item.type === type)
+                            .length === 0 && (
+                            <div className='col-span-full'>
                                 <EmptyState
                                     title='No Products Found'
-                                    message='Oops! No products are available in this category.'
+                                    message={`Oops! No products are available in this ${type}.`}
                                 />
                             </div>
                         )}
@@ -142,27 +143,32 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
                     </div>
                 ) : (
                     <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
-                        {products?.length === 0 && (
+                        {products.filter((item: any) => item.type === type)
+                            .length === 0 && (
                             <div className='col-span-full'>
                                 <EmptyState
                                     title='No Products Found'
-                                    message='Oops! No products are available in this category.'
+                                    message={`Oops! No products are available in this ${type}.`}
                                 />
                             </div>
                         )}
-                        {products.map((item: any) => (
-                            <Items
-                                key={item.id}
-                                id={item.id}
-                                categoryName={item.categoryData?.value || ""}
-                                name={item.name}
-                                title={item.title}
-                                description={item.description}
-                                type={item.type}
-                                files={item.files || []}
-                                additionalInfo={item.additionalInfo}
-                            />
-                        ))}
+                        {products
+                            .filter((item: any) => item.type === type)
+                            .map((item: any) => (
+                                <Items
+                                    key={item.id}
+                                    id={item.id}
+                                    categoryName={
+                                        item.categoryData?.value || ""
+                                    }
+                                    name={item.name}
+                                    title={item.title}
+                                    description={item.description}
+                                    type={item.type}
+                                    files={item.files || []}
+                                    additionalInfo={item.additionalInfo}
+                                />
+                            ))}
                     </div>
                 ))}
         </div>

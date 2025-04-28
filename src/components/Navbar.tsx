@@ -70,7 +70,7 @@ const Navbar = () => {
         },
         {
             name: "Products",
-            path: "/products",
+            path: "/products/imported-products",
         },
 
         { name: "Manufacturing", path: "/manufacturing/production-department" },

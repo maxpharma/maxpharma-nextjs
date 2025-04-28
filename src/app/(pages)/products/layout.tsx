@@ -8,11 +8,11 @@ const ProductLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
 
     const aboutNavItems = [
-        { name: "Imported Products", path: "/products" },
+        { name: "Imported Products", path: "/products/imported-products/" },
 
         {
             name: "Manufactured Products",
-            path: "/products/manufactured-products",
+            path: "/products/manufactured-products/",
         },
     ];
 
@@ -31,8 +31,8 @@ const ProductLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <div>
             <div>
-                {(pathname === "/products" ||
-                    pathname === "/products/manufactured-products") && (
+                {(pathname === "/products/imported-products/" ||
+                    pathname === "/products/manufactured-products/") && (
                     <BannerNavigation title={title} items={aboutNavItems} />
                 )}
             </div>

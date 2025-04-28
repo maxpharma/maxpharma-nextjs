@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
             lastModified: new Date(),
         },
         {
-            url: "/products",
+            url: "/products/imported-products",
             priority: 0.8,
             changeFrequency: "weekly",
             lastModified: new Date(),
