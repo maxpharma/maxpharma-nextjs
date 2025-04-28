@@ -7,6 +7,7 @@ import ProductsApi from "@/api/product";
 import CustomImage from "@/components/CustomImage";
 import Button from "@/components/Button";
 import { useRouter } from "next/navigation";
+import EmptyState from "@/components/EmptyState";
 
 // Add variant prop with default value "list"
 interface ProductsProps {
@@ -36,34 +37,48 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
         ...(categoriesRaw?.map((c: any) => c.value) || []),
     ];
 
-    const activeCategoryId = categoriesRaw.find(
+    // Get the active category ID
+    const activeCategoryId = categoriesRaw?.find?.(
         (category: any) => activeCategory === category.value
     )?.id;
 
-    const fetchProducts = async () => {
-        setLoading(true);
-        try {
-            let response;
-
-            if (activeCategory === "All Products") {
-                response = await ProductsApi.get();
-            } else {
-                response = await ProductsApi.get(activeCategoryId);
-            }
-
-            setProducts(response.items || []);
-        } catch (error) {
-            console.error("Error fetching products:", error);
-            setProducts([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    // Fetch products when category changes
+    // Fetch products whenever activeCategory or activeCategoryId changes
     useEffect(() => {
-        fetchProducts();
-    }, [activeCategory, activeCategoryId]);
+        // Only fetch if we have categories
+        if (categoriesRaw?.length || activeCategory === "All Products") {
+            const fetchProducts = async () => {
+                setLoading(true);
+                try {
+                    let response;
+
+                    if (activeCategory === "All Products") {
+                        response = await ProductsApi.get();
+                    } else {
+                        response = await ProductsApi.get(activeCategoryId);
+                    }
+
+                    setProducts(response.items || []);
+                } catch (error) {
+                    console.error("Error fetching products:", error);
+                    setProducts([]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            fetchProducts();
+        }
+    }, [activeCategory, activeCategoryId, categoriesRaw?.length]);
+
+    // Show EmptyState if no categories
+    if (!categoriesRaw?.length) {
+        return (
+            <EmptyState
+                title='No Categories Found'
+                message='Oops! No product categories are available.'
+            />
+        );
+    }
 
     return (
         <div className='space-y-4'>
@@ -101,8 +116,11 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
                 (variant === "scroll" ? (
                     <div className='mt-4 flex overflow-x-auto gap-4 pb-8 scrollbar-hide'>
                         {products?.length === 0 && (
-                            <div className='flex-shrink-0 text-center text-gray-500 w-full'>
-                                No products found.
+                            <div className='flex-shrink-0 w-full'>
+                                <EmptyState
+                                    title='No Products Found'
+                                    message='Oops! No products are available in this category.'
+                                />
                             </div>
                         )}
                         {products.map((item: any) => (
@@ -125,8 +143,11 @@ const Products: React.FC<ProductsProps> = ({ variant = "list" }) => {
                 ) : (
                     <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
                         {products?.length === 0 && (
-                            <div className='col-span-full text-center text-gray-500'>
-                                No products found.
+                            <div className='col-span-full'>
+                                <EmptyState
+                                    title='No Products Found'
+                                    message='Oops! No products are available in this category.'
+                                />
                             </div>
                         )}
                         {products.map((item: any) => (

@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import Gallery from "@/api/gallery";
 import { useSelector } from "react-redux";
+import EmptyState from "@/components/EmptyState"; // <-- import EmptyState
 
 type GalleryImage = {
     id: number;
@@ -166,7 +167,12 @@ const PhotoGallery: React.FC = () => {
             tabIndex={0}
             onKeyDown={handleKeyDown}
         >
-            {galleryData && galleryData.length > 0 ? (
+            {!galleryData || galleryData.length === 0 ? (
+                <EmptyState
+                    title='No Gallery Found'
+                    message='Oops! Our gallery is feeling a little empty.'
+                />
+            ) : (
                 galleryData.map((galleryItem: GalleryItem) => (
                     <div key={galleryItem.id} className='mb-16'>
                         <h1 className='text-3xl font-bold mb-4 text-center'>
@@ -214,12 +220,6 @@ const PhotoGallery: React.FC = () => {
                         </div>
                     </div>
                 ))
-            ) : (
-                <div className='text-center py-16'>
-                    <p className='text-xl text-gray-500'>
-                        Loading gallery data...
-                    </p>
-                </div>
             )}
 
             {/* Lightbox Overlay */}
