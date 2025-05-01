@@ -27,7 +27,7 @@ const ContactList = () => {
         null
     );
 
-    const contactData = [...contactDataRaw.reverse()];
+    const contactData = [...contactDataRaw].reverse();
 
     const fetchData = async () => {
         await Contact.getAll();
