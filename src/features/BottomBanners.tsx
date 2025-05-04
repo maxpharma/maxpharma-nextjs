@@ -10,7 +10,6 @@ const BottomBanners: React.FC = () => {
         "/images/bottom-banner-1.png",
         "/images/bottom-banner-2.png",
         "/images/bottom-banner-3.png",
-        "/images/bottom-banner-4.png",
         "/images/bottom-banner-5.png",
         "/images/bottom-banner-6.png",
         "/images/bottom-banner-7.png",
