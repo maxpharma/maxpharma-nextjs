@@ -1,5 +1,5 @@
 // components/CustomToast.tsx
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
 
 interface CustomToastProps {
@@ -33,6 +33,17 @@ const CustomToast: FC<CustomToastProps> = ({
         return () => clearTimeout(timer);
     }, []);
 
+    const handleClose = useCallback(() => {
+        setIsClosing(true);
+        // Wait for animation to complete before unmounting
+        setTimeout(() => {
+            setIsMounted(false);
+            setTimeout(() => {
+                onClose?.();
+            }, 50);
+        }, 300);
+    }, [onClose]);
+
     useEffect(() => {
         let autoCloseTimer: NodeJS.Timeout;
 
@@ -45,18 +56,7 @@ const CustomToast: FC<CustomToastProps> = ({
         return () => {
             if (autoCloseTimer) clearTimeout(autoCloseTimer);
         };
-    }, [duration]);
-
-    const handleClose = () => {
-        setIsClosing(true);
-        // Wait for animation to complete before unmounting
-        setTimeout(() => {
-            setIsMounted(false);
-            setTimeout(() => {
-                onClose?.();
-            }, 50);
-        }, 300);
-    };
+    }, [duration, handleClose]);
 
     const handleButtonClick = () => {
         setIsClosing(true);

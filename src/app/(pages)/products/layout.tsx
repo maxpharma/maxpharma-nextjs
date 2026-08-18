@@ -4,17 +4,17 @@ import BannerNavigation from "@/components/BannerNavigation";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const aboutNavItems = [
+    { name: "Imported Products", path: "/products/imported-products/" },
+
+    {
+        name: "Manufactured Products",
+        path: "/products/manufactured-products/",
+    },
+];
+
 const ProductLayout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
-
-    const aboutNavItems = [
-        { name: "Imported Products", path: "/products/imported-products/" },
-
-        {
-            name: "Manufactured Products",
-            path: "/products/manufactured-products/",
-        },
-    ];
 
     const [title, setTitle] = useState("Products");
 

@@ -32,12 +32,33 @@ const Banner: React.FC<BannerProps> = ({
         if (!banners?.length) fetchBanner();
     }, [banners?.length]);
 
-    const bannerImages = banners?.map((banner: any) => banner.file) || [];
-    const bannerData =
-        banners?.map((banner: any) => ({
-            title: banner.title,
-            link: banner.value,
-        })) || [];
+    const defaultBannerImages = ["/images/banner4.png", "/images/ad-banner.png"];
+    const defaultBannerData = [
+        {
+            title: "Empowering Healthcare with High-Quality Pharmaceuticals",
+            link: "/about",
+        },
+        {
+            title: "Trusted Products & Manufacturing Services",
+            link: "/products/manufactured-products",
+        },
+    ];
+
+    const hasBanners = Array.isArray(banners) && banners.length > 0;
+    const bannerImages = hasBanners
+        ? banners.map((banner: any) =>
+              banner.file?.startsWith("http") || banner.file?.startsWith("/")
+                  ? banner.file
+                  : `${bucketUrl}/${banner.file}`
+          )
+        : defaultBannerImages;
+
+    const bannerData = hasBanners
+        ? banners.map((banner: any) => ({
+              title: banner.title,
+              link: banner.value,
+          }))
+        : defaultBannerData;
 
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isHovering, setIsHovering] = useState(false);
@@ -131,7 +152,7 @@ const Banner: React.FC<BannerProps> = ({
                                 className='absolute inset-0'
                             >
                                 <Image
-                                    src={`${bucketUrl}/${bannerImages[currentIndex]}`}
+                                    src={bannerImages[currentIndex] || "/images/banner4.png"}
                                     alt={`Banner image ${currentIndex + 1}`}
                                     fill
                                     className='object-cover rounded-xl'

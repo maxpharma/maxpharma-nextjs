@@ -17,13 +17,9 @@ const Overview = ({ type }: { type: string }) => {
         (state: any) => state.aboutUsOverview
     );
 
-    const fetchData = async () => {
-        await AboutUs.get("aboutUsOverview", type);
-    };
-
     useEffect(() => {
         if (!aboutUsData?.length) {
-            fetchData();
+            AboutUs.get("aboutUsOverview", type);
         }
     }, [aboutUsData?.length, type]);
 

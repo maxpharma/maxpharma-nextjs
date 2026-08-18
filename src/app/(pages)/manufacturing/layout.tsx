@@ -35,17 +35,17 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const [title, setTitle] = useState("Manufacturing");
 
   useEffect(() => {
-    const check = aboutNavItems.find(
+    const check = serviceCategories.find(
       (item: any) =>
-        item.infos?.seoUrl === decodeURIComponent(params?.service as string)
+        item?.infos?.seoUrl === decodeURIComponent(params?.service as string)
     );
 
     if (check) {
-      setTitle(check.name);
+      setTitle(check.value);
     } else {
       setTitle("Manufacturing");
     }
-  }, [params?.service]);
+  }, [params?.service, serviceCategories]);
 
   return (
     <>

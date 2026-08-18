@@ -4,7 +4,7 @@ import ConfirmationAlert from "@/components/ConfirmationAlert";
 import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 
 const TeamData = ({ setUpdatedIdData }: any) => {
@@ -16,13 +16,13 @@ const TeamData = ({ setUpdatedIdData }: any) => {
 
     const directorsData = [...originalDirectorsData].reverse();
 
-    const fetchTeamData = async (type: string) => {
-        await Team.getData(toggle, type);
-    };
+    const fetchTeamData = useCallback((type: string) => {
+        Team.getData(type, type);
+    }, []);
 
     useEffect(() => {
         fetchTeamData(toggle);
-    }, [toggle]);
+    }, [toggle, fetchTeamData]);
 
     const columns = [
         {

@@ -59,14 +59,14 @@ const ServicePage = () => {
   };
 
   useEffect(() => {
-    if (!currentService) {
-      fetchServiceDataById();
+    if (!currentService && selectedCategoryData?.infos?.serviceId) {
+      Services.getbyId(selectedCategoryData?.infos?.serviceId).then((res: any) => setCurrentService(res));
     }
-  }, [currentService]);
+  }, [currentService, selectedCategoryData?.infos?.serviceId]);
 
   useEffect(() => {
     if (!!selectedCategoryData?.infos?.serviceId) {
-      fetchServiceDataById();
+      Services.getbyId(selectedCategoryData?.infos?.serviceId).then((res: any) => setCurrentService(res));
     }
   }, [selectedCategoryData?.infos?.serviceId, selectedCategoryId]);
 
@@ -84,7 +84,7 @@ const ServicePage = () => {
         files: [],
       });
     }
-  }, [currentService, selectedCategoryId]);
+  }, [currentService, selectedCategoryData?.infos?.serviceId, selectedCategoryId]);
 
   const submitHandler = async (values: any, { resetForm }: any) => {
     setLoading(true);

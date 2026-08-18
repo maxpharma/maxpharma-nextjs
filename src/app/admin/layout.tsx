@@ -39,7 +39,7 @@ export default function AdminLayout({
     } else if (!loading && !user?.token && pathname !== "/admin") {
       router.push("/admin");
     }
-  }, [loading, user, pathname]);
+  }, [loading, user, pathname, router]);
 
   // Close dropdown when clicking outside
   useEffect(() => {

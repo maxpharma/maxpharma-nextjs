@@ -16,13 +16,9 @@ const MessageChairperson = ({ type }: any) => {
         (state: any) => state.aboutUsMessageFromChairperson
     );
 
-    const fetchData = async () => {
-        await AboutUs.get("aboutUsMessageFromChairperson", type);
-    };
-
     useEffect(() => {
         if (!chairpersonData?.length) {
-            fetchData();
+            AboutUs.get("aboutUsMessageFromChairperson", type);
         }
     }, [chairpersonData?.length, type]);
 

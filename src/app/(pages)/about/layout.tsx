@@ -4,20 +4,20 @@ import BannerNavigation from "@/components/BannerNavigation";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+const aboutNavItems = [
+    { name: "Overview", path: "/about" },
+    {
+        name: "Message from Chairperson",
+        path: "/about/message-from-chairperson",
+    },
+    {
+        name: "Organization Hierarchy",
+        path: "/about/organization-hierarchy",
+    },
+];
+
 const Layout = ({ children }: { children: React.ReactNode }) => {
     const pathname = usePathname();
-
-    const aboutNavItems = [
-        { name: "Overview", path: "/about" },
-        {
-            name: "Message from Chairperson",
-            path: "/about/message-from-chairperson",
-        },
-        {
-            name: "Organization Hierarchy",
-            path: "/about/organization-hierarchy",
-        },
-    ];
 
     const [title, setTitle] = useState("About");
 

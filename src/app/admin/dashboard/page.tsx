@@ -44,7 +44,7 @@ const DashboardPage = () => {
     if (!appliesData?.length) {
       fetchApplications();
     }
-  }, []);
+  }, [appliesData?.length]);
 
   const fetchProductData = async () => {
     await Inquiry.get();
@@ -54,7 +54,7 @@ const DashboardPage = () => {
     if (!inquiriesData?.length) {
       fetchProductData();
     }
-  }, []);
+  }, [inquiriesData?.length]);
 
   const contactsData = useSelector((state: any) => state.contacts?.items || []);
 
@@ -66,7 +66,7 @@ const DashboardPage = () => {
     if (!contactsData?.length) {
       fetchContactData();
     }
-  }, []);
+  }, [contactsData?.length]);
 
   const bucketUrl = process.env.NEXT_PUBLIC_BUCKET_URL || "";
 
@@ -74,7 +74,7 @@ const DashboardPage = () => {
     if (!dashboardData?.length) {
       fetchData();
     }
-  }, []);
+  }, [dashboardData?.length]);
 
   // Compose left table: Career Apply + Product Inquiry (latest first)
   const careerApplyRows = Array.isArray(appliesData)

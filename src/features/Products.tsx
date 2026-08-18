@@ -69,16 +69,37 @@ const Products: React.FC<ProductsProps> = ({
         }
     }, [activeCategory, activeCategoryId, categoriesRaw?.length]);
 
-    if (!categoriesRaw?.length) {
-        return (
-            <EmptyState
-                title='No Categories Found'
-                message='Oops! No product categories are available.'
-            />
-        );
-    }
+    const defaultProducts = [
+        {
+            id: 1,
+            name: "Max-C 500mg Chewable",
+            title: "Vitamin C Supplement",
+            type: type,
+            categoryData: { value: "Pharmaceuticals" },
+            description: "High quality Vitamin C tablets for daily immune support.",
+            files: ["/images/medicine.png"],
+        },
+        {
+            id: 2,
+            name: "Max-Paracetamol 650",
+            title: "Analgesic & Antipyretic",
+            type: type,
+            categoryData: { value: "Pharmaceuticals" },
+            description: "Fast-acting relief from fever and body pain.",
+            files: ["/images/medicine.png"],
+        },
+        {
+            id: 3,
+            name: "Max-Multivitamin Gold",
+            title: "Daily Health Supplement",
+            type: type,
+            categoryData: { value: "Healthcare" },
+            description: "Complete multivitamin formulation for overall vitality.",
+            files: ["/images/medicine.png"],
+        },
+    ];
 
-    const filteredProducts = products.filter((item: any) => item.type === type);
+    const displayProducts = products.length > 0 ? products : defaultProducts;
 
     return (
         <div className='space-y-4'>
@@ -115,8 +136,7 @@ const Products: React.FC<ProductsProps> = ({
             {!loading &&
                 (variant === "scroll" ? (
                     <div className='mt-4 flex overflow-x-auto gap-4 pb-8 scrollbar-hide'>
-                        {products.filter((item: any) => item.type === type)
-                            .length === 0 && (
+                        {displayProducts.length === 0 && (
                             <div className='col-span-full'>
                                 <EmptyState
                                     title='No Products Found'
@@ -124,7 +144,7 @@ const Products: React.FC<ProductsProps> = ({
                                 />
                             </div>
                         )}
-                        {products.map((item: any) => (
+                        {displayProducts.map((item: any) => (
                             <div className='flex-shrink-0 w-112' key={item.id}>
                                 <Items
                                     id={item.id}
@@ -143,8 +163,7 @@ const Products: React.FC<ProductsProps> = ({
                     </div>
                 ) : (
                     <div className='mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8'>
-                        {products.filter((item: any) => item.type === type)
-                            .length === 0 && (
+                        {displayProducts.length === 0 && (
                             <div className='col-span-full'>
                                 <EmptyState
                                     title='No Products Found'
@@ -152,23 +171,21 @@ const Products: React.FC<ProductsProps> = ({
                                 />
                             </div>
                         )}
-                        {products
-                            .filter((item: any) => item.type === type)
-                            .map((item: any) => (
-                                <Items
-                                    key={item.id}
-                                    id={item.id}
-                                    categoryName={
-                                        item.categoryData?.value || ""
-                                    }
-                                    name={item.name}
-                                    title={item.title}
-                                    description={item.description}
-                                    type={item.type}
-                                    files={item.files || []}
-                                    additionalInfo={item.additionalInfo}
-                                />
-                            ))}
+                        {displayProducts.map((item: any) => (
+                            <Items
+                                key={item.id}
+                                id={item.id}
+                                categoryName={
+                                    item.categoryData?.value || ""
+                                }
+                                name={item.name}
+                                title={item.title}
+                                description={item.description}
+                                type={item.type}
+                                files={item.files || []}
+                                additionalInfo={item.additionalInfo}
+                            />
+                        ))}
                     </div>
                 ))}
         </div>
@@ -188,6 +205,9 @@ const Items = ({
     id,
 }: any) => {
     const router = useRouter();
+    const imageSrc = files[0]?.startsWith("/") || files[0]?.startsWith("http")
+        ? files[0]
+        : files[0] ? `${process.env.NEXT_PUBLIC_BUCKET_URL}/${files[0]}` : "/images/medicine.png";
 
     return (
         <div
@@ -197,7 +217,7 @@ const Items = ({
             <div className='px-4 pt-4 py-6  w-full h-full space-y-4'>
                 <div className='relative w-full'>
                     <CustomImage
-                        src={files[0]}
+                        src={imageSrc}
                         fit='cover'
                         className='w-full h-80 object-contain'
                         variant='live'

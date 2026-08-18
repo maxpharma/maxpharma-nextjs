@@ -5,16 +5,21 @@ import { Metadata } from "next";
 import ScrollReveal from "@/components/animation/ScrollReveal";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-    const { service } = params;
+    try {
+        const resolvedParams = await params;
+        const service = resolvedParams?.service;
 
-    const data = await GeneralSettings.getByGroup(
-        "serviceCategories",
-        "serviceCategories"
-    );
+        const data = await GeneralSettings.getByGroup(
+            "serviceCategories",
+            "serviceCategories"
+        );
 
-    const seoKey = data?.find((item: any) => service === item?.infos?.seoUrl);
+        const seoKey = data?.find((item: any) => service === item?.infos?.seoUrl);
 
-    return await getSeoMetadata(seoKey?.infos?.state);
+        return await getSeoMetadata(seoKey?.infos?.state);
+    } catch (error) {
+        return await getSeoMetadata("");
+    }
 }
 
 export default async function Page() {

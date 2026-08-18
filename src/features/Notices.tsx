@@ -33,26 +33,52 @@ const Notices = ({
         }
     }, [noticesData.length]);
 
-    const importantNoticeData = noticesData.filter(
+    const defaultNotices = [
+        {
+            id: 1,
+            title: "Annual Quality Assurance Compliance Update",
+            date: "2026-08-01T00:00:00Z",
+            documentType: "Important Notice",
+            file: "#",
+        },
+        {
+            id: 2,
+            title: "New Product Launch & Distribution Announcement",
+            date: "2026-07-15T00:00:00Z",
+            documentType: "Important Notice",
+            file: "#",
+        },
+        {
+            id: 3,
+            title: "GMP Certification Renewal Completed",
+            date: "2026-06-20T00:00:00Z",
+            documentType: "Important Notice",
+            file: "#",
+        },
+        {
+            id: 4,
+            title: "Medical Representative (Sales Executive)",
+            date: "2026-08-10T00:00:00Z",
+            documentType: "Career Notice",
+            file: "#",
+        },
+    ];
+
+    const displayNotices = noticesData.length > 0 ? noticesData : defaultNotices;
+
+    const importantNoticeData = displayNotices.filter(
         (item: any) => item?.documentType === "Important Notice"
     );
 
-    const careerNoticeData = noticesData.filter(
+    const careerNoticeData = displayNotices.filter(
         (item: any) => item?.documentType === "Career Notice"
     );
 
     return (
-        <>
-            {noticesData.length === 0 && (
-                <EmptyState
-                    title={
-                        variant === "notice"
-                            ? "No Notices Found"
-                            : "No Career Notices Found"
-                    }
-                    message='Oops! There are no notices available at the moment.'
-                />
-            )}
+        <div className='space-y-4'>
+            <h1 className='text-2xl font-semibold'>
+                {variant === "notice" ? "Notices" : "Career Notices"}
+            </h1>
             <div
                 className={`${
                     variant === "notice"
@@ -60,12 +86,6 @@ const Notices = ({
                         : "max-w-4xl mx-auto flex flex-col gap-8"
                 }`}
             >
-                {noticesData.length > 0 && (
-                    <h1 className='text-2xl font-semibold'>
-                        {variant === "notice" ? "Notices" : "Career Notices"}
-                    </h1>
-                )}
-
                 {(variant === "notice"
                     ? importantNoticeData.slice(0, limit)
                     : careerNoticeData.slice(0, limit)
@@ -73,7 +93,7 @@ const Notices = ({
                     <Items key={index} {...item} variant={variant} />
                 ))}
             </div>
-        </>
+        </div>
     );
 };
 

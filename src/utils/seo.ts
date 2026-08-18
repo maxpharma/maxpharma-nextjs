@@ -2,11 +2,17 @@ import GeneralSettings from "@/api/generalSettings";
 import { Metadata } from "next";
 
 export const getSeoMetadata = async (key: string): Promise<Metadata> => {
-    const data = await GeneralSettings.getByKey("seo", key);
-
-    console.log(data, "SEO DATA");
+    let data: any = null;
+    try {
+        if (key) {
+            data = await GeneralSettings.getByKey("seo", key);
+        }
+    } catch (error) {
+        // Fallback to default metadata
+    }
 
     return {
+        metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://maxpharma.com.np"),
         title: data?.infos?.title || "Max Pharma",
         description: data?.infos?.description,
         keywords: data?.infos?.keywords,

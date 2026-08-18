@@ -185,21 +185,18 @@ const SpecificationTable: React.FC<SpecificationTableProps> = ({
     // Check for empty rows less frequently - not on every render
     useEffect(() => {
         // Skip during typing to prevent focus loss
-        if (isTyping.current) return;
-
-        const hasEmptyRow = specPairs.some(
-            (pair) => pair.key === "" && pair.value === ""
-        );
-
-        if (!hasEmptyRow && specPairs.length > 0) {
-            setSpecPairs([
-                ...specPairs,
-                {
-                    id: `spec-new-${Date.now()}-${specPairs.length}`,
-                    key: "",
-                    value: "",
-                },
-            ]);
+        if (specPairs.length === 0) {
+            setSpecPairs((prev) =>
+                prev.length === 0
+                    ? [
+                          {
+                              id: `spec-new-${Date.now()}-0`,
+                              key: "",
+                              value: "",
+                          },
+                      ]
+                    : prev
+            );
         }
     }, [specPairs.length]); // Only check when row count changes
 

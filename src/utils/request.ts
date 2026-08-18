@@ -38,7 +38,7 @@ const request = async (configuration: any) => {
   const defaultHeader: any = {
     "Content-Type": "application/json",
     Accept: "application/json",
-    "Api-Key": process.env.NEXT_PUBLIC_API_KEY,
+    "Api-Key": process.env.NEXT_PUBLIC_API_KEY || process.env.API_KEY,
   };
 
   let adminPath = "";
@@ -49,7 +49,10 @@ const request = async (configuration: any) => {
   if (!!authorization && adminPath.startsWith("/admin/")) {
     const user = helper.getUser();
     if (!user?.token) {
-      return toast.error("No token found");
+      if (isBrowser) {
+        toast.error("No token found");
+      }
+      return;
     }
     defaultHeader.Authorization = `Bearer ${user?.token}`;
   }
@@ -65,10 +68,10 @@ const request = async (configuration: any) => {
         throw new Error(resp?.data?.errors[0]?.message);
       }
       const data = resp?.data?.data;
-      if (!!config.store) {
+      if (!!config?.store) {
         await storeProcess(config.store, data);
       }
-      if (!!config.successMsg) {
+      if (!!config?.successMsg && isBrowser) {
         toast.success(configuration?.config?.successMsg);
       }
       return data;
@@ -79,7 +82,12 @@ const request = async (configuration: any) => {
         err.response?.data?.errors?.[0]?.message ||
         err?.message;
 
-      if (!!config?.showErr) {
+      if (
+        !!config?.showErr &&
+        isBrowser &&
+        message !== "Network Error" &&
+        err?.code !== "ERR_NETWORK"
+      ) {
         toast.error(message);
       }
 

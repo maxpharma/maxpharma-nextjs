@@ -42,7 +42,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
     }
 
     loadTheme();
-  }, [theme.primaryColor, theme.secondaryColor]);
+  }, [theme.primaryColor, theme.secondaryColor, theme.primaryLightColor]);
 
   const fetchData = async () => {
     await Popup.getData("popup");

@@ -25,13 +25,9 @@ const ServiceContents = () => {
   const { items: servicesData } = useSelector(
     (state: any) => state.services || []
   );
-  const fetchServicesData = async () => {
-    await Services.get(selectedCategory?.id);
-  };
-
   useEffect(() => {
     if (selectedCategory?.id) {
-      fetchServicesData();
+      Services.get(selectedCategory?.id);
     }
   }, [selectedCategory?.id]);
 

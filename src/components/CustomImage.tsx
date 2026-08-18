@@ -67,9 +67,9 @@ const CustomImage: React.FC<CustomImageProps> = ({
 
     // Construct the image source based on the variant
     const imageSrc =
-        variant === "live"
-            ? `${process.env.NEXT_PUBLIC_BUCKET_URL}/${src}`
-            : src;
+        src?.startsWith("/") || src?.startsWith("http")
+            ? src
+            : `${process.env.NEXT_PUBLIC_BUCKET_URL}/${src}`;
 
     return (
         <>

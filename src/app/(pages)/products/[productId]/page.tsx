@@ -24,12 +24,10 @@ const ProductDetailPage = () => {
         (state: any) => state.singleProduct
     );
 
-    const fetchData = async () => {
-        await ProductApi.getById(Number(productId));
-    };
-
     useEffect(() => {
-        fetchData();
+        if (productId) {
+            ProductApi.getById(Number(productId));
+        }
     }, [productId]);
 
     // If product not found, show a message

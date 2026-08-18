@@ -13,13 +13,9 @@ const Vision = ({ type }: { type: string }) => {
         (state: any) => state.aboutUsOurVision
     );
 
-    const fetchData = async () => {
-        await AboutUs.get("aboutUsOurVision", type);
-    };
-
     useEffect(() => {
         if (!ourVision?.length) {
-            fetchData();
+            AboutUs.get("aboutUsOurVision", type);
         }
     }, [ourVision?.length, type]);
 

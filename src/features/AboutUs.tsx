@@ -21,14 +21,23 @@ const AboutUs = () => {
         }
     }, [aboutUsData?.length]);
 
+    const title = aboutUsData?.[0]?.title || "About Max Pharma";
+    const description =
+        aboutUsData?.[0]?.description ||
+        "Max Pharma is a premier pharmaceutical company committed to delivering safe, effective, and high-quality healthcare products across Nepal. We focus on modern manufacturing excellence, continuous innovation, and trusted partnerships.";
+    const images =
+        aboutUsData?.[0]?.files?.length > 0
+            ? aboutUsData[0].files.map((image: any) => `${bucketUrl}/${image}`)
+            : ["/images/medicine.png", "/images/ad-banner.png"];
+
     return (
         <section className='space-y-4 mb-8'>
             <div className='flex flex-col lg:flex-row gap-4 lg:gap-12 lg:items-center'>
                 <div className='space-y-2 md:space-y-6 lg:w-6/10'>
-                    <h1>{aboutUsData[0]?.title}</h1>
+                    <h1>{title}</h1>
                     <p
                         dangerouslySetInnerHTML={{
-                            __html: aboutUsData[0]?.description || "",
+                            __html: description,
                         }}
                         className='space-y-4'
                     />
@@ -36,13 +45,7 @@ const AboutUs = () => {
 
                 {/* Gallery card with proper spacing */}
                 <div className='lg:w-4/10 lg:mt-0'>
-                    <GalleryCard
-                        images={
-                            aboutUsData[0]?.files?.map(
-                                (image: any) => `${bucketUrl}/${image}`
-                            ) || []
-                        }
-                    />
+                    <GalleryCard images={images} />
                 </div>
             </div>
         </section>

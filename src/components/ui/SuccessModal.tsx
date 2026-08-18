@@ -112,9 +112,10 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
 
     // Progress bar for autoDisappear (smooth with GSAP)
     useEffect(() => {
-        if (autoDisappear && progressBarRef.current) {
-            gsap.set(progressBarRef.current, { width: "0%" });
-            const tween = gsap.to(progressBarRef.current, {
+        const barElement = progressBarRef.current;
+        if (autoDisappear && barElement) {
+            gsap.set(barElement, { width: "0%" });
+            const tween = gsap.to(barElement, {
                 width: "100%",
                 duration: autoDisappearTime / 1000,
                 ease: "linear",
@@ -122,7 +123,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
             });
             return () => {
                 tween.kill();
-                gsap.set(progressBarRef.current, { width: "0%" });
+                if (barElement) gsap.set(barElement, { width: "0%" });
             };
         }
     }, [autoDisappear, autoDisappearTime]);
