@@ -39,6 +39,22 @@ const uploadFile = async ({
   base64: string;
 }) => {
   try {
+    // If base64 is already a URL or Spaces key, return the clean key without re-processing
+    if (
+      typeof base64 === "string" &&
+      (base64.startsWith("http://") ||
+        base64.startsWith("https://") ||
+        base64.includes("/maxpharma/") ||
+        base64.startsWith("maxpharma/"))
+    ) {
+      try {
+        const url = new URL(base64);
+        return url.pathname.replace(/^\/+/, "");
+      } catch {
+        return base64.replace(/^\/+/, "");
+      }
+    }
+
     const extension = (fileName.split(".").pop() || "").toLowerCase();
 
     // If it is an image, convert to webp and upload via uploadImage

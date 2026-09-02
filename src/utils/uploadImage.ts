@@ -13,6 +13,22 @@ const uploadImage = async ({
   base64: string;
 }) => {
   try {
+    // If base64 is already a URL or Spaces key, return the clean key without re-processing
+    if (
+      typeof base64 === "string" &&
+      (base64.startsWith("http://") ||
+        base64.startsWith("https://") ||
+        base64.includes("/maxpharma/") ||
+        base64.startsWith("maxpharma/"))
+    ) {
+      try {
+        const url = new URL(base64);
+        return url.pathname.replace(/^\/+/, "");
+      } catch {
+        return base64.replace(/^\/+/, "");
+      }
+    }
+
     // Strip possible data URI scheme prefix (e.g. data:image/png;base64,...)
     const cleanBase64 = base64.includes(",") ? base64.split(",")[1] : base64;
     const buffer = Buffer.from(cleanBase64, "base64");

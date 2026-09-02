@@ -85,23 +85,20 @@ const update = async (input: any, id: number) => {
     }
     const data: any = await find(id);
     if (!!input?.file) {
-      if (Constant.imageValidationExtensions.includes(input?.file.extension)){
+      if (typeof input.file === "string") {
+        // Keep existing file
+        input.file = input.file.replace(/^\/+/, "");
+      } else if (input.file?.base64) {
         const { file } = input;
-        input.file = await uploadFile({
+        const newFilePath = await uploadFile({
           filePath: `applies`,
-          fileName: `${Date.now()}-apply.${file.extension}`,
+          fileName: `${Date.now()}-apply.${file.extension || "pdf"}`,
           base64: file.base64,
         });
-      } else if (Constant.fileValidationExtensions.includes(input?.file.extension)){
-        const { file } = input;
-        input.file = await uploadFile({
-          filePath: `applies`,
-          fileName: `${Date.now()}-apply.${file.extension}`,
-          base64: file.base64,
-        });
-      }
-      if (data.file) {
-        await removeFile({ filePath: data.file });
+        if (data.file && data.file !== newFilePath) {
+          await removeFile({ filePath: data.file });
+        }
+        input.file = newFilePath;
       }
     }
     await data.update(input);

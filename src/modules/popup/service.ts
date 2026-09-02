@@ -95,6 +95,22 @@ const update = async (input: any, id: number) => {
         }
     }
     const data: any = await find(id);
+    if (!!input?.image) {
+      if (typeof input.image === "string") {
+        input.image = input.image.replace(/^\/+/, "");
+      } else if (input.image?.base64) {
+        const { image } = input;
+        const newFilePath = await uploadFile({
+          filePath: `popup`,
+          fileName: `${Date.now()}-popup.${image.extension || "webp"}`,
+          base64: image.base64,
+        });
+        if (data.image && data.image !== newFilePath) {
+          await removeFile({ filePath: data.image });
+        }
+        input.image = newFilePath;
+      }
+    }
     const update = await data.update(input);
     return update;
   } catch (err: any) {

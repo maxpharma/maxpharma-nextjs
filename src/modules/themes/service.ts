@@ -80,24 +80,30 @@ const update = async (input: any, id: number) => {
     }
     const data: any = await find(id);
 
-    const uploadAndReplaceFile = async ( field: string, folder:string) => {
-        if(!input?.[field]) return ;
-        const {extension, base64} = input[field]
+    const uploadAndReplaceFile = async (field: string, folder: string) => {
+      if (!input?.[field]) return;
+      if (typeof input[field] === "string") {
+        input[field] = input[field].replace(/^\/+/, "");
+        return;
+      }
+      if (input[field]?.base64) {
+        const { extension, base64 } = input[field];
         const filePath = await uploadFile({
           filePath: folder,
-          fileName: `${Date.now()}-${field}.${extension}`,
+          fileName: `${Date.now()}-${field}.${extension || "webp"}`,
           base64,
-         })
+        });
 
-        if(!!data[field]){
-          await removeFile({filePath: data[field]})
+        if (data[field] && data[field] !== filePath) {
+          await removeFile({ filePath: data[field] });
         }
-        input[field] = filePath   
-    }
+        input[field] = filePath;
+      }
+    };
     await uploadAndReplaceFile("header", "themes");
     await uploadAndReplaceFile("footer", "themes");
 
-    const update = data.update(input)
+    const update = await data.update(input)
     return update;
 
   } catch (err: any) {
