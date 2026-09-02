@@ -17,9 +17,8 @@ const server: any = new Elysia({
   return new Response(Bun.gzipSync(new TextEncoder().encode(text)), {
     status,
     headers: {
-      "Content-Type": `${
-        isJson ? "application/json" : "text/plain"
-      }; charset=utf-8`,
+      "Content-Type": `${isJson ? "application/json" : "text/plain"
+        }; charset=utf-8`,
     },
   });
 });
@@ -28,12 +27,10 @@ server
   .use(corsOptions)
   .use(helmetOptions)
   .onRequest(async (context: any) => {
-    const client = server?.server!?.requestIP(context.request);
-    const address = `${client?.address}-${context.request.path}`;
+    const client = server?.server?.requestIP ? server.server.requestIP(context.request) : null;
+    const ip = client?.address || context.request?.headers?.get?.("x-forwarded-for") || "127.0.0.1";
+    const address = `${ip}-${context.request?.path || ""}`;
     const currentTime = Date.now();
-    if (!client) {
-      throw new Error("Client Id not found");
-    }
     const record: any = requestCounts.get(address);
     if (!record) {
       requestCounts.set(address, { count: 1, timestamp: currentTime });

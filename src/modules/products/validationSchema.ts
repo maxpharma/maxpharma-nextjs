@@ -7,7 +7,7 @@ export const imageInputSchema = Joi.alternatives().try(
       .valid(...Constant.imageValidationExtensions, ...Constant.fileValidationExtensions)
       .required(),
   }),
-  Joi.string().pattern(/^uploads\//)
+  Joi.string().pattern(/^(uploads\/|maxpharma\/|http:\/\/|https:\/\/)/)
 );
   
 const createValidationSchema = Joi.object({

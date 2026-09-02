@@ -1,21 +1,31 @@
-import path from "path";
-import fs from "fs";
 import { Constant } from ".";
-import ffmpeg from "fluent-ffmpeg";
-import removeFile from "./removeFile";
-import { ROOT_PATH } from "../constant";
-const saveFile = async ({
-  buffer,
-  storePath,
-}: {
-  buffer: Buffer;
-  storePath: string;
-}) => {
-  try {
-    await fs.promises.writeFile(storePath, buffer);
-    return storePath;
-  } catch (err: any) {
-    throw new Error(err);
+import uploadImage from "./uploadImage";
+import { uploadToSpaces } from "./s3";
+import env from "../config/env";
+
+const getMimeType = (extension: string) => {
+  switch (extension.toLowerCase()) {
+    case "pdf":
+      return "application/pdf";
+    case "docx":
+      return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    case "doc":
+      return "application/msword";
+    case "mp4":
+      return "video/mp4";
+    case "mkv":
+      return "video/x-matroska";
+    case "mov":
+      return "video/quicktime";
+    case "webp":
+      return "image/webp";
+    case "png":
+      return "image/png";
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    default:
+      return "application/octet-stream";
   }
 };
 
@@ -29,46 +39,34 @@ const uploadFile = async ({
   base64: string;
 }) => {
   try {
-    const buffer = Buffer.from(base64, "base64");
-    const folderPath = path.join(ROOT_PATH, "../uploads", filePath);
-    const tempFolderPath = path.join(ROOT_PATH, "../uploads", "temp");
-    const splitFilename: any[] = fileName.split(".");
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
-    }
-    if (Constant.videoValidationExtensions.includes(splitFilename.pop())) {
-      if (!fs.existsSync(tempFolderPath)) {
-        fs.mkdirSync(tempFolderPath, { recursive: true });
-      }
-      const tempPath = path.join(tempFolderPath, fileName);
-      await saveFile({
-        buffer: buffer,
-        storePath: tempPath,
-      });
-      ffmpeg(tempPath)
-        .fps(40)
-        .videoCodec("libx264")
-        .outputOptions(["-pix_fmt yuv420p", `-crf 37`, "-preset fast"])
-        .on("end", () => {
-          removeFile({
-            filePath: `uploads/temp/${fileName}`,
-          });
-        })
-        .on("error", () => {
-          removeFile({
-            filePath: `uploads/temp/${fileName}`,
-          });
-        })
-        .save(path.join(folderPath, fileName));
-    } else {
-      await saveFile({
-        buffer: buffer,
-        storePath: path.join(folderPath, fileName),
+    const extension = (fileName.split(".").pop() || "").toLowerCase();
+
+    // If it is an image, convert to webp and upload via uploadImage
+    if (Constant.imageValidationExtensions.includes(extension)) {
+      return await uploadImage({
+        filePath,
+        fileName,
+        base64,
       });
     }
-    return `uploads/${filePath}/${fileName}`;
+
+    // Otherwise, upload directly to DigitalOcean Spaces
+    const cleanBase64 = base64.includes(",") ? base64.split(",")[1] : base64;
+    const buffer = Buffer.from(cleanBase64, "base64");
+    const folderPrefix = env.DIGITAL_BUCKET_FOLDER || "maxpharma";
+    const spaceKey = `${folderPrefix}/${filePath}/${fileName}`;
+
+    await uploadToSpaces({
+      key: spaceKey,
+      buffer,
+      contentType: getMimeType(extension),
+    });
+
+    console.log(`[Spaces Upload File] Successfully uploaded: ${spaceKey}`);
+    return spaceKey;
   } catch (err: any) {
-    throw new Error(err);
+    console.error("Error in uploadFile:", err);
+    throw new Error(err?.message || err);
   }
 };
 

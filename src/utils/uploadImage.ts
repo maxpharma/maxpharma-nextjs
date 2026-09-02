@@ -1,24 +1,7 @@
-import path from "path";
-import fs from "fs";
 import sharp from "sharp";
 import heicConvert from "heic-convert";
-import { ROOT_PATH } from "../constant";
-const saveFile = async ({
-  buffer,
-  storePath,
-}: {
-  buffer: Buffer;
-  storePath: string;
-}) => {
-  try {
-    fs.writeFile(storePath, buffer, (err: any) => {
-      if (err) throw new Error(err);
-    });
-    return storePath;
-  } catch (err: any) {
-    throw new Error(err);
-  }
-};
+import env from "../config/env";
+import { uploadToSpaces } from "./s3";
 
 const uploadImage = async ({
   filePath,
@@ -30,49 +13,52 @@ const uploadImage = async ({
   base64: string;
 }) => {
   try {
-    const buffer: any = Buffer.from(base64, "base64");
-    const name = fileName.split(".")[0];
-    const extension = fileName.split(".").pop()?.toLowerCase();
-    const folderPath = path.join(ROOT_PATH, "../uploads", filePath);
-    if (!fs.existsSync(folderPath)) {
-      fs.mkdirSync(folderPath, { recursive: true });
-    }
+    // Strip possible data URI scheme prefix (e.g. data:image/png;base64,...)
+    const cleanBase64 = base64.includes(",") ? base64.split(",")[1] : base64;
+    const buffer = Buffer.from(cleanBase64, "base64");
+
+    // Extract base name without extension
+    const name = fileName.substring(0, fileName.lastIndexOf(".")) || fileName;
+    const extension = (fileName.split(".").pop() || "").toLowerCase();
+
+    let webpBuffer: Buffer;
+
     if (extension === "heic" || extension === "heif") {
-      const pngFileName = `${name}.png`;
       try {
-        const formatBuffer = await sharp(buffer)
-          .toFormat("png", { quality: 90 })
+        webpBuffer = await sharp(buffer)
+          .webp({ quality: 85 })
           .toBuffer();
-        const pngFileName = `${name}.png`;
-        await saveFile({
-          buffer: formatBuffer,
-          storePath: path.join(folderPath, pngFileName),
-        });
-      } catch (err) {
-        const formatBuffer: any = await heicConvert({
-          buffer,
+      } catch {
+        const pngBuffer: any = await heicConvert({
+          buffer: buffer as any,
           format: "PNG",
           quality: 0.9,
         });
-        await saveFile({
-          buffer: formatBuffer,
-          storePath: path.join(folderPath, pngFileName),
-        });
+        webpBuffer = await sharp(pngBuffer)
+          .webp({ quality: 85 })
+          .toBuffer();
       }
-      return `uploads/${filePath}/${pngFileName}`;
     } else {
-      const webpFileName = `${name}.webp`;
-      const formatBuffer = await sharp(buffer)
-        .toFormat("webp", { quality: 90 })
+      webpBuffer = await sharp(buffer)
+        .webp({ quality: 85 })
         .toBuffer();
-      await saveFile({
-        buffer: formatBuffer,
-        storePath: path.join(folderPath, webpFileName),
-      });
-      return `uploads/${filePath}/${webpFileName}`;
     }
+
+    const webpFileName = `${name}.webp`;
+    const folderPrefix = env.DIGITAL_BUCKET_FOLDER || "maxpharma";
+    const spaceKey = `${folderPrefix}/${filePath}/${webpFileName}`;
+
+    await uploadToSpaces({
+      key: spaceKey,
+      buffer: webpBuffer,
+      contentType: "image/webp",
+    });
+
+    console.log(`[Spaces Upload] Successfully uploaded: ${spaceKey}`);
+    return spaceKey;
   } catch (err: any) {
-    throw new Error(err);
+    console.error("Error in uploadImage:", err);
+    throw new Error(err?.message || err);
   }
 };
 
