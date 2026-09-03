@@ -4,6 +4,7 @@ import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
+import cache from "../../utils/cache";
 
 const create = async (input: any) => {
   try {
@@ -30,7 +31,9 @@ const create = async (input: any) => {
         input.file = filePath;
       }
     }
-    return await Model.create(input);
+    const result = await Model.create(input);
+    cache.invalidatePrefix("settings:");
+    return result;
   } catch (err: any) {
     throw new Error(err.message);
   }
@@ -38,12 +41,11 @@ const create = async (input: any) => {
 
 const find = async (id: number) => {
   try {
-    const data = await Model.findOne({ where: { id: id } });
-    if (!!data) {
-      return data;
-    } else {
+    const data = await Model.findByPk(id);
+    if (!data) {
       throw new Error(ERROR_MESSAGES.DATA_NOT_FOUND);
     }
+    return data;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -51,14 +53,16 @@ const find = async (id: number) => {
 
 const getByKey = async (key: string) => {
   try {
+    const cacheKey = `settings:key:${key}`;
+    const cached = cache.get<any>(cacheKey);
+    if (cached) return cached;
+
     const data = await Model.findOne({
       where: { key: key },
     });
-    if (!!data) {
-      return data;
-    } else {
-      return {};
-    }
+    const result = data || {};
+    cache.set(cacheKey, result, 60);
+    return result;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -66,15 +70,17 @@ const getByKey = async (key: string) => {
 
 const getByGroup = async (group: string) => {
   try {
+    const cacheKey = `settings:group:${group}`;
+    const cached = cache.get<any>(cacheKey);
+    if (cached) return cached;
+
     const data = await Model.findAll({
       where: { group: group },
       order: [["createdAt", "desc"]],
     });
-    if (!!data?.length) {
-      return data;
-    } else {
-      return [];
-    }
+    const result = data?.length ? data : [];
+    cache.set(cacheKey, result, 60);
+    return result;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -110,6 +116,7 @@ const update = async (input: any, id: number) => {
     }
       
     await data.update(input, { where: { id: id } });
+    cache.invalidatePrefix("settings:");
     return data;
   } catch (err: any) {
     throw new Error(err);
@@ -123,6 +130,7 @@ const remove = async (id: number) => {
       await removeFile({ filePath: data?.file });
     }
     await data.destroy();
+    cache.invalidatePrefix("settings:");
     return data;
   } catch (err: any) {
     throw new Error(err);

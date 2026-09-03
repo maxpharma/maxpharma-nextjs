@@ -1,8 +1,8 @@
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import env from "../config/env";
-const hashPassword = (password: string) => {
-  return bcrypt.hashSync(password, 10);
+const hashPassword = async (password: string) => {
+  return await bcrypt.hash(password, 10);
 };
 
 const generateToken = async (obj: any) => {

@@ -7,7 +7,11 @@ import uploadMultipleImage from "../../utils/uploadMultipleFile";
 const list = async (params: any) => {
   try {
     const filter: any = await Repository.buildListFilter(params);
-    const data = await Model.scope(["withCategory"]).findAndCountAll(filter);
+    const data = await Model.scope(["withCategory"]).findAndCountAll({
+      ...filter,
+      distinct: true,
+      col: "products.id",
+    });
     return {
       items: data.rows,
       page: params.page,

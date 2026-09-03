@@ -32,7 +32,7 @@ const create = async (input: any) => {
     if (validate.error) {
       throw new Error(validate.error.details[0].message);
     }
-    input.password = Helper.hashPassword(input?.password);
+    input.password = await Helper.hashPassword(input?.password);
     const data = await Model.create(input);
     data.setDataValue("role", "admin");
     return data;
@@ -76,7 +76,7 @@ const changePassword = async (input: any, id: number) => {
     if (!isMatch) {
       throw new Error(ERROR_MESSAGES.INVALID_CREDENTIALS);
     }
-    await data.update({ password: Helper.hashPassword(input?.newPassword) });
+    await data.update({ password: await Helper.hashPassword(input?.newPassword) });
     data.setDataValue("role", "admin");
     return data;
   } catch (err: any) {

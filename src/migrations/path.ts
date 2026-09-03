@@ -10,7 +10,8 @@ const migrations: string[] = [
     "../modules/themes/migration.ts",
     "../modules/inquiries/migration.ts",
     "../modules/apply/migration.ts",
-    "../modules/popup/migration.ts"
+    "../modules/popup/migration.ts",
+    "./add_performance_indexes.ts"
 ];
   
 export default migrations;

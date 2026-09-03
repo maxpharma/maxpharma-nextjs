@@ -5,18 +5,25 @@ import uploadImage from "../../utils/uploadImage";
 import removeFile from "../../utils/removeFile";
 import { ERROR_MESSAGES } from "../../utils/messages";
 import uploadFile from "../../utils/uploadFile";
+import cache from "../../utils/cache";
 const model = Theme
 const list = async (params: any) => {
   try {
+    const cacheKey = `themes:${params?.page || 1}:${params?.limit || 10}:${params?.search || ""}`;
+    const cached = cache.get<any>(cacheKey);
+    if (cached) return cached;
+
     const filter: any = await Repository.buildListFilter(params);
     const data = await model.findAndCountAll(filter);
-    return {
+    const result = {
       items: data.rows,
       page: params.page,
       limit: params.limit,
       totalItems: data.count || 0,
       totalPages: Math.ceil(data.count / params?.limit) || 0,
     };
+    cache.set(cacheKey, result, 60);
+    return result;
   } catch (err: any) {
     throw new Error(err);
   }
@@ -47,6 +54,7 @@ const create = async (input: any) => {
     await uploadDocument("footer", "themes");
     
     const data = await model.create(input);
+    cache.invalidatePrefix("themes:");
     return data;
   } catch (err: any) {
     throw new Error(err);
@@ -103,7 +111,8 @@ const update = async (input: any, id: number) => {
     await uploadAndReplaceFile("header", "themes");
     await uploadAndReplaceFile("footer", "themes");
 
-    const update = await data.update(input)
+    const update = await data.update(input);
+    cache.invalidatePrefix("themes:");
     return update;
 
   } catch (err: any) {
@@ -118,6 +127,7 @@ const remove = async (id: number) => {
       await removeFile({ filePath: data.image });
     }
     await data.destroy();
+    cache.invalidatePrefix("themes:");
     return data;
   } catch (err: any) {
     throw new Error(err);

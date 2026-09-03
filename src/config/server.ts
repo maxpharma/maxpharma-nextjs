@@ -6,20 +6,46 @@ import db from "./db";
 const requestCounts = new Map<string, { count: number; timestamp: number }>();
 const windowMs: number = 60 * 1000;
 const maxRequests: number = 80;
+
+// Periodic cleanup of expired rate limiter records to prevent unbounded memory growth
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, record] of requestCounts.entries()) {
+    if (now - record.timestamp > windowMs) {
+      requestCounts.delete(key);
+    }
+  }
+}, 60 * 1000).unref();
+
 const server: any = new Elysia({
   serve: {
-    maxRequestBodySize: 1024 * 1024 * 256,
+    maxRequestBodySize: 1024 * 1024 * 32, // 32MB max request body to prevent OOM
   },
-}).mapResponse(({ response, set }) => {
+}).mapResponse(({ response, set, request }) => {
   const isJson = typeof response === "object";
   const text = isJson ? JSON.stringify(response) : (response?.toString() ?? "");
-  set.headers["Content-Encoding"] = "gzip";
   const status: any = set.status || 200;
-  return new Response(Bun.gzipSync(new TextEncoder().encode(text)) as unknown as BodyInit, {
+  const contentType = isJson ? "application/json; charset=utf-8" : "text/plain; charset=utf-8";
+
+  // Only compress large responses (> 1KB) if client accepts gzip, saving CPU on small payloads
+  const acceptEncoding = request?.headers?.get?.("accept-encoding") || "";
+  const shouldCompress = text.length > 1024 && acceptEncoding.includes("gzip");
+
+  if (shouldCompress) {
+    set.headers["Content-Encoding"] = "gzip";
+    return new Response(Bun.gzipSync(new TextEncoder().encode(text)) as unknown as BodyInit, {
+      status,
+      headers: {
+        "Content-Type": contentType,
+        "Content-Encoding": "gzip",
+      },
+    });
+  }
+
+  return new Response(text, {
     status,
     headers: {
-      "Content-Type": `${isJson ? "application/json" : "text/plain"
-        }; charset=utf-8`,
+      "Content-Type": contentType,
     },
   });
 });

@@ -1,8 +1,10 @@
 import { Op } from "sequelize";
 const buildListFilter = async (params: any) => {
-  const offset = (params.page - 1) * params.limit;
+  const limit = Math.min(Math.max(Number(params?.limit) || 10, 1), 100);
+  const page = Math.max(Number(params?.page) || 1, 1);
+  const offset = (page - 1) * limit;
   const filter: any = {
-    limit: params.limit,
+    limit: limit,
     offset: offset,
     order: [["createdAt", "DESC"]],
     where: {},

@@ -15,14 +15,15 @@ Service.belongsTo(GeneralSetting, {
 
 Service.addScope("withCategory", () => {
   const scope = {
-    model:GeneralSetting,
-    as:"categoryData",
-    where:{}
-  }
+    model: GeneralSetting,
+    as: "categoryData",
+    attributes: ["id", "value", "type"],
+    required: false,
+  };
 
   return {
-    include: [scope]
-  }
-})
+    include: [scope],
+  };
+});
 
 export default Service;
