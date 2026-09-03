@@ -38,35 +38,28 @@ const ImageUpdateOverlay = ({ updateIdData, closeOverlay }: any) => {
 
         // Prepare files array: keep string for existing, object for new
         const files = (values.files || []).map((file: any) => {
-            if (typeof file === "string" && file.startsWith("uploads/")) {
-                return file;
+            if (typeof file === "string") {
+                return file.replace(/^\/+/, "");
             }
-            if (
-                file?.url &&
-                typeof file.url === "string" &&
-                file.url.startsWith("uploads/")
-            ) {
-                return file.url;
+            if (file?.url && typeof file.url === "string") {
+                return file.url.replace(/^\/+/, "");
             }
             if (file?.base64 && file?.extension) {
                 if (
                     typeof file.base64 === "string" &&
                     (file.base64.startsWith("http") ||
-                        file.base64.startsWith("/uploads/"))
+                        file.base64.startsWith("/uploads/") ||
+                        file.base64.includes("/maxpharma/") ||
+                        file.base64.startsWith("maxpharma/"))
                 ) {
                     try {
                         const url = new URL(
                             file.base64,
                             window.location.origin
                         );
-                        if (url.pathname.startsWith("/uploads/")) {
-                            return url.pathname.slice(1);
-                        }
+                        return url.pathname.replace(/^\/+/, "");
                     } catch {
-                        if (file.base64.startsWith("/uploads/")) {
-                            return file.base64.replace(/^\//, "");
-                        }
-                        return file.base64;
+                        return file.base64.replace(/^\/+/, "");
                     }
                 }
                 if (

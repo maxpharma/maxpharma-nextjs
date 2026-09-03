@@ -1,6 +1,6 @@
-// ProductGallery.tsx
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import helpers from "@/utils/helper";
 import {
     ChevronLeft,
     ChevronRight,
@@ -204,7 +204,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                                 onClick={() => setCurrentImageIndex(index)}
                             >
                                 <Image
-                                    src={image.src}
+                                    src={helpers.getFileUrl(image.src)}
                                     alt={`Thumbnail ${index + 1}`}
                                     fill
                                     className='object-cover rounded-xs'
@@ -244,7 +244,7 @@ const ProductGallery = ({ images }: ProductGalleryProps) => {
                 >
                     <div className='relative mx-auto h-100 md:h-120 max-sm:max-w-100 md:aspect-square'>
                         <Image
-                            src={images[currentImageIndex].src}
+                            src={helpers.getFileUrl(images[currentImageIndex].src)}
                             alt={images[currentImageIndex].alt}
                             fill
                             className='object-cover rounded-xl'

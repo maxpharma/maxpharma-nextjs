@@ -60,10 +60,18 @@ const TeamPage = () => {
                 role: values.role,
                 companyName: values.companyName,
             },
-            image: {
-                base64: values.file.base64,
-                extension: values.file.extension,
-            },
+            ...(values.file?.base64
+                ? {
+                      image: {
+                          base64: values.file.base64,
+                          extension: values.file.extension,
+                      },
+                  }
+                : typeof values.file === "string" && values.file
+                ? {
+                      image: values.file,
+                  }
+                : {}),
         };
 
         try {

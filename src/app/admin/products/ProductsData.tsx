@@ -7,6 +7,7 @@ import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
 import Image from "next/image";
+import helpers from "@/utils/helper";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -113,7 +114,7 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
                                       className='relative w-8 h-8 rounded overflow-hidden border border-gray-200'
                                   >
                                       <Image
-                                          src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
+                                          src={helpers.getFileUrl(file)}
                                           alt={`img-${idx}`}
                                           fill
                                           className='object-cover'
@@ -138,11 +139,8 @@ const ProductsData = ({ setUpdateIdData, filterType, filterCategory }: any) => {
                                 productOverview: item.description,
                                 type: item.type,
                                 categoryId: item.categoryId,
-                                categoryName: item.categoryData.value,
-                                images: item.files?.map((file: string) => ({
-                                    base64: `${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`,
-                                    extension: file.split(".").pop() || "",
-                                })),
+                                categoryName: item.categoryData?.value || "",
+                                images: item.files || [],
                                 specifications: item.additionalInfo || {},
                             });
 

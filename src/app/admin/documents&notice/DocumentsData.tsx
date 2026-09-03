@@ -4,6 +4,7 @@ import ConfirmationAlert from "@/components/ConfirmationAlert";
 import CustomImage from "@/components/CustomImage";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
+import helpers from "@/utils/helper";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -45,7 +46,7 @@ const DocumentsData = ({ setUpdateIdData }: any) => {
                         // if file link ends with .pdf then show view document else just render image
                         item?.file?.endsWith(".pdf") ? (
                             <a
-                                href={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${item?.file}`}
+                                href={helpers.getFileUrl(item?.file)}
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 className='text-blue-500 underline'
@@ -54,13 +55,13 @@ const DocumentsData = ({ setUpdateIdData }: any) => {
                             </a>
                         ) : (
                             <a
-                                href={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${item?.file}`}
+                                href={helpers.getFileUrl(item?.file)}
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 className='text-blue-500 underline'
                             >
                                 <CustomImage
-                                    src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${item?.file}`}
+                                    src={item?.file}
                                     size='small'
                                 />
                             </a>

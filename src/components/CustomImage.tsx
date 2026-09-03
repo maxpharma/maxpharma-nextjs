@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import helpers from "@/utils/helper";
 
 type SizeType = "small" | "medium" | "large";
 type OrientationType = "landscape" | "portrait" | "square";
@@ -65,20 +66,19 @@ const CustomImage: React.FC<CustomImageProps> = ({
     const objectFitClass =
         fit === "contain" ? "object-contain" : "object-cover";
 
-    // Construct the image source based on the variant
-    const imageSrc =
-        src?.startsWith("/") || src?.startsWith("http")
-            ? src
-            : `${process.env.NEXT_PUBLIC_BUCKET_URL}/${src}`;
+    // Construct the image source reliably using getFileUrl
+    const imageSrc = helpers.getFileUrl(src);
+    const isDataOrSvg = imageSrc.startsWith("data:") || imageSrc.endsWith(".svg");
 
     return (
         <>
-            {!!src && (
+            {!!imageSrc && (
                 <div className={`relative ${className || containerSize} `}>
                     <Image
                         src={imageSrc}
                         alt={alt}
                         fill
+                        unoptimized={isDataOrSvg}
                         className={`${objectFitClass} rounded-lg ${imageClassName}`}
                         sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                         priority

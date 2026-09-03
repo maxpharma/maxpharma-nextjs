@@ -1,5 +1,6 @@
 import Gallery from "@/api/gallery";
 import { deleteIcon, editIcon } from "@/assets/svg";
+import helpers from "@/utils/helper";
 import ConfirmationAlert from "@/components/ConfirmationAlert";
 import DataTable from "@/components/DataTable";
 import SvgIcon from "@/components/SvgIcon";
@@ -45,7 +46,7 @@ const ImageData = ({ setUpdateIdData }: any) => {
                             className='relative w-8 h-8 rounded overflow-hidden border border-gray-200'
                         >
                             <Image
-                                src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${file}`}
+                                src={helpers.getFileUrl(file)}
                                 alt={`img-${idx}`}
                                 fill
                                 className='object-cover'

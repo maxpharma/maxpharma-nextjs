@@ -74,14 +74,25 @@ const DocumentsPage = () => {
     const submitHandler = async (values: any, { resetForm }: any) => {
         setLoading(true);
 
+        let filePayload: any = undefined;
+        if (values.file?.base64) {
+            if (values.file.base64.startsWith("data:")) {
+                filePayload = {
+                    base64: values.file.base64,
+                    extension: values.file.extension,
+                };
+            } else {
+                filePayload = values.file.base64;
+            }
+        } else if (typeof values.file === "string") {
+            filePayload = values.file;
+        }
+
         const payload = {
             title: values.title,
             documentType: values.documentType,
             date: values.date,
-            file: {
-                base64: values.file.base64,
-                extension: values.file.extension,
-            },
+            ...(filePayload ? { file: filePayload } : {}),
         };
         resetForm();
 

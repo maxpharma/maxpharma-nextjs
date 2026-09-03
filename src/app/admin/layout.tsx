@@ -24,22 +24,24 @@ export default function AdminLayout({
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
+  const isPublicRoute = pathname === "/admin" || pathname === "/admin/";
+
   useEffect(() => {
     const storedUser = helpers.getUser();
     setUser(storedUser);
     setLoading(false);
-  }, []);
+  }, [pathname]);
 
   // Redirect logic
   useEffect(() => {
-    if (!loading && !!user?.token) {
-      if (pathname === "/admin") {
+    if (!loading) {
+      if (!!user?.token && isPublicRoute) {
         router.push("/admin/dashboard");
+      } else if (!user?.token && !isPublicRoute) {
+        router.push("/admin");
       }
-    } else if (!loading && !user?.token && pathname !== "/admin") {
-      router.push("/admin");
     }
-  }, [loading, user, pathname, router]);
+  }, [loading, user, isPublicRoute, router]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -56,8 +58,6 @@ export default function AdminLayout({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const isPublicRoute = pathname === "/admin/";
 
   const handleLogout = async () => {
     try {

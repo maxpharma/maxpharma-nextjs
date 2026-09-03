@@ -11,6 +11,7 @@ import {
     smallProfileImageIcon,
 } from "@/assets/commonSvg";
 import CustomImage from "../CustomImage";
+import helpers from "@/utils/helper";
 // Note: You'll provide the SvgIcon component yourself
 
 interface UploadProps {
@@ -228,8 +229,9 @@ const Upload: FC<UploadProps> = ({
                                             <Image
                                                 src={`${field?.value?.info},${field?.value?.base64}`}
                                                 alt='Uploaded file'
-                                                layout='fill'
-                                                objectFit='contain'
+                                                fill
+                                                unoptimized
+                                                className='object-contain'
                                             />
                                         </div>
                                     ) : isVideoFile(
@@ -265,10 +267,11 @@ const Upload: FC<UploadProps> = ({
                                 ) : value ? (
                                     <div className='w-full h-full relative'>
                                         <Image
-                                            src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${value}`}
+                                            src={helpers.getFileUrl(value)}
                                             alt='Preview'
-                                            layout='fill'
-                                            objectFit='contain'
+                                            fill
+                                            unoptimized={helpers.getFileUrl(value).startsWith("data:")}
+                                            className='object-contain'
                                         />
                                     </div>
                                 ) : (
@@ -299,12 +302,12 @@ const Upload: FC<UploadProps> = ({
                                             <Image
                                                 src={`${field?.value?.info},${field?.value?.base64}`}
                                                 alt='Uploaded file'
-                                                layout='fill'
-                                                objectFit='cover'
+                                                fill
+                                                unoptimized
                                                 className={
                                                     cardIcon === "profile"
-                                                        ? "rounded-full"
-                                                        : ""
+                                                        ? "rounded-full object-cover"
+                                                        : "object-cover"
                                                 }
                                             />
                                         </div>
@@ -336,14 +339,14 @@ const Upload: FC<UploadProps> = ({
                                 ) : value ? (
                                     <div className='w-full h-full relative'>
                                         <Image
-                                            src={value}
+                                            src={helpers.getFileUrl(value)}
                                             alt='Preview'
-                                            layout='fill'
-                                            objectFit='cover'
+                                            fill
+                                            unoptimized={helpers.getFileUrl(value).startsWith("data:")}
                                             className={
                                                 cardIcon === "profile"
-                                                    ? "rounded-full"
-                                                    : ""
+                                                    ? "rounded-full object-cover"
+                                                    : "object-cover"
                                             }
                                         />
                                     </div>

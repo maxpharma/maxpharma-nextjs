@@ -3,8 +3,9 @@ import { ReturnType } from "./types";
 
 const getByGroup = async (state: string, group: string, type?: string) => {
   try {
+    const query = type ? `?type=${type}` : "";
     const config: ReturnType = {
-      url: `generalSettings/group/${group}?type=${type}`,
+      url: `generalSettings/group/${group}${query}`,
       method: "get",
       authorization: false,
       config: {

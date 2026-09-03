@@ -72,19 +72,22 @@ const ProductPage = () => {
         )
           return img.url;
         // If object with base64 as URL
+        if (typeof img === "string") {
+          return img.replace(/^\/+/, "");
+        }
         if (
           img?.base64 &&
           typeof img.base64 === "string" &&
-          (img.base64.startsWith("http") || img.base64.startsWith("/uploads/"))
+          (img.base64.startsWith("http") ||
+            img.base64.startsWith("/uploads/") ||
+            img.base64.includes("/maxpharma/") ||
+            img.base64.startsWith("maxpharma/"))
         ) {
           try {
             const url = new URL(img.base64, window.location.origin);
-            if (url.pathname.startsWith("/uploads/"))
-              return url.pathname.slice(1);
+            return url.pathname.replace(/^\/+/, "");
           } catch {
-            if (img.base64.startsWith("/uploads/"))
-              return img.base64.replace(/^\//, "");
-            return img.base64;
+            return img.base64.replace(/^\/+/, "");
           }
         }
         // Otherwise, return as is (for new uploads)

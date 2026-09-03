@@ -205,9 +205,7 @@ const Items = ({
     id,
 }: any) => {
     const router = useRouter();
-    const imageSrc = files[0]?.startsWith("/") || files[0]?.startsWith("http")
-        ? files[0]
-        : files[0] ? `${process.env.NEXT_PUBLIC_BUCKET_URL}/${files[0]}` : "/images/medicine.png";
+    const imageSrc = files && files.length > 0 && files[0] ? files[0] : "/images/medicine.png";
 
     return (
         <div

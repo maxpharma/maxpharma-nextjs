@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import Popup from "@/api/popup";
 import CustomImage from "@/components/CustomImage";
 import Image from "next/image";
+import helpers from "@/utils/helper";
 import { color } from "@/utils/theme";
 import WebsiteData from "@/features/theme";
 
@@ -90,7 +91,7 @@ const ClientLayout = ({ children }: ClientLayoutProps) => {
         <div className="fixed inset-0 bg-black/70 bg-opacity-50 flex items-center justify-center z-50">
           <div ref={popupRef} className="relative">
             <Image
-              src={`${process.env.NEXT_PUBLIC_BUCKET_URL}/${activePopup.image}`}
+              src={helpers.getFileUrl(activePopup.image)}
               alt="Popup"
               width={500}
               height={500}

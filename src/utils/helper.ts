@@ -41,12 +41,32 @@ const convertDateTime = (dateStr: string, timeStr: string) => {
     return dateTimeStr;
 };
 
+const getFileUrl = (path?: string): string => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://") || path.startsWith("data:")) {
+        return path;
+    }
+    if (
+        path.startsWith("/images/") ||
+        path.startsWith("/icons/") ||
+        path.startsWith("/logo") ||
+        path.startsWith("/favicon")
+    ) {
+        return path;
+    }
+    const bucketUrl = (process.env.NEXT_PUBLIC_BUCKET_URL || "").replace(/\/+$/, "");
+    const cleanPath = path.replace(/^\/+/, "");
+    return bucketUrl ? `${bucketUrl}/${cleanPath}` : `/${cleanPath}`;
+};
+
 const helpers = {
     saveUser,
     removeUser,
     getUser,
     generatePassword,
     convertDateTime,
+    getFileUrl,
 };
 
 export default helpers;
+
