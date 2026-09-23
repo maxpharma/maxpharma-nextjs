@@ -5,7 +5,7 @@ import checkApiKey from "../middleware/checkApiKey";
 import db from "./db";
 const requestCounts = new Map<string, { count: number; timestamp: number }>();
 const windowMs: number = 60 * 1000;
-const maxRequests: number = 80;
+const maxRequests: number = 500;
 
 // Periodic cleanup of expired rate limiter records to prevent unbounded memory growth
 setInterval(() => {

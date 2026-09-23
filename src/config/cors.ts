@@ -1,15 +1,11 @@
 import { cors } from "@elysiajs/cors";
 const corsOptions = cors({
-  // origin: [
-  //   "http://localhost:8080",
-  //   "http://localhost:8081",
-  //   "http://localhost:8082",
-  //   "http://localhost:3000",
-  //   "https://beta.prabhusteel.com",
-  // ],
   origin: "*",
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Api-Key"],
+  // Cannot use credentials:true with origin:"*" — browsers block it (CORS spec)
+  credentials: false,
+  maxAge: 86400, // cache preflight for 24h instead of 5s
 });
 
 export default corsOptions;
