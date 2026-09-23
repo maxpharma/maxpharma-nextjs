@@ -1,0 +1,44 @@
+"use client";
+
+import BannerNavigation from "@/components/BannerNavigation";
+import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+const aboutNavItems = [
+    { name: "Imported Products", path: "/products/imported-products/" },
+
+    {
+        name: "Manufactured Products",
+        path: "/products/manufactured-products/",
+    },
+];
+
+const ProductLayout = ({ children }: { children: React.ReactNode }) => {
+    const pathname = usePathname();
+
+    const [title, setTitle] = useState("Products");
+
+    useEffect(() => {
+        const check = aboutNavItems.find((item) => item.path === pathname);
+
+        if (check) {
+            setTitle(check.name);
+        } else {
+            setTitle("About");
+        }
+    }, [pathname]);
+
+    return (
+        <div>
+            <div>
+                {(pathname === "/products/imported-products/" ||
+                    pathname === "/products/manufactured-products/") && (
+                    <BannerNavigation title={title} items={aboutNavItems} />
+                )}
+            </div>
+            <div className='custom-container mt-4'>{children}</div>
+        </div>
+    );
+};
+
+export default ProductLayout;

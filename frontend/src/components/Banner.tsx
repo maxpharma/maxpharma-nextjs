@@ -1,0 +1,200 @@
+"use client";
+
+import GeneralSettings from "@/api/generalSettings";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Button from "./Button";
+import { bucketUrl } from "@/features/data";
+
+interface BannerProps {
+    autoSlide?: boolean;
+    autoSlideInterval?: number;
+}
+
+const Banner: React.FC<BannerProps> = ({
+    autoSlide = true,
+    autoSlideInterval = 5000,
+}) => {
+    const fetchBanner = async () => {
+        await GeneralSettings.getByGroup("banners", "banner")
+            .then(() => {})
+            .catch(() => {});
+    };
+
+    const { data: banners, loading: skeleton } = useSelector(
+        (state: any) => state.banners
+    );
+
+    useEffect(() => {
+        if (!banners?.length) fetchBanner();
+    }, [banners?.length]);
+
+    const defaultBannerImages = ["/images/banner4.png", "/images/ad-banner.png"];
+    const defaultBannerData = [
+        {
+            title: "Empowering Healthcare with High-Quality Pharmaceuticals",
+            link: "/about",
+        },
+        {
+            title: "Trusted Products & Manufacturing Services",
+            link: "/products/manufactured-products",
+        },
+    ];
+
+    const hasBanners = Array.isArray(banners) && banners.length > 0;
+    const bannerImages = hasBanners
+        ? banners.map((banner: any) =>
+              banner.file?.startsWith("http") || banner.file?.startsWith("/")
+                  ? banner.file
+                  : `${bucketUrl}/${banner.file}`
+          )
+        : defaultBannerImages;
+
+    const bannerData = hasBanners
+        ? banners.map((banner: any) => ({
+              title: banner.title,
+              link: banner.value,
+          }))
+        : defaultBannerData;
+
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isHovering, setIsHovering] = useState(false);
+    const [isPaused, setIsPaused] = useState(false);
+    const [direction, setDirection] = useState(1); // 1 for right, -1 for left
+
+    const nextSlide = useCallback(() => {
+        setDirection(1);
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, [bannerImages.length]);
+
+    const prevSlide = useCallback(() => {
+        setDirection(-1);
+        setCurrentIndex((prevIndex) =>
+            prevIndex === 0 ? bannerImages.length - 1 : prevIndex - 1
+        );
+    }, [bannerImages.length]);
+
+    const goToSlide = (index: number) => {
+        setDirection(index > currentIndex ? 1 : -1);
+        setCurrentIndex(index);
+    };
+
+    useEffect(() => {
+        if (!autoSlide || isPaused) return;
+
+        const slideInterval = setInterval(nextSlide, autoSlideInterval);
+
+        return () => clearInterval(slideInterval);
+    }, [autoSlide, isPaused, nextSlide, autoSlideInterval]);
+
+    // Variants for slide animations
+    const variants = {
+        enter: (direction: number) => ({
+            x: direction > 0 ? "100%" : "-100%",
+            opacity: 0,
+        }),
+        center: {
+            x: 0,
+            opacity: 1,
+        },
+        exit: (direction: number) => ({
+            x: direction > 0 ? "-100%" : "100%",
+            opacity: 0,
+        }),
+    };
+
+    return (
+        <div
+            className='relative h-[180px] md:h-[350px] lg:h-[450px] xl:h-[550px] 2xl:h-[600px] w-full max-w-[96vw] mx-auto overflow-hidden rounded-xl'
+            onMouseEnter={() => {
+                setIsHovering(true);
+                setIsPaused(true);
+            }}
+            onMouseLeave={() => {
+                setIsHovering(false);
+                setIsPaused(false);
+            }}
+        >
+            {skeleton ? (
+                // Skeleton Loader
+                <div className='absolute inset-0 bg-gray-200 animate-pulse rounded-xl flex flex-col justify-end'>
+                    <div className='p-6'>
+                        <div className='h-8 w-1/3 bg-gray-300 rounded mb-4 animate-pulse' />
+                        <div className='h-10 w-24 bg-gray-300 rounded' />
+                    </div>
+                </div>
+            ) : (
+                <>
+                    <div className='absolute inset-0'>
+                        <AnimatePresence
+                            initial={false}
+                            custom={direction}
+                            mode='sync'
+                        >
+                            <motion.div
+                                key={currentIndex}
+                                custom={direction}
+                                variants={variants}
+                                initial='enter'
+                                animate='center'
+                                exit='exit'
+                                transition={{
+                                    x: {
+                                        type: "spring",
+                                        stiffness: 300,
+                                        damping: 30,
+                                    },
+                                    opacity: { duration: 0.2 },
+                                }}
+                                className='absolute inset-0'
+                            >
+                                <Image
+                                    src={bannerImages[currentIndex] || "/images/banner4.png"}
+                                    alt={`Banner image ${currentIndex + 1}`}
+                                    fill
+                                    className='object-cover rounded-xl'
+                                    priority
+                                />
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Indicators */}
+                    <div className='absolute bottom-4 left-0 right-0'>
+                        <div className='flex gap-2 justify-center'>
+                            {bannerImages.map((_: any, index: number) => (
+                                <button
+                                    key={index}
+                                    onClick={() => goToSlide(index)}
+                                    className={`w-2 h-2 rounded-full transition-all cursor-pointer ${
+                                        index === currentIndex
+                                            ? "bg-primary w-4"
+                                            : "bg-white/50"
+                                    }`}
+                                    aria-label={`Go to slide ${index + 1}`}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                    <div className='absolute bottom-0 left-0 md:bottom-2 md:left-2 lg:bottom-4 lg:left-4 flex flex-col gap-2 md:gap-4 z-10 p-4 rounded-lg'>
+                        <span className='text-base text-white font-bold md:text-xl lg:text-2xl xl:text-3xl'>
+                            {bannerData[currentIndex]?.title || "Banner Title"}
+                        </span>
+
+                        <Link
+                            href={bannerData[currentIndex]?.link || "/"}
+                            passHref
+                        >
+                            <Button>Learn More</Button>
+                        </Link>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+export default Banner;

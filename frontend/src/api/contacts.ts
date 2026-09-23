@@ -1,0 +1,73 @@
+import request from "@/utils/request";
+import { ReturnType } from "./types";
+
+const create = async (data: any) => {
+    try {
+        const config: ReturnType = {
+            url: `contacts`,
+            method: "post",
+            data,
+            authorization: true,
+            config: {
+                showErr: true,
+                store: {
+                    action: "prepend",
+                    key: "contacts",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
+
+const getAll = async () => {
+    try {
+        const config: ReturnType = {
+            url: `contacts`,
+            method: "get",
+            authorization: true,
+            config: {
+                showErr: true,
+
+                store: {
+                    action: "set",
+                    key: "contacts",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
+
+const deleteItem = async (id: number) => {
+    try {
+        const config: ReturnType = {
+            url: `contacts/${id}`,
+            method: "delete",
+            authorization: true,
+            config: {
+                showErr: true,
+                successMsg: "Deleted Successfully",
+
+                store: {
+                    action: "remove",
+                    key: "contacts",
+                },
+            },
+        };
+        const response = await request(config);
+        return response;
+    } catch (err: any) {
+        throw new Error(err.message);
+    }
+};
+
+const Contact = { create, getAll, deleteItem };
+
+export default Contact;
