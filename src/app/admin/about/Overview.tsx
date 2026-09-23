@@ -4,118 +4,102 @@ import AboutUs from "@/api/aboutUs";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
-import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
+import CustomToast from "@/components/CustomToast";
 import { FieldArray, Form, Formik } from "formik";
-import { desc } from "framer-motion/client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 
 const Overview = ({ type }: { type: string }) => {
     const [loading, setLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+
     const { items: aboutUsData } = useSelector(
-        (state: any) => state.aboutUsOverview
+        (state: any) => state.aboutUsOverview || {}
     );
 
-    useEffect(() => {
-        if (!aboutUsData?.length) {
-            AboutUs.get("aboutUsOverview", type);
+    const fetchData = useCallback(async () => {
+        try {
+            await AboutUs.get("aboutUsOverview", type);
+        } catch (error) {
+            console.error("Error fetching overview data:", error);
         }
-    }, [aboutUsData?.length, type]);
+    }, [type]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const [initialValues, setInitialValues] = useState({
+        id: "",
         title: "",
         description: "",
-        files: [],
+        files: [] as any[],
     });
 
     useEffect(() => {
         if (aboutUsData?.length) {
+            const item = aboutUsData[0];
             setInitialValues({
-                title: aboutUsData[0]?.title || "",
-                description: aboutUsData[0]?.description || "",
-                files: aboutUsData[0]?.files || [],
+                id: item?.id ? String(item.id) : "",
+                title: item?.title || "",
+                description: item?.description || "",
+                files: Array.isArray(item?.files) ? item.files : [],
             });
         }
-    }, [aboutUsData?.length, aboutUsData]);
+    }, [aboutUsData]);
 
-    const submitHandler = async (values: any, { resetForm }: any) => {
+    const submitHandler = async (values: any) => {
         setLoading(true);
 
-        const isUpdate = aboutUsData?.length > 0 && aboutUsData[0]?.id;
-        const original = aboutUsData?.[0] || {};
+        const currentItem = aboutUsData?.[0];
+        const isUpdate = Boolean(currentItem?.id);
 
-        // Always construct files array with both images (updated or previous)
         const filesToSend = [0, 1].map((index) => {
-            const newFile = values.files[index];
-            const oldFile = initialValues.files[index]; // always a string (path) or undefined
+            const newFile = values.files?.[index];
+            const oldFile = initialValues.files?.[index];
 
-            // If newFile has base64, use it (new upload)
             if (newFile?.base64) {
                 return {
                     extension: newFile.extension,
                     base64: newFile.base64,
                 };
             }
-            // Otherwise, use the old file path string (if exists)
             if (typeof oldFile === "string") {
                 return oldFile;
             }
             return null;
         });
 
-        // Check if any file has changed (newFile has base64)
-        const filesChanged = [0, 1].some(
-            (index) => values.files[index]?.base64
-        );
-
-        const defaultSend = {
+        const payload = {
             title: values.title,
             type: "Overview",
             description: values.description,
+            files: filesToSend,
         };
-
-        const getUpdatedFields = () => {
-            const changed: any = {};
-            if (!isUpdate) {
-                changed.description = values.description;
-                changed.files = filesToSend;
-                changed.title = values.title;
-                return changed;
-            }
-            if (values.title !== original.title) changed.title = values.title;
-            if (values.description !== original.description)
-                changed.description = values.description;
-            if (filesChanged) {
-                changed.files = filesToSend;
-            }
-            return changed;
-        };
-
-        const updatedFields = getUpdatedFields();
-        const payload = { ...defaultSend, ...updatedFields };
-
-        if (isUpdate && Object.keys(updatedFields).length === 0) {
-            setLoading(false);
-            return;
-        }
 
         try {
             if (isUpdate) {
-                await AboutUs.update("aboutUsOverview", original.id, payload);
+                await AboutUs.update("aboutUsOverview", currentItem.id, payload);
+                setToastMessage("Overview updated successfully");
             } else {
                 await AboutUs.create("aboutUsOverview", payload);
-                resetForm();
+                setToastMessage("Overview created successfully");
             }
+            setShowToast(true);
+            await fetchData();
         } catch (error) {
             console.error("Error submitting data:", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <div>
             <Formik
+                key={`${initialValues.id || "empty"}-${initialValues.title}`}
                 initialValues={initialValues}
                 onSubmit={submitHandler}
                 enableReinitialize
@@ -153,10 +137,18 @@ const Overview = ({ type }: { type: string }) => {
                         </FieldArray>
                     </div>
                     <Button variant='submit' loading={loading}>
-                        Submit
+                        {initialValues.id ? "Update" : "Submit"}
                     </Button>
                 </Form>
             </Formik>
+
+            {showToast && (
+                <CustomToast
+                    title='Success'
+                    message={toastMessage}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </div>
     );
 };

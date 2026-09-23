@@ -4,25 +4,47 @@ import AboutUs from "@/api/aboutUs";
 import Button from "@/components/Button";
 import Input from "@/components/fields/Input";
 import MyEditor from "@/components/fields/MyEditor";
-import TextArea from "@/components/fields/TextArea";
 import Upload from "@/components/fields/Upload";
+import CustomToast from "@/components/CustomToast";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
+
+const parseInfos = (infos: any) => {
+    if (!infos) return { name: "", role: "" };
+    if (typeof infos === "string") {
+        try {
+            return JSON.parse(infos);
+        } catch {
+            return { name: "", role: "" };
+        }
+    }
+    return infos;
+};
 
 const MessageChairperson = ({ type }: any) => {
     const [loading, setLoading] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState("");
+
     const { items: chairpersonData } = useSelector(
-        (state: any) => state.aboutUsMessageFromChairperson
+        (state: any) => state.aboutUsMessageFromChairperson || {}
     );
 
-    useEffect(() => {
-        if (!chairpersonData?.length) {
-            AboutUs.get("aboutUsMessageFromChairperson", type);
+    const fetchData = useCallback(async () => {
+        try {
+            await AboutUs.get("aboutUsMessageFromChairperson", type);
+        } catch (error) {
+            console.error("Error fetching chairperson data:", error);
         }
-    }, [chairpersonData?.length, type]);
+    }, [type]);
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const [initialValues, setInitialValues] = useState({
+        id: "",
         profile: "",
         name: "",
         role: "",
@@ -32,105 +54,74 @@ const MessageChairperson = ({ type }: any) => {
 
     useEffect(() => {
         if (chairpersonData?.length) {
+            const item = chairpersonData[0];
+            const parsedInfos = parseInfos(item?.infos);
             setInitialValues({
+                id: item?.id ? String(item.id) : "",
                 profile:
-                    (chairpersonData[0]?.files &&
-                        chairpersonData[0]?.files[0]) ||
-                    "",
-                name: chairpersonData[0]?.infos?.name || "",
-                role: chairpersonData[0]?.infos?.role || "",
-                title: chairpersonData[0]?.title || "",
-                message: chairpersonData[0]?.description || "",
+                    (item?.files && item?.files[0]) || "",
+                name: parsedInfos?.name || "",
+                role: parsedInfos?.role || "",
+                title: item?.title || "",
+                message: item?.description || "",
             });
         }
     }, [chairpersonData]);
 
-    const submitHandler = async (values: any, { resetForm }: any) => {
+    const submitHandler = async (values: any) => {
         setLoading(true);
 
-        const isUpdate = chairpersonData?.length > 0 && chairpersonData[0]?.id;
-        const original = chairpersonData?.[0] || {};
-
-        const defaultSend = {
-            title: values.title,
-            type: "Message From Chairperson",
-            description: values.message,
-        };
+        const currentItem = chairpersonData?.[0];
+        const isUpdate = Boolean(currentItem?.id);
 
         const getFilesArray = () =>
             values.profile
                 ? [
-                      {
-                          extension: values.profile.extension,
-                          base64: values.profile.base64,
-                      },
+                      typeof values.profile === "string"
+                          ? values.profile
+                          : {
+                                extension: values.profile.extension,
+                                base64: values.profile.base64,
+                            },
                   ]
                 : [];
 
-        const getUpdatedFields = () => {
-            if (!isUpdate) {
-                return {
-                    infos: {
-                        name: values.name,
-                        role: values.role,
-                    },
-                    files: getFilesArray(),
-                };
-            }
-            const changed: any = {};
-            if (values.title !== original.title) changed.title = values.title;
-            if (values.message !== original.description)
-                changed.description = values.message;
-            if (
-                values.name !== original.infos?.name ||
-                values.role !== original.infos?.role
-            ) {
-                changed.infos = {
-                    name: values.name,
-                    role: values.role,
-                };
-            }
-            // Compare files array shallowly
-            const origFile = (original.files && original.files[0]) || {};
-            const currFile = values.profile || {};
-            if (
-                currFile.base64 &&
-                (currFile.base64 !== origFile.base64 ||
-                    currFile.extension !== origFile.extension)
-            ) {
-                changed.files = getFilesArray();
-            }
-            return changed;
+        const payload = {
+            title: values.title,
+            type: "Message From Chairperson",
+            description: values.message,
+            infos: {
+                name: values.name,
+                role: values.role,
+            },
+            files: getFilesArray(),
         };
-
-        const updatedFields = getUpdatedFields();
-        const payload = { ...defaultSend, ...updatedFields };
-
-        if (isUpdate && Object.keys(updatedFields).length === 0) {
-            setLoading(false);
-            return;
-        }
 
         try {
             if (isUpdate) {
                 await AboutUs.update(
                     "aboutUsMessageFromChairperson",
-                    original.id,
+                    currentItem.id,
                     payload
                 );
+                setToastMessage("Message from Chairperson updated successfully");
             } else {
                 await AboutUs.create("aboutUsMessageFromChairperson", payload);
-                resetForm();
+                setToastMessage("Message from Chairperson created successfully");
             }
+            setShowToast(true);
+            await fetchData();
         } catch (error) {
             console.error("Error submitting data:", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <div>
             <Formik
+                key={`${initialValues.id || "empty"}-${initialValues.title}`}
                 initialValues={initialValues}
                 onSubmit={submitHandler}
                 enableReinitialize
@@ -171,10 +162,18 @@ const MessageChairperson = ({ type }: any) => {
                     />
 
                     <Button variant='submit' loading={loading}>
-                        Submit
+                        {initialValues.id ? "Update" : "Submit"}
                     </Button>
                 </Form>
             </Formik>
+
+            {showToast && (
+                <CustomToast
+                    title='Success'
+                    message={toastMessage}
+                    onClose={() => setShowToast(false)}
+                />
+            )}
         </div>
     );
 };

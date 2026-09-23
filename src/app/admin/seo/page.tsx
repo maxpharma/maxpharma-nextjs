@@ -1,5 +1,6 @@
 "use client";
 
+import GeneralSettings from "@/api/generalSettings";
 import ActionButton from "@/components/ActionButton";
 import CustomToast from "@/components/CustomToast";
 import Input from "@/components/fields/Input";
@@ -18,40 +19,7 @@ interface PageOption {
     state: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_APP_BASE_URL ?? "http://localhost:9000/api";
-const API_KEY  = process.env.NEXT_PUBLIC_API_KEY ?? "";
 const EMPTY: FormValues = { title: "", description: "", keywords: "" };
-
-async function fetchSeoList(): Promise<any[]> {
-    const res = await fetch(`${API_BASE}/generalSettings/group/seo`, {
-        headers: { "Api-Key": API_KEY, "Content-Type": "application/json" },
-        cache: "no-store",
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const json = await res.json();
-    return Array.isArray(json?.data) ? json.data : [];
-}
-
-async function saveSeo(payload: any, existingId?: number): Promise<void> {
-    const token = typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("max-pharma-admin") || "null")?.token
-        : null;
-    const url    = existingId ? `${API_BASE}/generalSettings/${existingId}` : `${API_BASE}/generalSettings`;
-    const method = existingId ? "PATCH" : "POST";
-    const res = await fetch(url, {
-        method,
-        headers: {
-            "Api-Key": API_KEY,
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(payload),
-    });
-    if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err?.message || `HTTP ${res.status}`);
-    }
-}
 
 function parseInfos(infos: any): FormValues {
     if (!infos) return EMPTY;
@@ -79,20 +47,16 @@ const STATIC_PAGES: PageOption[] = [
 
 const SeoForm = () => {
     const [showToast, setShowToast]       = useState(false);
-    const [toastError, setToastError]     = useState("");
+    const [errorMsg, setErrorMsg]         = useState("");
     const [selectedPage, setSelectedPage] = useState<PageOption>(STATIC_PAGES[0]);
     const [loading, setLoading]           = useState(false);
     const [fetching, setFetching]         = useState(true);
     const [formValues, setFormValues]     = useState<FormValues>(EMPTY);
-    // currentEntry tracks the DB record for the active tab — used for update vs create
     const [currentEntry, setCurrentEntry] = useState<any>(null);
     const formikRef = useRef<FormikProps<FormValues>>(null);
+    const entryRef  = useRef<any>(null);
+    entryRef.current = currentEntry;
 
-    // Keep a ref so submitHandler always sees the latest entry even if state is stale
-    const currentEntryRef = useRef<any>(null);
-    currentEntryRef.current = currentEntry;
-
-    // Service categories from Redux for extra tabs
     const { data: serviceCategoriesRaw } = useSelector(
         (state: any) => state.serviceCategories || {}
     );
@@ -107,15 +71,16 @@ const SeoForm = () => {
     const loadSeo = useCallback(async (pageState: string) => {
         setFetching(true);
         setCurrentEntry(null);
+        setFormValues(EMPTY);
         try {
-            const list = await fetchSeoList();
+            // Uses axios via request.ts — same as every other working page
+            const res: any = await GeneralSettings.getByGroup("seo", "seo");
+            const list: any[] = Array.isArray(res) ? res : [];
             const match = list.find((item: any) => item.key === pageState) ?? null;
-            // Set both in one update group so they're always in sync
             setCurrentEntry(match);
             setFormValues(match ? parseInfos(match.infos) : EMPTY);
         } catch (err: any) {
-            console.error("SEO fetch error:", err?.message);
-            setFormValues(EMPTY);
+            setErrorMsg(err?.message || "Failed to load SEO data");
         } finally {
             setFetching(false);
         }
@@ -125,14 +90,9 @@ const SeoForm = () => {
         loadSeo(selectedPage.state);
     }, [loadSeo, selectedPage.state]);
 
-    const handlePageSelect = (page: PageOption) => {
-        setSelectedPage(page);
-    };
-
     const submitHandler = async (values: FormValues) => {
         setLoading(true);
-        // Use the ref so we always have the latest entry id, not a stale closure value
-        const entry = currentEntryRef.current;
+        const entry = entryRef.current;
         const payload = {
             group: "seo",
             key:   selectedPage.state,
@@ -141,11 +101,15 @@ const SeoForm = () => {
             infos: { ...values },
         };
         try {
-            await saveSeo(payload, entry?.id);
+            if (entry?.id) {
+                await GeneralSettings.update("seo", payload, entry.id);
+            } else {
+                await GeneralSettings.create("seo", payload);
+            }
             setShowToast(true);
             await loadSeo(selectedPage.state);
         } catch (err: any) {
-            setToastError(err?.message || "Failed to save SEO data");
+            setErrorMsg(err?.message || "Failed to save");
         } finally {
             setLoading(false);
         }
@@ -153,7 +117,6 @@ const SeoForm = () => {
 
     return (
         <>
-            {/* Page tabs */}
             <div className='bg-light-blue p-4 rounded-lg mb-8'>
                 <h1>Seo Settings</h1>
                 <div className='flex gap-2 flex-wrap justify-center p-12'>
@@ -165,7 +128,7 @@ const SeoForm = () => {
                                     ? "bg-primary text-white"
                                     : "bg-white text-primary hover:bg-blue-100"
                             }`}
-                            onClick={() => handlePageSelect(page)}
+                            onClick={() => setSelectedPage(page)}
                         >
                             {page.name}
                         </div>
@@ -188,21 +151,9 @@ const SeoForm = () => {
                 >
                     {({ handleSubmit }) => (
                         <Form onSubmit={handleSubmit}>
-                            <Input
-                                name='title'
-                                label='Meta Title'
-                                placeholder='Meta Title'
-                            />
-                            <TextArea
-                                name='description'
-                                label='Meta Description'
-                                placeholder='Meta Description'
-                            />
-                            <TextArea
-                                name='keywords'
-                                label='Meta Keywords'
-                                placeholder='Comma separated keywords'
-                            />
+                            <Input name='title' label='Meta Title' placeholder='Meta Title' />
+                            <TextArea name='description' label='Meta Description' placeholder='Meta Description' />
+                            <TextArea name='keywords' label='Meta Keywords' placeholder='Comma separated keywords' />
                             <ActionButton type='submit' loading={loading}>
                                 {currentEntry?.id ? "Update" : "Save"}
                             </ActionButton>
@@ -212,18 +163,10 @@ const SeoForm = () => {
             )}
 
             {showToast && (
-                <CustomToast
-                    title='Success'
-                    message='SEO settings saved successfully'
-                    onClose={() => setShowToast(false)}
-                />
+                <CustomToast title='Success' message='SEO settings saved successfully' onClose={() => setShowToast(false)} />
             )}
-            {toastError && (
-                <CustomToast
-                    title='Error'
-                    message={toastError}
-                    onClose={() => setToastError("")}
-                />
+            {errorMsg && (
+                <CustomToast title='Error' message={errorMsg} onClose={() => setErrorMsg("")} />
             )}
         </>
     );

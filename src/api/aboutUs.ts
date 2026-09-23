@@ -26,8 +26,9 @@ const create = async (state: string, data: any) => {
 
 const get = async (state: string, type: string) => {
     try {
+        const encodedType = encodeURIComponent(type);
         const config: ReturnType = {
-            url: `about-us?type=${type}`,
+            url: `about-us?type=${encodedType}`,
             method: "get",
             authorization: true,
             config: {
