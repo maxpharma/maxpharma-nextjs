@@ -16,7 +16,7 @@ const seeders = async () => {
     console.log("Admin user already exists. Skipping seed.");
   } else {
     await db.query(
-      "INSERT INTO admins (name,email,password,username,createdAt,updatedAt) VALUES (?, ?, ?, ?, ?, ?)",
+      'INSERT INTO admins (name,email,password,username,"createdAt","updatedAt") VALUES (?, ?, ?, ?, ?, ?)',
       {
         replacements: [
           "Admin",
