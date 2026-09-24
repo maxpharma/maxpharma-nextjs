@@ -1,0 +1,8 @@
+import { apiHandler } from "@/server/lib/apiHandler";
+import requireAdmin from "@/server/middleware/requireAdmin";
+import AdminService from "@/server/modules/admins/service";
+
+export const GET = apiHandler(async (request) => {
+  const user = await requireAdmin(request, ["admin"]);
+  return AdminService.find(user.id);
+});
