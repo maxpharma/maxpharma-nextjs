@@ -21,7 +21,7 @@
     "framer-motion": "^12.7.4",
     "gsap": "^3.12.7",
     "heic-convert": "^2.1.0",
-    "joi": "^18.2.9",
+    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.479.0",
     "mysql2": "^3.24.4",
