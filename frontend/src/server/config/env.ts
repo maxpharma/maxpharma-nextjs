@@ -1,11 +1,9 @@
 // Next.js loads .env/.env.local itself — no dotenv package needed here.
 const env = {
   APP_NAME: process.env.APP_NAME || "Max Pharma",
-  DB_NAME: process.env.DB_NAME || "maxpharma",
-  DB_USER: process.env.DB_USER || "root",
-  DB_PASS: process.env.DB_PASS || "password",
-  DB_HOST: process.env.DB_HOST || "127.0.0.1",
-  DB_PORT: Number(process.env.DB_PORT) || 3307,
+  DATABASE_URL:
+    process.env.DATABASE_URL ||
+    "postgres://postgres:postgres@127.0.0.1:5432/maxpharma",
   API_KEY: process.env.API_KEY,
   JWT_SECRET: process.env.JWT_SECRET,
   MODE: process.env.MODE || "development",

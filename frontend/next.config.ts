@@ -45,15 +45,7 @@ const nextConfig = {
     ],
   },
   reactStrictMode: true,
-  // sequelize requires all its dialect modules (incl. postgres/pg-hstore,
-  // unused here — this app is mysql2-only) at import time; bundling it
-  // fails the build. Keep it external so Node resolves it at runtime.
   serverExternalPackages: ["sequelize"],
-  // trailingSlash below is fine for pages, but Next was also 308-redirecting
-  // /api/* to add a trailing slash — a redirect carries no CORS headers, so
-  // it broke OPTIONS preflights and any cross-origin/non-browser (mobile)
-  // client that doesn't follow redirects on POST/PATCH. This opts API routes
-  // out of that redirect while leaving page routing untouched.
   skipTrailingSlashRedirect: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",

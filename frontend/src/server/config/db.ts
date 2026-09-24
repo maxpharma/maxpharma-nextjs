@@ -1,35 +1,22 @@
 import { Sequelize } from "sequelize";
-import mysql2 from "mysql2";
+import pg from "pg";
 import env from "./env";
 
-// ponytail: lazy singleton so a missing DB_* env var at `next build` time
-// doesn't crash the build — the old backend threw eagerly at import time,
-// which was fine for a long-lived process but breaks a serverless build step.
 let _db: Sequelize | null = null;
 
 const getDb = (): Sequelize => {
   if (_db) return _db;
 
-  const { DB_NAME, DB_USER, DB_PASS, DB_HOST } = env;
-  if (!DB_NAME || !DB_USER || !DB_PASS || !DB_HOST) {
+  if (!env.DATABASE_URL) {
     throw new Error(
-      "Missing required environment variables for database connection.",
+      "Missing required DATABASE_URL environment variable for database connection.",
     );
   }
 
-  _db = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
-    host: DB_HOST,
-    port: env.DB_PORT,
-    dialect: "mysql",
-    // ponytail: static import above makes mysql2 traceable by @vercel/nft —
-    // sequelize's internal `require("mysql2")` is dynamic and gets missed
-    // by Next's standalone output file tracing, so the driver never ships.
-    dialectModule: mysql2,
+  _db = new Sequelize(env.DATABASE_URL, {
+    dialect: "postgres",
+    dialectModule: pg,
     logging: false,
-    timezone: "+05:45",
-    // ponytail: pool sized for one Vercel Function instance, not the whole
-    // app — put a connection pooler (PlanetScale / ProxySQL) in front of
-    // MySQL so many concurrent instances don't exceed max_connections.
     pool: {
       max: 2,
       min: 0,

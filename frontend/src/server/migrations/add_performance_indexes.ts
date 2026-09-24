@@ -50,8 +50,7 @@ const up = async (queryInterface: QueryInterface) => {
       });
       console.log(`[Index Created] ${idx.name} on ${idx.table} (${idx.fields.join(", ")})`);
     } catch (err: any) {
-      // Ignore if index already exists
-      if (!err.message?.includes("Duplicate key name") && !err.message?.includes("already exists")) {
+      if (!err.message?.includes("already exists")) {
         console.warn(`[Index Warning] ${idx.name}:`, err.message);
       }
     }
