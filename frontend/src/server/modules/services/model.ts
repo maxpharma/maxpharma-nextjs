@@ -1,0 +1,29 @@
+import { getDb } from "../../config/db";
+import GeneralSetting from "../generalSettings/model";
+import { serviceAttributes } from "./attributes";
+const Service = getDb().define("services", serviceAttributes, {
+  tableName: "services",
+  timestamps: true,
+  createdAt: "createdAt",
+  updatedAt: "updatedAt",
+});
+
+Service.belongsTo(GeneralSetting, {
+  foreignKey:"categoryId",
+  as:"categoryData"
+})
+
+Service.addScope("withCategory", () => {
+  const scope = {
+    model: GeneralSetting,
+    as: "categoryData",
+    attributes: ["id", "value", "type"],
+    required: false,
+  };
+
+  return {
+    include: [scope],
+  };
+});
+
+export default Service;
