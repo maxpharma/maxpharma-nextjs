@@ -7,6 +7,9 @@ export const GET = apiHandler(async (request) => {
   return NoticesService.list({
     page: Number(searchParams.get("page")) || 1,
     limit: Number(searchParams.get("limit")) || 10,
+    search: searchParams.get("search") || null,
+    type: searchParams.get("type") || null,
+    categoryId: searchParams.get("categoryId") || null,
   });
 });
 

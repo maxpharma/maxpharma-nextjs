@@ -8,6 +8,7 @@ export const GET = apiHandler(async (request) => {
   return ContactsService.list({
     page: Number(searchParams.get("page")) || 1,
     limit: Number(searchParams.get("limit")) || 10,
+    search: searchParams.get("search") || null,
   });
 });
 

@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize";
+import mysql2 from "mysql2";
 import env from "./env";
 
 // ponytail: lazy singleton so a missing DB_* env var at `next build` time
@@ -20,6 +21,10 @@ const getDb = (): Sequelize => {
     host: DB_HOST,
     port: env.DB_PORT,
     dialect: "mysql",
+    // ponytail: static import above makes mysql2 traceable by @vercel/nft —
+    // sequelize's internal `require("mysql2")` is dynamic and gets missed
+    // by Next's standalone output file tracing, so the driver never ships.
+    dialectModule: mysql2,
     logging: false,
     timezone: "+05:45",
     // ponytail: pool sized for one Vercel Function instance, not the whole
